@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Browser-enforced privacy: no outbound connections, no form submissions.
+       connect-src 'none' means this page is physically unable to transmit your data. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'" />
+  <title>USCIS Case Tracker (Unofficial)</title>
+  <meta name="description"
+    content="Unofficial, browser-only viewer for USCIS case JSON. Paste the data from your own USCIS account to see an event timeline, progress overview, and plain-language explanations. Nothing is uploaded or stored." />
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇺🇸</text></svg>" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+
+  <!-- Statue of Liberty watermark (original line art) -->
+  <svg class="statue-mark" viewBox="0 0 220 420" fill="none" stroke="currentColor" stroke-width="3"
+    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M163 10 C157 20 166 24 161 34 C172 29 172 16 163 10 Z" />
+    <path d="M152 36 L172 36 L168 46 L156 46 Z" />
+    <path d="M162 46 L160 58" />
+    <path d="M158 58 C148 74 136 88 126 100" />
+    <path d="M166 60 C158 78 148 94 138 106" />
+    <path d="M104 74 L104 52" /> <path d="M92 78 L80 60" /> <path d="M116 78 L128 60" />
+    <path d="M84 88 L66 76" /> <path d="M124 88 L142 76" />
+    <circle cx="104" cy="102" r="16" />
+    <path d="M88 94 L120 94" />
+    <path d="M86 122 C96 114 114 114 126 124 L136 180 L148 330 L60 330 L74 180 Z" />
+    <path d="M60 170 L44 200 L60 212 L74 184 Z" />
+    <path d="M74 150 C66 160 60 168 56 176" />
+    <path d="M96 150 L90 320" /> <path d="M110 150 L112 320" /> <path d="M124 160 L130 320" />
+    <path d="M52 330 L156 330 L166 356 L42 356 Z" />
+    <path d="M56 356 L152 356 L152 396 L56 396 Z" />
+  </svg>
+
+  <div class="page">
+
+    <!-- ══ HEADER (canton) ═══════════════════════════════════ -->
+    <header class="header">
+      <div class="hdr-inner">
+        <div class="hdr-top">
+          <div class="hdr-seal">
+            <svg viewBox="0 0 60 38" aria-hidden="true">
+              <rect x="1" y="1" width="58" height="36" fill="var(--stripe-white)" stroke="var(--border)" stroke-width="1" />
+              <rect x="1" y="1" width="58" height="2.77" fill="var(--stripe-red)" />
+              <rect x="1" y="6.54" width="58" height="2.77" fill="var(--stripe-red)" />
+              <rect x="1" y="12.08" width="58" height="2.77" fill="var(--stripe-red)" />
+              <rect x="1" y="17.62" width="58" height="2.77" fill="var(--stripe-red)" />
+              <rect x="1" y="23.15" width="58" height="2.77" fill="var(--stripe-red)" />
+              <rect x="1" y="28.69" width="58" height="2.77" fill="var(--stripe-red)" />
+              <rect x="1" y="34.23" width="58" height="2.77" fill="var(--stripe-red)" />
+              <rect x="1" y="1" width="24" height="19.4" fill="var(--canton)" />
+              <circle cx="5" cy="4.8" r="1.1" fill="#fff" /> <circle cx="11" cy="4.8" r="1.1" fill="#fff" />
+              <circle cx="17" cy="4.8" r="1.1" fill="#fff" /> <circle cx="23" cy="4.8" r="1.1" fill="#fff" />
+              <circle cx="8" cy="9.6" r="1.1" fill="#fff" /> <circle cx="14" cy="9.6" r="1.1" fill="#fff" />
+              <circle cx="20" cy="9.6" r="1.1" fill="#fff" />
+              <circle cx="5" cy="14.4" r="1.1" fill="#fff" /> <circle cx="11" cy="14.4" r="1.1" fill="#fff" />
+              <circle cx="17" cy="14.4" r="1.1" fill="#fff" /> <circle cx="23" cy="14.4" r="1.1" fill="#fff" />
+            </svg>
+          </div>
+          <div>
+            <div class="hdr-title-row">
+              <h1 class="hdr-title">USCIS Case Tracker</h1>
+              <span class="unofficial-chip">UNOFFICIAL</span>
+            </div>
+            <div class="hdr-sub">Independent case viewer — paste your USCIS API JSON · Times shown in your local
+              timezone</div>
+          </div>
+        </div>
+        <div class="hdr-right">
+          <div>Schema: <a href="https://niem.github.io/model/5.0/scr/BenefitDocumentStatusCategoryCodeSimpleType/"
+              target="_blank" rel="noopener noreferrer">NIEM v5.0</a></div>
+          <div>Timezone: <span class="val" id="liveTZName">—</span></div>
+          <div>Now: <span class="val" id="liveTimeDisplay">—</span></div>
+        </div>
+      </div>
+    </header>
+    <div class="flag-ribbon"></div>
+
+    <!-- ══ MAIN ══════════════════════════════════════════════ -->
+    <main class="main">
+
+      <section class="input-section">
+        <div class="privacy-note">🔒 <strong>Private by design:</strong> your case data never leaves your browser.
+          This page stores nothing and cannot transmit data anywhere — outbound connections are blocked by its
+          Content-Security-Policy, which the browser enforces (view source to verify).</div>
+        <textarea id="jsonInput" spellcheck="false" placeholder='Paste the JSON from your USCIS online account here, then click Analyze Case.
+
+(It will look something like  { "data": { "receiptNumber": "IOE…", … } }  — see the instructions below for how to get it.)'></textarea>
+        <div class="error-bar" id="errorBar"></div>
+
+        <div class="input-actions">
+          <button class="btn btn-clear" id="clearBtn">Clear</button>
+          <button class="btn btn-analyze" id="analyzeBtn">Analyze Case</button>
+        </div>
+
+        <!-- Instructions -->
+        <div class="api-guide">
+          <div class="api-guide-title">📖 Instructions to Access Your USCIS Case JSON Data</div>
+          <div class="api-guide-body">
+            <p>Your case data lives in your own USCIS online account — this page can't fetch it for you. To pull it
+              yourself:</p>
+            <div class="api-step"><span class="step-num">1</span><span>Log in at <a
+                  href="https://myaccount.uscis.gov/sign-in" target="_blank"
+                  rel="noopener noreferrer">myaccount.uscis.gov/sign-in</a>.</span></div>
+            <div class="api-step"><span class="step-num">2</span><span>In the same browser, open a new tab to:<br />
+                <code class="api-url">https://my.uscis.gov/account/case-service/api/cases/IOE09XXXXXXXX</code></span>
+            </div>
+            <div class="api-step"><span class="step-num">3</span><span>Swap <code
+                  class="inline-code">IOE09XXXXXXXX</code> for your own receipt number (it starts with
+                <code class="inline-code">IOE</code>).</span></div>
+            <div class="api-step"><span class="step-num">4</span><span>The tab will show raw JSON. Copy all of it
+                (<strong>Ctrl+A</strong>, then <strong>Ctrl+C</strong>), paste it into the box above, and hit
+                <strong>Analyze Case</strong>.</span></div>
+            <p class="guide-note">The link only works while you're signed in, because your browser pulls the data
+              straight from USCIS. This page never sees your login and cannot fetch anything on its own — everything
+              you paste stays on your device.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Empty state -->
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">📋</div>
+        <div class="empty-title">Ready When You Are</div>
+        <div class="empty-sub">Paste your case JSON above and hit Analyze Case</div>
+      </div>
+
+      <!-- Output -->
+      <div id="output" style="display:none">
+        <div class="case-details-grid" id="caseDetailsGrid"></div>
+
+        <section>
+          <div class="sec-heading"><span class="star">★</span> The Road So Far — Event Timeline</div>
+          <div class="timeline" id="timeline"></div>
+        </section>
+
+        <section>
+          <div class="sec-heading"><span class="star">★</span> Where Things Stand</div>
+          <div class="summary-card" id="summaryCard"></div>
+        </section>
+      </div>
+
+      <!-- Disclaimer (collapsible) -->
+      <details class="disclaimer">
+        <summary>
+          <span class="disclaimer-line">⚠ Unofficial tool — not affiliated with USCIS or DHS · not legal advice ·
+            all processing stays in your browser</span>
+          <span class="disclaimer-toggle"></span>
+        </summary>
+        <div class="disclaimer-body">
+          <p>This is a personal, independent utility for viewing case data that you retrieve yourself from your own
+            USCIS online account. It has no connection to U.S. Citizenship and Immigration Services (USCIS), the
+            Department of Homeland Security, or any other government agency, law firm, or attorney, and nothing here
+            has been reviewed or endorsed by any of them.</p>
+          <p>Everything on this page is computed inside your browser from the JSON you paste in. Nothing is uploaded,
+            logged, or stored anywhere — close the tab and it's gone. The page's Content-Security-Policy blocks all
+            outbound connections and form submissions, so the browser itself enforces that your data cannot be
+            transmitted.</p>
+          <p>Event-code explanations are plain-language interpretations based on the publicly available NIEM v5.0
+            schema; they are not official definitions and may be incomplete or become outdated as USCIS changes its
+            systems.</p>
+          <p>None of this is legal advice, and no outcome is implied or guaranteed. For anything that matters, rely on
+            official USCIS communications and consult a licensed immigration attorney or a DOJ-accredited
+            representative.</p>
+        </div>
+      </details>
+
+    </main>
+
+    <!-- ══ FOOTER ════════════════════════════════════════════ -->
+    <footer class="footer">
+      <div>Open source · Built with Claude · Not affiliated with USCIS or DHS</div>
+      <div>Event codes: <a href="https://niem.github.io/model/5.0/scr/BenefitDocumentStatusCategoryCodeSimpleType/"
+          target="_blank" rel="noopener noreferrer">NIEM v5.0</a></div>
+    </footer>
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+
+</html>

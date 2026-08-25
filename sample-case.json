@@ -1,0 +1,83 @@
+{
+  "data": {
+    "receiptNumber": "IOE0912345678",
+    "formType": "I-485",
+    "formName": "Application to Register Permanent Residence or Adjust Status",
+    "applicantName": "JANE Q SAMPLE",
+    "submissionTimestamp": "2025-04-02T16:41:00Z",
+    "updatedAtTimestamp": "2026-08-21T13:05:00Z",
+    "closed": false,
+    "ackedByAdjudicatorAndCms": true,
+    "isPremiumProcessed": false,
+    "areAllGroupStatusesComplete": false,
+    "actionRequired": false,
+    "elisChannelType": "Online",
+    "evidenceRequests": [],
+    "events": [
+      {
+        "eventId": "EV-001",
+        "eventCode": "IAF",
+        "eventTimestamp": "2025-04-02T16:41:00Z",
+        "createdAtTimestamp": "2025-04-02T16:45:00Z"
+      },
+      {
+        "eventId": "EV-002",
+        "eventCode": "FSA0",
+        "eventTimestamp": "2025-04-10T09:00:00Z",
+        "createdAtTimestamp": "2025-04-10T09:02:00Z"
+      },
+      {
+        "eventId": "EV-003",
+        "eventCode": "FNA",
+        "eventTimestamp": "2025-04-15T11:30:00Z",
+        "createdAtTimestamp": "2025-04-15T11:32:00Z"
+      },
+      {
+        "eventId": "EV-004",
+        "eventCode": "FNB",
+        "eventTimestamp": "2025-05-01T14:20:00Z",
+        "createdAtTimestamp": "2025-05-01T14:25:00Z"
+      },
+      {
+        "eventId": "EV-005",
+        "eventCode": "FTA0",
+        "eventTimestamp": "2025-05-20T08:10:00Z",
+        "createdAtTimestamp": "2025-05-20T08:12:00Z"
+      },
+      {
+        "eventId": "EV-006",
+        "eventCode": "FJ",
+        "eventTimestamp": "2026-05-06T04:12:05.000Z",
+        "createdAtTimestamp": "2026-07-23T11:23:07.999Z",
+        "eventDateTime": "2026-05-06"
+      },
+      {
+        "eventId": "EV-007",
+        "eventCode": "HG",
+        "eventTimestamp": "2026-03-18T15:30:00Z",
+        "createdAtTimestamp": "2026-03-18T15:35:00Z"
+      },
+      {
+        "eventId": "EV-008",
+        "eventCode": "FTA1",
+        "eventTimestamp": "2026-08-05T07:45:00Z",
+        "createdAtTimestamp": "2026-08-05T07:50:00Z"
+      }
+    ],
+    "notices": [
+      {
+        "actionType": "Receipt Notice",
+        "generationDate": "2025-04-02T17:00:00Z",
+        "receiptNumber": "IOE0912345678",
+        "letterId": "LTR-1001"
+      },
+      {
+        "actionType": "Interview Scheduled",
+        "generationDate": "2026-02-10T10:10:00Z",
+        "appointmentDateTime": "2026-03-18T15:00:00Z",
+        "receiptNumber": "IOE0912345678",
+        "letterId": "LTR-2002"
+      }
+    ]
+  }
+}
