@@ -395,6 +395,7 @@ textarea#jsonInput:focus { outline: none; border-color: var(--navy); }
 .detail-key { color: var(--text-muted); flex-shrink: 0; }
 .detail-val { text-align: right; font-weight: 500; }
 .detail-val.small { font-size: 12px; }
+.appt-note { color: var(--text-dim); font-style: italic; }
 .mono { font-family: 'DM Mono', monospace; }
 .receipt-no { color: var(--red-flag); font-size: 14px; }
 

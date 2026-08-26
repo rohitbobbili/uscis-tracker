@@ -279,6 +279,14 @@ function renderAll(d) {
     }
   }
 
+  const appointments = collectAppointments(notices, events);
+  const appointmentRows = appointments.map(a => {
+    const note = a.rescheduleCount
+      ? ` <span class="appt-note">(latest of ${a.rescheduleCount + 1} — rescheduled)</span>`
+      : (a.upcoming ? ' <span class="appt-note">(upcoming)</span>' : '');
+    return `<div class="detail-row"><span class="detail-key">${a.label} Appointment</span><span class="detail-val small">${fmtFull(a.when)}${note}</span></div>`;
+  }).join('');
+
   const latestEv = [...events].sort((a, b) =>
     new Date(b.createdAtTimestamp || b.eventTimestamp) - new Date(a.createdAtTimestamp || a.eventTimestamp))[0];
   const latestRow = latestEv
@@ -295,6 +303,7 @@ function renderAll(d) {
       <div class="detail-row"><span class="detail-key">Filed</span><span class="detail-val mono small">${f(subTs)}</span></div>
       <div class="detail-row"><span class="detail-key">Last Updated</span><span class="detail-val mono small">${f(updTs)}</span></div>
       <div class="detail-row"><span class="detail-key">Most Recent Update</span><span class="detail-val small">${latestRow}</span></div>
+      ${appointmentRows}
       <div class="detail-row" title="${daysTitle}"><span class="detail-key">${daysLabel}</span><span class="detail-val" style="color:var(--navy);font-weight:700">${daysSub}${daysSub === '—' ? '' : ' days'}</span></div>
     </div>
     <div class="tz-note">* All times shown in your local timezone — ${LOCAL_TZ.replace('_', ' ')} (${tzAbbr(new Date())}), converted from the UTC timestamps in the record.${daysTitle ? ` ${daysLabel}: ${daysTitle.charAt(0).toLowerCase()}${daysTitle.slice(1)}` : ''}</div>`;
@@ -445,6 +454,33 @@ function classifyNotice(notice, events) {
   return 'other';
 }
 
+const APPOINTMENT_LABELS = { biometrics: 'Biometrics', interview: 'Interview', other: 'Appointment' };
+
+// Group every appointment notice by kind. A case can hold several —
+// biometrics plus an interview, or a run of reschedules — so keep the
+// latest of each kind as the operative one and count the rest.
+function collectAppointments(notices, events) {
+  const groups = {};
+  (notices || []).forEach(n => {
+    if (!n.appointmentDateTime) return;
+    const kind = classifyNotice(n, events);
+    (groups[kind] = groups[kind] || []).push(n);
+  });
+
+  return ['biometrics', 'interview', 'other'].filter(k => groups[k]).map(kind => {
+    const sorted = groups[kind].sort((a, b) =>
+      new Date(b.appointmentDateTime) - new Date(a.appointmentDateTime));
+    return {
+      kind,
+      label: APPOINTMENT_LABELS[kind],
+      current: sorted[0],
+      when: sorted[0].appointmentDateTime,
+      rescheduleCount: sorted.length - 1,
+      upcoming: new Date(sorted[0].appointmentDateTime) > new Date(),
+    };
+  });
+}
+
 /* ═════════════════════════════════════════════════════════════
    SUMMARY — journey tracker + narrative
    ═════════════════════════════════════════════════════════════ */
@@ -516,10 +552,12 @@ function renderSummary(d, events, notices, codes) {
     const ev = events.find(e => e.eventCode === code);
     return ev ? f(ev.createdAtTimestamp || ev.eventTimestamp) : null;
   };
-  const ivNotice = notices.find(n => classifyNotice(n, events) === 'interview');
-  const ivDateStr = ivNotice ? f(ivNotice.appointmentDateTime) : null;
-  const bioNotice = notices.find(n => classifyNotice(n, events) === 'biometrics');
-  const bioDateStr = bioNotice ? f(bioNotice.appointmentDateTime) : null;
+  const appts = collectAppointments(notices, events);
+  const ivAppt = appts.find(a => a.kind === 'interview');
+  const ivDateStr = ivAppt ? f(ivAppt.when) : null;
+  const ivRescheduled = ivAppt ? ivAppt.rescheduleCount : 0;
+  const bioAppt = appts.find(a => a.kind === 'biometrics');
+  const bioDateStr = bioAppt ? f(bioAppt.when) : null;
   const fjEvent = events.find(e => e.eventCode === 'FJ');
   const fjDateStr = fjEvent ? fmtDate(fjEvent.eventTimestamp || fjEvent.createdAtTimestamp) : null;
   const h008ts = evTs('H008');
@@ -578,7 +616,7 @@ function renderSummary(d, events, notices, codes) {
 
   } else if (hasInterview) {
     narrative = `<p><strong>An interview has been scheduled or completed for ${applicant}.</strong>`;
-    if (ivDateStr) narrative += ` Appointment: <span class="hl">${ivDateStr}</span>.`;
+    if (ivDateStr) narrative += ` Appointment: <span class="hl">${ivDateStr}</span>${ivRescheduled ? ` (the most recent of ${ivRescheduled + 1} scheduled — the earlier ones were rescheduled)` : ''}.`;
     else if (fjDateStr) narrative += ` USCIS ordered the interview notice on <span class="hl">${fjDateStr}</span> — the appointment date itself is printed on that notice, not in this record.`;
     narrative += ` After the interview, the officer weighs the testimony, evidence, and background checks together.</p>`;
     narrative += `<p>Post-interview review commonly runs from weeks to a few months depending on the field office. Unless USCIS reaches out, there is nothing to do but wait.</p>`;
@@ -620,8 +658,8 @@ const DEMO_CASE = {
       "submissionTimestamp": "2025-09-15T00:00:00.000Z",
       "formType": "N-400",
       "formName": "Application for Naturalization",
-      "updatedAt": "2026-04-09",
-      "updatedAtTimestamp": "2026-04-09T14:02:18.404Z",
+      "updatedAt": "2026-06-22",
+      "updatedAtTimestamp": "2026-06-22T05:02:11.918Z",
       "cmsFailure": false,
       "closed": false,
       "ackedByAdjudicatorAndCms": true,
@@ -652,12 +690,12 @@ const DEMO_CASE = {
           "receiptNumber": "IOE1234567890",
           "eventId": "244ccb12-781a-46cf-b92a-f81d2d6d5cf1",
           "eventCode": "FJ",
-          "createdAt": "2026-04-09",
-          "createdAtTimestamp": "2026-04-09T14:02:18.404Z",
-          "updatedAt": "2026-04-09",
-          "updatedAtTimestamp": "2026-04-09T17:35:09.220Z",
-          "eventDateTime": "2026-01-22",
-          "eventTimestamp": "2026-01-22T05:48:31.000Z"
+          "createdAt": "2026-06-22",
+          "createdAtTimestamp": "2026-06-22T05:02:11.918Z",
+          "updatedAt": "2026-06-22",
+          "updatedAtTimestamp": "2026-06-22T08:35:09.220Z",
+          "eventDateTime": "2026-06-22",
+          "eventTimestamp": "2026-06-22T04:48:31.000Z"
         },
         {
           "receiptNumber": "IOE1234567890",
@@ -728,7 +766,7 @@ const DEMO_CASE = {
       ],
       "addendums": []
     }
-  };
+};
 
 function loadDemo() {
   $('jsonInput').value = JSON.stringify(DEMO_CASE, null, 2);
