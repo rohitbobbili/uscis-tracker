@@ -12,15 +12,15 @@
   --page-link: #9ec1ff;
   --page-accent: #ef7d88;
   --rule-blue: #6f85c6;
-  --surface: #ffffff;
-  --surface2: #dfe8f5;
+  --surface: #eaf1fa;
+  --surface2: #d6e2f4;
   --border: #c7d3e6;
   --shadow: rgba(0, 0, 0, .28);
   --navy: #1c2a52;
   --navy-dim: rgba(28, 42, 82, .08);
   --red-flag: #b22234;
   --red-flag-dim: rgba(178, 34, 52, .09);
-  --gold: #9a6700;
+  --gold: #7a5200;
   --gold-bright: #d4a843;
   --gold-dim: rgba(154, 103, 0, .12);
   --green: #1a6b37;
@@ -35,7 +35,7 @@
   --red-dim: rgba(179, 34, 46, .1);
   --text: #1f2637;
   --text-muted: #55617a;
-  --text-dim: #5f6d8c;
+  --text-dim: #55637f;
   --statue: rgba(190, 212, 255, .11);
   --road: #35456f;
   --road-dash: #7387bd;
@@ -821,6 +821,7 @@ textarea#jsonInput:focus { outline: none; border-color: var(--navy); }
   .unofficial-chip { color: #b22234; border-color: #b22234; }
 
   .card, .summary-card, .tl-content, .disclaimer {
+    background: #fff;
     box-shadow: none;
     break-inside: avoid;
   }
