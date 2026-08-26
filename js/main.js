@@ -413,6 +413,39 @@ function renderAll(d) {
 }
 
 /* ═════════════════════════════════════════════════════════════
+   NOTICE CLASSIFICATION
+   "Appointment Scheduled" is used for both biometrics and interview
+   notices, so the label alone can't tell them apart. USCIS stamps a
+   notice and the event that produced it within moments of each other,
+   so pair them up by time and read the event code instead.
+   ═════════════════════════════════════════════════════════════ */
+const INTERVIEW_EVENT_CODES = ['FJ', 'FI', 'FM', 'IM', 'HG'];
+const BIOMETRIC_EVENT_CODES = ['IMAG', 'FNA', 'FN', 'FNB'];
+const NOTICE_PAIR_WINDOW_MS = 2 * 86400000;
+
+function classifyNotice(notice, events) {
+  const type = notice.actionType || '';
+  if (/interview/i.test(type)) return 'interview';
+  if (/biometric|fingerprint/i.test(type)) return 'biometrics';
+
+  const generated = new Date(notice.generationDate).getTime();
+  if (!generated) return 'other';
+
+  let closest = null, smallestGap = Infinity;
+  events.forEach(ev => {
+    [ev.eventTimestamp, ev.createdAtTimestamp].filter(Boolean).forEach(ts => {
+      const gap = Math.abs(new Date(ts).getTime() - generated);
+      if (gap < smallestGap) { smallestGap = gap; closest = ev; }
+    });
+  });
+
+  if (!closest || smallestGap > NOTICE_PAIR_WINDOW_MS) return 'other';
+  if (INTERVIEW_EVENT_CODES.includes(closest.eventCode)) return 'interview';
+  if (BIOMETRIC_EVENT_CODES.includes(closest.eventCode)) return 'biometrics';
+  return 'other';
+}
+
+/* ═════════════════════════════════════════════════════════════
    SUMMARY — journey tracker + narrative
    ═════════════════════════════════════════════════════════════ */
 function renderSummary(d, events, notices, codes) {
@@ -483,8 +516,12 @@ function renderSummary(d, events, notices, codes) {
     const ev = events.find(e => e.eventCode === code);
     return ev ? f(ev.createdAtTimestamp || ev.eventTimestamp) : null;
   };
-  const ivNotice = notices.find(n => /interview|appointment/i.test(n.actionType || ''));
+  const ivNotice = notices.find(n => classifyNotice(n, events) === 'interview');
   const ivDateStr = ivNotice ? f(ivNotice.appointmentDateTime) : null;
+  const bioNotice = notices.find(n => classifyNotice(n, events) === 'biometrics');
+  const bioDateStr = bioNotice ? f(bioNotice.appointmentDateTime) : null;
+  const fjEvent = events.find(e => e.eventCode === 'FJ');
+  const fjDateStr = fjEvent ? fmtDate(fjEvent.eventTimestamp || fjEvent.createdAtTimestamp) : null;
   const h008ts = evTs('H008');
   const ldaTs = evTs('LDA');
   const leaTs = evTs('LEA');
@@ -542,6 +579,7 @@ function renderSummary(d, events, notices, codes) {
   } else if (hasInterview) {
     narrative = `<p><strong>An interview has been scheduled or completed for ${applicant}.</strong>`;
     if (ivDateStr) narrative += ` Appointment: <span class="hl">${ivDateStr}</span>.`;
+    else if (fjDateStr) narrative += ` USCIS ordered the interview notice on <span class="hl">${fjDateStr}</span> — the appointment date itself is printed on that notice, not in this record.`;
     narrative += ` After the interview, the officer weighs the testimony, evidence, and background checks together.</p>`;
     narrative += `<p>Post-interview review commonly runs from weeks to a few months depending on the field office. Unless USCIS reaches out, there is nothing to do but wait.</p>`;
 
@@ -549,7 +587,9 @@ function renderSummary(d, events, notices, codes) {
     narrative = `<p><span class="hl">⚠ USCIS has asked for more evidence</span> on the case of <strong>${applicant}</strong>. Watch your mail and your USCIS online account for the request, and respond before its deadline — missing it can sink the application.</p>`;
 
   } else if (hasBgChecks) {
-    narrative = `<p><strong>Background checks are underway or complete</strong> for the <strong>${form}</strong> of <strong>${applicant}</strong>, and the case is moving through the normal pipeline. No interview is on the calendar yet; timing from here varies widely by field office.</p>`;
+    narrative = `<p><strong>Background checks are underway or complete</strong> for the <strong>${form}</strong> of <strong>${applicant}</strong>, and the case is moving through the normal pipeline.`;
+    if (bioDateStr) narrative += ` The biometrics appointment was set for <span class="hl">${bioDateStr}</span>.`;
+    narrative += ` No interview is on the calendar yet; timing from here varies widely by field office.</p>`;
 
   } else {
     narrative = `<p><strong>The case for ${applicant} is in its early stages.</strong> USCIS has the <strong>${form}</strong> and is working through intake and initial verification.</p>`;
