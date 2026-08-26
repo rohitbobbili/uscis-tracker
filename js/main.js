@@ -21,6 +21,7 @@ const EVENT_CODES = {
   FSA0: { name: 'Database Checks Requested', desc: 'USCIS asked its partner federal agencies to run background checks.', cat: 'checks' },
   FN:   { name: 'Fingerprint / Agency Checks Ordered', desc: 'Fingerprint and agency background checks were ordered.', cat: 'checks' },
   FNA:  { name: 'Fingerprint Appointment Notice Ordered', desc: 'A biometrics appointment notice was generated for mailing.', cat: 'checks' },
+  IMAG: { name: 'Fingerprint Appointment Notice Sent', desc: 'The biometrics (fingerprint) appointment notice went out. It carries the date, time, and Application Support Center location for the appointment.', cat: 'checks' },
   FNB:  { name: 'Fingerprints Taken at ASC', desc: 'Fingerprints, photo, and signature were captured at an Application Support Center.', cat: 'checks' },
   FNC:  { name: 'FD-258 Sent to FBI', desc: 'The FD-258 fingerprint card went to the FBI for processing.', cat: 'checks' },
   FNG:  { name: 'Fingerprint Processing Complete — Match', desc: 'FBI fingerprint results returned with a matching record on file.', cat: 'checks' },
@@ -169,6 +170,7 @@ function cardInfo(formType) {
     case 'I-485': return { short: 'Green Card', full: 'Permanent Resident Card (Green Card)' };
     case 'I-765': return { short: 'EAD Card', full: 'Employment Authorization Document (EAD Card)' };
     case 'I-131': return { short: 'Travel Document', full: 'Travel Document (Advance Parole)' };
+    case 'N-400': return { short: 'Certificate', full: 'Certificate of Naturalization' };
     default:      return { short: 'Document/Card', full: 'Document or Card' };
   }
 }
@@ -311,9 +313,12 @@ function renderAll(d) {
   if (subTs) items.push({ type: 'submission', ts: subTs });
 
   if (updTs) {
+    // Compare against when events were *recorded* (how the timeline places
+    // them), or a backdated entry leaves a phantom update in its wake.
     const latestEventTime = events.reduce((m, ev) => {
-      const t = new Date(ev.eventTimestamp || ev.createdAtTimestamp);
-      return t > m ? t : m;
+      const stamps = [ev.createdAtTimestamp, ev.eventTimestamp]
+        .filter(Boolean).map(s => new Date(s));
+      return stamps.reduce((a, b) => (b > a ? b : a), m);
     }, new Date(0));
     if (new Date(updTs) > latestEventTime) items.push({ type: 'silent-update', ts: updTs });
   }
@@ -478,7 +483,7 @@ function renderSummary(d, events, notices, codes) {
     const ev = events.find(e => e.eventCode === code);
     return ev ? f(ev.createdAtTimestamp || ev.eventTimestamp) : null;
   };
-  const ivNotice = notices.find(n => n.actionType === 'Interview Scheduled');
+  const ivNotice = notices.find(n => /interview|appointment/i.test(n.actionType || ''));
   const ivDateStr = ivNotice ? f(ivNotice.appointmentDateTime) : null;
   const h008ts = evTs('H008');
   const ldaTs = evTs('LDA');
@@ -569,34 +574,121 @@ function renderSummary(d, events, notices, codes) {
    page's CSP blocks fetch(), by design.
    ═════════════════════════════════════════════════════════════ */
 const DEMO_CASE = {
-  data: {
-    receiptNumber: 'IOE0000000000',
-    formType: 'I-485',
-    formName: 'Application to Register Permanent Residence or Adjust Status',
-    applicantName: 'SAMPLE, ALEX (demo data)',
-    submissionTimestamp: '2025-04-02T16:41:00Z',
-    updatedAtTimestamp: '2026-08-21T13:05:00Z',
-    closed: false,
-    ackedByAdjudicatorAndCms: true,
-    isPremiumProcessed: false,
-    areAllGroupStatusesComplete: false,
-    actionRequired: false,
-    elisChannelType: 'Online',
-    evidenceRequests: [],
-    events: [
-      { eventId: 'DEMO-1', eventCode: 'IAF', eventTimestamp: '2025-04-02T16:41:00Z', createdAtTimestamp: '2025-04-02T16:45:00Z' },
-      { eventId: 'DEMO-2', eventCode: 'FSA0', eventTimestamp: '2025-04-10T09:00:00Z', createdAtTimestamp: '2025-04-10T09:02:00Z' },
-      { eventId: 'DEMO-3', eventCode: 'FNB', eventTimestamp: '2025-05-01T14:20:00Z', createdAtTimestamp: '2025-05-01T14:25:00Z' },
-      { eventId: 'DEMO-4', eventCode: 'FTA0', eventTimestamp: '2025-05-20T08:10:00Z', createdAtTimestamp: '2025-05-20T08:12:00Z' },
-      { eventId: 'DEMO-5', eventCode: 'FJ', eventTimestamp: '2026-05-06T04:12:05Z', createdAtTimestamp: '2026-07-23T11:23:07Z', eventDateTime: '2026-05-06' },
-      { eventId: 'DEMO-6', eventCode: 'HG', eventTimestamp: '2026-03-18T15:30:00Z', createdAtTimestamp: '2026-03-18T15:35:00Z' },
-      { eventId: 'DEMO-7', eventCode: 'FTA1', eventTimestamp: '2026-08-05T07:45:00Z', createdAtTimestamp: '2026-08-05T07:50:00Z' },
-    ],
-    notices: [
-      { actionType: 'Interview Scheduled', generationDate: '2026-02-10T10:10:00Z', appointmentDateTime: '2026-03-18T15:00:00Z', receiptNumber: 'IOE0000000000', letterId: 'DEMO-LTR' },
-    ],
-  },
-};
+    "data": {
+      "receiptNumber": "IOE1234567890",
+      "submissionDate": "2025-09-15",
+      "submissionTimestamp": "2025-09-15T00:00:00.000Z",
+      "formType": "N-400",
+      "formName": "Application for Naturalization",
+      "updatedAt": "2026-04-09",
+      "updatedAtTimestamp": "2026-04-09T14:02:18.404Z",
+      "cmsFailure": false,
+      "closed": false,
+      "ackedByAdjudicatorAndCms": true,
+      "applicantName": "DOE, JANE (sample data)",
+      "nonElisPaperFiled": false,
+      "noticeMailingPrefIndicator": false,
+      "docMailingPrefIndicator": false,
+      "elisBeneficiaryAddendum": {},
+      "areAllGroupStatusesComplete": false,
+      "areAllGroupMembersAuthorizedForTravel": true,
+      "isPremiumProcessed": false,
+      "actionRequired": false,
+      "elisChannelType": "EFile",
+      "concurrentCases": [],
+      "documents": [],
+      "evidenceRequests": [],
+      "notices": [
+        {
+          "receiptNumber": "IOE1234567890",
+          "letterId": "100000001",
+          "generationDate": "2025-09-20T01:14:22.118Z",
+          "appointmentDateTime": "2025-10-14T15:30:00.000Z",
+          "actionType": "Appointment Scheduled"
+        }
+      ],
+      "events": [
+        {
+          "receiptNumber": "IOE1234567890",
+          "eventId": "244ccb12-781a-46cf-b92a-f81d2d6d5cf1",
+          "eventCode": "FJ",
+          "createdAt": "2026-04-09",
+          "createdAtTimestamp": "2026-04-09T14:02:18.404Z",
+          "updatedAt": "2026-04-09",
+          "updatedAtTimestamp": "2026-04-09T17:35:09.220Z",
+          "eventDateTime": "2026-01-22",
+          "eventTimestamp": "2026-01-22T05:48:31.000Z"
+        },
+        {
+          "receiptNumber": "IOE1234567890",
+          "eventId": "1052918c-9eb8-41b0-b6ae-ee8d635eedd6",
+          "eventCode": "FTA0",
+          "createdAt": "2025-12-03",
+          "createdAtTimestamp": "2025-12-03T09:12:40.517Z",
+          "updatedAt": "2025-12-03",
+          "updatedAtTimestamp": "2025-12-03T09:12:40.517Z",
+          "eventDateTime": "2025-12-03",
+          "eventTimestamp": "2025-12-03T09:12:40.302Z"
+        },
+        {
+          "receiptNumber": "IOE1234567890",
+          "eventId": "c702f6b9-3b21-4740-9624-883b6c84080c",
+          "eventCode": "FTA0",
+          "createdAt": "2025-10-14",
+          "createdAtTimestamp": "2025-10-14T16:41:52.883Z",
+          "updatedAt": "2025-10-14",
+          "updatedAtTimestamp": "2025-10-14T16:41:52.883Z",
+          "eventDateTime": "2025-10-14",
+          "eventTimestamp": "2025-10-14T16:41:52.446Z"
+        },
+        {
+          "receiptNumber": "IOE1234567890",
+          "eventId": "b95cad4e-cc23-45ac-85e7-23600514c9d9",
+          "eventCode": "FTA0",
+          "createdAt": "2025-10-14",
+          "createdAtTimestamp": "2025-10-14T16:41:51.907Z",
+          "updatedAt": "2025-10-14",
+          "updatedAtTimestamp": "2025-10-14T16:41:51.907Z",
+          "eventDateTime": "2025-10-14",
+          "eventTimestamp": "2025-10-14T16:41:51.325Z"
+        },
+        {
+          "receiptNumber": "IOE1234567890",
+          "eventId": "d72eec63-20f8-4b93-a58d-b47bf00ecd57",
+          "eventCode": "FTA0",
+          "createdAt": "2025-10-14",
+          "createdAtTimestamp": "2025-10-14T16:26:18.664Z",
+          "updatedAt": "2025-10-14",
+          "updatedAtTimestamp": "2025-10-14T16:26:18.664Z",
+          "eventDateTime": "2025-10-14",
+          "eventTimestamp": "2025-10-14T16:26:18.201Z"
+        },
+        {
+          "receiptNumber": "IOE1234567890",
+          "eventId": "9564d127-ef30-4f95-9922-fa140176a537",
+          "eventCode": "IMAG",
+          "createdAt": "2025-09-20",
+          "createdAtTimestamp": "2025-09-20T01:31:44.902Z",
+          "updatedAt": "2025-09-20",
+          "updatedAtTimestamp": "2025-09-20T01:31:44.902Z",
+          "eventDateTime": "2025-09-20",
+          "eventTimestamp": "2025-09-20T01:14:22.235Z"
+        },
+        {
+          "receiptNumber": "IOE1234567890",
+          "eventId": "3c82c9db-7a7b-489d-bb3e-1f8ee2ae39e3",
+          "eventCode": "IAF",
+          "createdAt": "2025-09-15",
+          "createdAtTimestamp": "2025-09-15T13:07:29.611Z",
+          "updatedAt": "2025-09-15",
+          "updatedAtTimestamp": "2025-09-15T13:07:29.611Z",
+          "eventDateTime": "2025-09-15",
+          "eventTimestamp": "2025-09-15T00:00:00.000Z"
+        }
+      ],
+      "addendums": []
+    }
+  };
 
 function loadDemo() {
   $('jsonInput').value = JSON.stringify(DEMO_CASE, null, 2);
