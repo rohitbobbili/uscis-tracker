@@ -121,6 +121,24 @@ let currentData = null;
 
 const $ = id => document.getElementById(id);
 
+// A real case record holds a few dozen events. These caps exist so a
+// malformed or hostile paste can't lock up the tab.
+const MAX_INPUT_CHARS = 4_000_000;
+const MAX_EVENTS = 2000;
+let truncatedEvents = 0;
+
+// Everything rendered here comes from a file the visitor pasted in, and it
+// reaches the DOM through innerHTML. Escape it: pasted JSON is untrusted
+// input, whoever it came from.
+function esc(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 /* ═════════════════════════════════════════════════════════════
    TIME FORMATTING (Intl API — DST-aware)
    ═════════════════════════════════════════════════════════════ */
@@ -221,7 +239,10 @@ function clearAll() {
 
 function showErr(msg) {
   const bar = $('errorBar');
-  bar.innerHTML = '<strong>⚠ Error:</strong> ' + msg;
+  bar.textContent = '';
+  const label = document.createElement('strong');
+  label.textContent = '⚠ Error: ';
+  bar.append(label, String(msg));
   bar.classList.add('show');
 }
 
@@ -229,6 +250,10 @@ function parseAndRender() {
   const raw = $('jsonInput').value.trim();
   $('errorBar').classList.remove('show');
   if (!raw) { showErr('Please paste your USCIS API JSON first.'); return; }
+  if (raw.length > MAX_INPUT_CHARS) {
+    showErr(`That paste is ${(raw.length / 1e6).toFixed(1)} MB — far larger than any USCIS case record. Please check you copied the right page.`);
+    return;
+  }
 
   let parsed;
   try { parsed = JSON.parse(raw); }
@@ -240,6 +265,12 @@ function parseAndRender() {
   if (!d.receiptNumber && !d.formType && !d.events) {
     showErr('This does not appear to be a USCIS API JSON. Expected fields like "receiptNumber", "formType", or "events".');
     return;
+  }
+
+  truncatedEvents = 0;
+  if (Array.isArray(d.events) && d.events.length > MAX_EVENTS) {
+    truncatedEvents = d.events.length - MAX_EVENTS;
+    d = { ...d, events: d.events.slice(0, MAX_EVENTS) };
   }
 
   currentData = d;
@@ -299,29 +330,29 @@ function renderAll(d) {
     const note = a.rescheduleCount
       ? ` <span class="appt-note">(latest of ${a.rescheduleCount + 1} — rescheduled)</span>`
       : (a.upcoming ? ' <span class="appt-note">(upcoming)</span>' : '');
-    return `<div class="detail-row"><span class="detail-key">${a.label} Appointment</span><span class="detail-val small">${fmtFull(a.when)}${note}</span></div>`;
+    return `<div class="detail-row"><span class="detail-key">${esc(a.label)} Appointment</span><span class="detail-val small">${fmtFull(a.when)}${note}</span></div>`;
   }).join('');
 
   const latestEv = [...events].sort((a, b) =>
     new Date(b.createdAtTimestamp || b.eventTimestamp) - new Date(a.createdAtTimestamp || a.eventTimestamp))[0];
   const latestRow = latestEv
-    ? `${eventInfo(latestEv.eventCode, d.formType, d.formName).name} · ${fmtDate(latestEv.createdAtTimestamp || latestEv.eventTimestamp)}`
+    ? `${esc(eventInfo(latestEv.eventCode, d.formType, d.formName).name)} · ${fmtDate(latestEv.createdAtTimestamp || latestEv.eventTimestamp)}`
     : '—';
 
   $('caseDetailsGrid').innerHTML = `
     <div class="card">
       <div class="card-title">📋 Case Details</div>
-      <div class="detail-row"><span class="detail-key">Receipt Number</span><span class="detail-val mono receipt-no">${d.receiptNumber || '—'}</span></div>
-      <div class="detail-row"><span class="detail-key">Form Type</span><span class="detail-val">${d.formType || '—'}</span></div>
-      <div class="detail-row"><span class="detail-key">Form Name</span><span class="detail-val small">${d.formName || '—'}</span></div>
-      <div class="detail-row"><span class="detail-key">Applicant Name</span><span class="detail-val">${d.applicantName || '—'}</span></div>
+      <div class="detail-row"><span class="detail-key">Receipt Number</span><span class="detail-val mono receipt-no">${esc(d.receiptNumber || '—')}</span></div>
+      <div class="detail-row"><span class="detail-key">Form Type</span><span class="detail-val">${esc(d.formType || '—')}</span></div>
+      <div class="detail-row"><span class="detail-key">Form Name</span><span class="detail-val small">${esc(d.formName || '—')}</span></div>
+      <div class="detail-row"><span class="detail-key">Applicant Name</span><span class="detail-val">${esc(d.applicantName || '—')}</span></div>
       <div class="detail-row"><span class="detail-key">Filed</span><span class="detail-val mono small">${f(subTs)}</span></div>
       <div class="detail-row"><span class="detail-key">Last Updated</span><span class="detail-val mono small">${f(updTs)}</span></div>
       <div class="detail-row"><span class="detail-key">Most Recent Update</span><span class="detail-val small">${latestRow}</span></div>
       ${appointmentRows}
       <div class="detail-row" title="${daysTitle}"><span class="detail-key">${daysLabel}</span><span class="detail-val" style="color:var(--navy);font-weight:700">${daysSub}${daysSub === '—' ? '' : ' days'}</span></div>
     </div>
-    <div class="tz-note">* All times shown in your local timezone — ${LOCAL_TZ.replace('_', ' ')} (${tzAbbr(new Date())}), converted from the UTC timestamps in the record.${daysTitle ? ` ${daysLabel}: ${daysTitle.charAt(0).toLowerCase()}${daysTitle.slice(1)}` : ''}</div>`;
+    <div class="tz-note">* All times shown in your local timezone — ${LOCAL_TZ.replace('_', ' ')} (${tzAbbr(new Date())}), converted from the UTC timestamps in the record.${truncatedEvents ? ` Showing the first ${MAX_EVENTS} events; ${truncatedEvents} more were left out.` : ''}${daysTitle ? ` ${daysLabel}: ${daysTitle.charAt(0).toLowerCase()}${daysTitle.slice(1)}` : ''}</div>`;
 
 
   // ── Timeline: destination flag + events + submission + silent update ──
@@ -382,8 +413,8 @@ function renderAll(d) {
           <div class="tl-content-top"><div class="tl-event-name">Application Filed &amp; Submitted</div><span class="tl-event-code">FILED</span></div>
           <div class="tl-badges"><span class="badge badge-blue">Filing — journey begins 🧳</span></div>
           <div class="tl-event-desc">
-            The <strong>${d.formType || 'I-485'}</strong> was filed with USCIS through <strong>${d.elisChannelType || 'Lockbox'}</strong>
-            and entered the ELIS system as receipt <strong>${d.receiptNumber || '—'}</strong>.
+            The <strong>${esc(d.formType || 'I-485')}</strong> was filed with USCIS through <strong>${esc(d.elisChannelType || 'Lockbox')}</strong>
+            and entered the ELIS system as receipt <strong>${esc(d.receiptNumber || '—')}</strong>.
           </div>
         </div>
       </div>`;
@@ -445,16 +476,16 @@ function renderAll(d) {
       : fmtTime(item.ts);
 
     return `
-      <div class="timeline-item"${item.eventId ? ` title="Event ID ${item.eventId}"` : ''}>
+      <div class="timeline-item"${item.eventId ? ` title="Event ID ${esc(item.eventId)}"` : ''}>
         ${dateCol(fmtDate(item.ts), spanLabel)}
         <div class="tl-spine"><div class="tl-star" style="background:${style.dot}"></div>${line}</div>
         <div class="tl-content">
           <div class="tl-content-top">
-            <div class="tl-event-name">${info.name}${repeated ? ` <span class="tl-count">×${occ.length}</span>` : ''}${anyBackdated ? ' <span class="warn-flag" title="Backdated entry">⚠️</span>' : ''}</div>
-            <span class="tl-event-code">${item.code}</span>
+            <div class="tl-event-name">${esc(info.name)}${repeated ? ` <span class="tl-count">×${occ.length}</span>` : ''}${anyBackdated ? ' <span class="warn-flag" title="Backdated entry">⚠️</span>' : ''}</div>
+            <span class="tl-event-code">${esc(item.code)}</span>
           </div>
           <div class="tl-badges"><span class="badge ${style.cls}">${style.label}</span></div>
-          <div class="tl-event-desc">${info.desc}</div>
+          <div class="tl-event-desc">${esc(info.desc)}</div>
           ${warnHTML}
           ${occurrenceList}
           ${effective}
@@ -530,8 +561,8 @@ function collectAppointments(notices, events) {
    ═════════════════════════════════════════════════════════════ */
 function renderSummary(d, events, notices, codes) {
   const f = ts => fmtFull(ts);
-  const applicant = d.applicantName || 'the applicant';
-  const form = d.formType || 'I-485';
+  const applicant = esc(d.applicantName || 'the applicant');
+  const form = esc(d.formType || 'I-485');
   const ci = cardInfo(form);
 
   const isApproved = codes.some(c => APPROVAL_CODES.includes(c));
@@ -610,7 +641,7 @@ function renderSummary(d, events, notices, codes) {
   const fta1ts = evTs('FTA1');
 
   // ── Narrative ──
-  const codeChip = c => `<span class="mono code-chip">${c}</span>`;
+  const codeChip = c => `<span class="mono code-chip">${esc(c)}</span>`;
   let narrative = '';
 
   if (isApproved && isClosed) {
