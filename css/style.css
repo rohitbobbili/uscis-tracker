@@ -117,16 +117,6 @@ a { color: var(--blue); }
 
 .hdr-sub { color: #b9c5e0; font-size: 12.5px; margin-top: 4px; letter-spacing: .3px; }
 
-.hdr-right {
-  text-align: right;
-  font-family: 'DM Mono', monospace;
-  font-size: 11.5px;
-  color: #b9c5e0;
-  line-height: 1.8;
-}
-
-.hdr-right .val, .hdr-right a { color: #e8c56a; }
-
 /* ══ STRIPES — full-width band under the canton ═══════════ */
 .flag-ribbon {
   height: 28px;
@@ -685,7 +675,6 @@ textarea#jsonInput:focus { outline: none; border-color: var(--navy); }
 @media (max-width: 900px) {
   .header { padding: 18px 24px; }
   .hdr-inner { grid-template-columns: 1fr; }
-  .hdr-right { text-align: left; }
 }
 
 @media (max-width: 700px) {

@@ -208,15 +208,6 @@ function catStyle(cat, formType) {
 }
 
 /* ═════════════════════════════════════════════════════════════
-   LIVE CLOCK
-   ═════════════════════════════════════════════════════════════ */
-function updateClock() {
-  const now = new Date();
-  $('liveTimeDisplay').textContent = fmtFull(now);
-  $('liveTZName').textContent = tzAbbr(now);
-}
-
-/* ═════════════════════════════════════════════════════════════
    INPUT HANDLING
    ═════════════════════════════════════════════════════════════ */
 function clearAll() {
@@ -579,6 +570,4 @@ function renderSummary(d, events, notices, codes) {
 window.addEventListener('DOMContentLoaded', () => {
   $('clearBtn').addEventListener('click', clearAll);
   $('analyzeBtn').addEventListener('click', parseAndRender);
-  updateClock();
-  setInterval(updateClock, 10000);
 });
