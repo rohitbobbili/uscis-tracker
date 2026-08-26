@@ -26,7 +26,7 @@
   --red-dim: rgba(179, 34, 46, .1);
   --text: #1f2637;
   --text-muted: #55617a;
-  --text-dim: #8fa0bd;
+  --text-dim: #5f6d8c;
   --statue: rgba(28, 42, 82, .08);
   --road: #d3dded;
   --road-dash: #aebdd6;
@@ -211,6 +211,31 @@ textarea#jsonInput:focus { outline: none; border-color: var(--navy); }
 .error-bar.show { display: block; }
 
 .input-actions { display: flex; justify-content: center; gap: 12px; margin-top: 14px; }
+
+.input-help {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  font-size: 12.5px;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12.5px;
+  color: var(--blue);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.link-btn:hover { color: var(--navy); }
+.help-sep { color: var(--text-dim); }
 
 .btn {
   font-family: 'DM Sans', sans-serif;
@@ -571,7 +596,7 @@ textarea#jsonInput:focus { outline: none; border-color: var(--navy); }
   margin-bottom: 16px;
 }
 
-.progress-steps { display: flex; align-items: flex-start; }
+.progress-steps { display: flex; align-items: flex-start; flex-wrap: wrap; row-gap: 10px; }
 
 .progress-step-inner { display: flex; flex-direction: column; align-items: center; gap: 7px; width: 82px; }
 
@@ -702,5 +727,52 @@ textarea#jsonInput:focus { outline: none; border-color: var(--navy); }
 @media (max-width: 620px) {
   .timeline-item, .tl-terminus { grid-template-columns: 76px 26px 1fr; gap: 8px; }
   .tl-date-main { font-size: 11px; }
-  .progress-steps { overflow-x: auto; padding-bottom: 6px; }
+}
+
+/* Narrow screens: shrink the journey steps so every stage stays on screen */
+@media (max-width: 520px) {
+  .progress-track { padding: 16px 12px 12px; }
+  .progress-step-inner { width: 52px; gap: 5px; }
+  .pstar { width: 24px; height: 24px; }
+  .progress-step-inner .flag { height: 24px !important; }
+  .progress-step-name { font-size: 9.5px; }
+  .progress-connector { min-width: 6px; height: 5px; margin-top: 9px; }
+}
+
+@media (max-width: 380px) {
+  .progress-step-inner { width: 46px; }
+  .progress-step-name { font-size: 9px; }
+}
+
+/* ══ REDUCED MOTION ═══════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .flag { animation: none; }
+  .pstar.active .shape { animation: none; }
+  * { transition: none !important; }
+}
+
+/* ══ PRINT ════════════════════════════════════════════════ */
+@media print {
+  body { background: #fff; }
+  .statue-mark, .input-section, .api-guide, .footer, .flag-ribbon { display: none; }
+
+  .header {
+    background: none;
+    padding: 0 0 12px;
+    border-bottom: 2px solid #1c2a52;
+  }
+
+  .hdr-title { color: #1c2a52; text-shadow: none; }
+  .unofficial-chip { color: #b22234; border-color: #b22234; }
+
+  .card, .summary-card, .tl-content, .disclaimer {
+    box-shadow: none;
+    break-inside: avoid;
+  }
+
+  .card-title { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .timeline-item { break-inside: avoid; }
+  .disclaimer[open] .disclaimer-body, .disclaimer-body { display: block; }
+  .disclaimer-toggle, .guide-toggle { display: none; }
+  .main { padding-top: 12px; }
 }

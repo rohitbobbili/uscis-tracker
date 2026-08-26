@@ -270,10 +270,10 @@ function renderAll(d) {
     if (caseEnded && updTs) {
       daysSub = daysBetween(subTs, updTs);
       daysLabel = 'Days, Filing to Close';
-      daysTitle = `From the filing date to the last case update (${fmtDate(updTs)}) — the case is decided/closed.`;
+      daysTitle = `Counted from the filing date to the last case update (${fmtDate(updTs)}), because the case is decided or closed.`;
     } else {
       daysSub = daysBetween(subTs, new Date());
-      daysTitle = `From the filing date to today (${fmtDate(new Date())}) — the case is still in progress.`;
+      daysTitle = `Counted from the filing date to today (${fmtDate(new Date())}), because the case is still open.`;
     }
   }
 
@@ -295,7 +295,7 @@ function renderAll(d) {
       <div class="detail-row"><span class="detail-key">Most Recent Update</span><span class="detail-val small">${latestRow}</span></div>
       <div class="detail-row" title="${daysTitle}"><span class="detail-key">${daysLabel}</span><span class="detail-val" style="color:var(--navy);font-weight:700">${daysSub}${daysSub === '—' ? '' : ' days'}</span></div>
     </div>
-    <div class="tz-note">* All times shown in your local timezone — ${LOCAL_TZ.replace('_', ' ')} (${tzAbbr(new Date())}), converted from the UTC timestamps in the record.</div>`;
+    <div class="tz-note">* All times shown in your local timezone — ${LOCAL_TZ.replace('_', ' ')} (${tzAbbr(new Date())}), converted from the UTC timestamps in the record.${daysTitle ? ` ${daysLabel}: ${daysTitle.charAt(0).toLowerCase()}${daysTitle.slice(1)}` : ''}</div>`;
 
 
   // ── Timeline: destination flag + events + submission + silent update ──
@@ -564,9 +564,57 @@ function renderSummary(d, events, notices, codes) {
 }
 
 /* ═════════════════════════════════════════════════════════════
+   DEMO — fabricated case so visitors can preview the output
+   without pasting anything of their own. Inlined because the
+   page's CSP blocks fetch(), by design.
+   ═════════════════════════════════════════════════════════════ */
+const DEMO_CASE = {
+  data: {
+    receiptNumber: 'IOE0000000000',
+    formType: 'I-485',
+    formName: 'Application to Register Permanent Residence or Adjust Status',
+    applicantName: 'SAMPLE, ALEX (demo data)',
+    submissionTimestamp: '2025-04-02T16:41:00Z',
+    updatedAtTimestamp: '2026-08-21T13:05:00Z',
+    closed: false,
+    ackedByAdjudicatorAndCms: true,
+    isPremiumProcessed: false,
+    areAllGroupStatusesComplete: false,
+    actionRequired: false,
+    elisChannelType: 'Online',
+    evidenceRequests: [],
+    events: [
+      { eventId: 'DEMO-1', eventCode: 'IAF', eventTimestamp: '2025-04-02T16:41:00Z', createdAtTimestamp: '2025-04-02T16:45:00Z' },
+      { eventId: 'DEMO-2', eventCode: 'FSA0', eventTimestamp: '2025-04-10T09:00:00Z', createdAtTimestamp: '2025-04-10T09:02:00Z' },
+      { eventId: 'DEMO-3', eventCode: 'FNB', eventTimestamp: '2025-05-01T14:20:00Z', createdAtTimestamp: '2025-05-01T14:25:00Z' },
+      { eventId: 'DEMO-4', eventCode: 'FTA0', eventTimestamp: '2025-05-20T08:10:00Z', createdAtTimestamp: '2025-05-20T08:12:00Z' },
+      { eventId: 'DEMO-5', eventCode: 'FJ', eventTimestamp: '2026-05-06T04:12:05Z', createdAtTimestamp: '2026-07-23T11:23:07Z', eventDateTime: '2026-05-06' },
+      { eventId: 'DEMO-6', eventCode: 'HG', eventTimestamp: '2026-03-18T15:30:00Z', createdAtTimestamp: '2026-03-18T15:35:00Z' },
+      { eventId: 'DEMO-7', eventCode: 'FTA1', eventTimestamp: '2026-08-05T07:45:00Z', createdAtTimestamp: '2026-08-05T07:50:00Z' },
+    ],
+    notices: [
+      { actionType: 'Interview Scheduled', generationDate: '2026-02-10T10:10:00Z', appointmentDateTime: '2026-03-18T15:00:00Z', receiptNumber: 'IOE0000000000', letterId: 'DEMO-LTR' },
+    ],
+  },
+};
+
+function loadDemo() {
+  $('jsonInput').value = JSON.stringify(DEMO_CASE, null, 2);
+  parseAndRender();
+}
+
+function showInstructions() {
+  const guide = document.querySelector('details.api-guide');
+  guide.open = true;
+  guide.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* ═════════════════════════════════════════════════════════════
    INIT
    ═════════════════════════════════════════════════════════════ */
 window.addEventListener('DOMContentLoaded', () => {
   $('clearBtn').addEventListener('click', clearAll);
   $('analyzeBtn').addEventListener('click', parseAndRender);
+  $('helpLink').addEventListener('click', showInstructions);
+  $('demoBtn').addEventListener('click', loadDemo);
 });
