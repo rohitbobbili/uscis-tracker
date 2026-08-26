@@ -27,6 +27,12 @@ to your USCIS account, open
 in another tab, copy the JSON, paste it into the tracker, and click
 **Analyze Case**. A fake but realistic example lives in `sample-case.json`.
 
+## Development
+
+`index.html` loads `css/style.css?v=N` and `js/main.js?v=N`. Run
+`./bump-assets.sh` after changing either file so returning visitors don't
+pair a fresh `index.html` with cached old assets.
+
 ## Disclaimer
 
 This is an unofficial, independent tool with no affiliation to USCIS, DHS, or
