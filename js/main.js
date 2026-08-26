@@ -255,6 +255,21 @@ const APPROVAL_CODES = ['DA', 'DH', 'IEA', 'IEE', 'IEC', 'H008'];
 const DENIAL_CODES = ['EA', 'IFA'];
 const BACKDATE_TOLERANCE_MS = 86400000; // flag events recorded >1 day after their effective date
 
+// An event USCIS logged well after the date it actually applies to.
+function backdateInfo(item) {
+  if (!item.rawTS || !item.ts || item.rawTS === item.ts) return null;
+  const lagMs = new Date(item.ts) - new Date(item.rawTS);
+  if (lagMs <= BACKDATE_TOLERANCE_MS) return null;
+  return { days: Math.round(lagMs / 86400000), effective: item.rawTS, recorded: item.ts };
+}
+
+function backdateWarning(b) {
+  return `<div class="tl-warn">⚠️ <strong>Backdated entry:</strong> recorded on
+    <strong>${fmtDate(b.recorded)}</strong>, but its effective date is
+    <strong>${fmtDate(b.effective)}</strong> — ${b.days} day${b.days === 1 ? '' : 's'} earlier.
+    USCIS logged this after the date it applies to; the timeline places it where it was recorded.</div>`;
+}
+
 function renderAll(d) {
   const events = d.events || [];
   const notices = d.notices || [];
@@ -334,6 +349,18 @@ function renderAll(d) {
 
   items.sort((a, b) => new Date(b.ts) - new Date(a.ts));
 
+  // USCIS often writes the same code several times in a burst (four identical
+  // check results seconds apart). Fold consecutive repeats into one entry.
+  const groups = [];
+  items.forEach(item => {
+    const prev = groups[groups.length - 1];
+    if (item.type === 'event' && prev && prev.type === 'event' && prev.code === item.code) {
+      prev.occurrences.push(item);
+    } else {
+      groups.push(item.type === 'event' ? { ...item, occurrences: [item] } : item);
+    }
+  });
+
   const terminus = `
     <div class="tl-terminus">
       <div></div>
@@ -341,14 +368,15 @@ function renderAll(d) {
       <div class="label">${caseEnded ? 'Destination reached — decision issued' : 'The road ahead — decision pending'}</div>
     </div>`;
 
-  $('timeline').innerHTML = terminus + items.map((item, i) => {
-    const line = i === items.length - 1 ? '' : '<div class="tl-line"></div>';
-    const dateCol = `<div class="tl-date"><div class="tl-date-main">${fmtDate(item.ts)}</div><div class="tl-date-time">${fmtTime(item.ts)}</div></div>`;
+  $('timeline').innerHTML = terminus + groups.map((item, i) => {
+    const line = i === groups.length - 1 ? '' : '<div class="tl-line"></div>';
+    const dateCol = (main, sub) =>
+      `<div class="tl-date"><div class="tl-date-main">${main}</div><div class="tl-date-time">${sub}</div></div>`;
 
     if (item.type === 'submission') {
       return `
       <div class="timeline-item">
-        ${dateCol}
+        ${dateCol(fmtDate(item.ts), fmtTime(item.ts))}
         <div class="tl-spine"><div class="tl-star" style="background:var(--blue)"></div>${line}</div>
         <div class="tl-content">
           <div class="tl-content-top"><div class="tl-event-name">Application Filed &amp; Submitted</div><span class="tl-event-code">FILED</span></div>
@@ -357,7 +385,6 @@ function renderAll(d) {
             The <strong>${d.formType || 'I-485'}</strong> was filed with USCIS through <strong>${d.elisChannelType || 'Lockbox'}</strong>
             and entered the ELIS system as receipt <strong>${d.receiptNumber || '—'}</strong>.
           </div>
-          <div class="tl-event-id">Source: submissionTimestamp field in case record</div>
         </div>
       </div>`;
     }
@@ -365,7 +392,7 @@ function renderAll(d) {
     if (item.type === 'silent-update') {
       return `
       <div class="timeline-item">
-        ${dateCol}
+        ${dateCol(fmtDate(item.ts), fmtTime(item.ts))}
         <div class="tl-spine"><div class="tl-star" style="background:var(--purple)"></div>${line}</div>
         <div class="tl-content">
           <div class="tl-content-top">
@@ -379,41 +406,58 @@ function renderAll(d) {
             USCIS touched the case record without logging a formal event code — often an internal note, a
             reassignment, or a supervisor opening the file. No action is implied either way.
           </div>
-          <div class="tl-event-id">Source: updatedAtTimestamp field in case record</div>
         </div>
       </div>`;
     }
 
     const info = eventInfo(item.code, d.formType, d.formName);
     const style = catStyle(info.cat, d.formType);
-    const rawNote = item.rawDT ? ` · Effective: ${fmtFull(item.rawTS || item.rawDT)}` : '';
+    const occ = item.occurrences;
+    const repeated = occ.length > 1;
+    const backdated = occ.map(backdateInfo);
+    const anyBackdated = backdated.some(Boolean);
 
-    // Backdating check: recorded (createdAt) well after the event's own effective date
-    let warnHTML = '';
-    if (item.rawTS && item.ts && item.rawTS !== item.ts) {
-      const lagMs = new Date(item.ts) - new Date(item.rawTS);
-      if (lagMs > BACKDATE_TOLERANCE_MS) {
-        const lagDays = Math.round(lagMs / 86400000);
-        warnHTML = `<div class="tl-warn">⚠️ <strong>Backdated entry:</strong> this event was recorded on
-          <strong>${fmtDate(item.ts)}</strong>, but its effective event date is
-          <strong>${fmtDate(item.rawTS)}</strong> — ${lagDays} day${lagDays === 1 ? '' : 's'} earlier.
-          USCIS logged this event after the date it applies to; the timeline position reflects when it was recorded.</div>`;
-      }
-    }
+    const warnHTML = (!repeated && backdated[0]) ? backdateWarning(backdated[0]) : '';
+
+    // A repeat burst collapses to one card; the exact stamps stay one click away.
+    const occurrenceList = repeated ? `
+          <details class="tl-occurrences">
+            <summary>${occ.length} entries — show each</summary>
+            <ul>
+              ${occ.map((o, k) => `<li>
+                <span class="occ-when">${fmtFull(o.ts)}</span>
+                ${backdated[k] ? `<span class="occ-warn">⚠️ effective ${fmtDate(backdated[k].effective)} — recorded ${backdated[k].days} days later</span>` : ''}
+              </li>`).join('')}
+            </ul>
+          </details>` : '';
+
+    // Only worth showing when the effective date is genuinely ahead of the
+    // recording; anything inside a day is bookkeeping noise, and the other
+    // direction already gets a backdated warning.
+    const forwardLagMs = item.rawTS ? new Date(item.rawTS) - new Date(item.ts) : 0;
+    const effective = (!repeated && forwardLagMs > BACKDATE_TOLERANCE_MS)
+      ? `<div class="tl-event-id">Takes effect ${fmtDate(item.rawTS)}</div>` : '';
+
+    const spanLabel = repeated
+      ? (fmtDate(occ[0].ts) === fmtDate(occ[occ.length - 1].ts)
+          ? `${occ.length} entries, same day`
+          : `${occ.length} entries since ${fmtDate(occ[occ.length - 1].ts)}`)
+      : fmtTime(item.ts);
 
     return `
-      <div class="timeline-item">
-        ${dateCol}
+      <div class="timeline-item"${item.eventId ? ` title="Event ID ${item.eventId}"` : ''}>
+        ${dateCol(fmtDate(item.ts), spanLabel)}
         <div class="tl-spine"><div class="tl-star" style="background:${style.dot}"></div>${line}</div>
         <div class="tl-content">
           <div class="tl-content-top">
-            <div class="tl-event-name">${info.name}${warnHTML ? ' <span class="warn-flag" title="Backdated entry">⚠️</span>' : ''}</div>
+            <div class="tl-event-name">${info.name}${repeated ? ` <span class="tl-count">×${occ.length}</span>` : ''}${anyBackdated ? ' <span class="warn-flag" title="Backdated entry">⚠️</span>' : ''}</div>
             <span class="tl-event-code">${item.code}</span>
           </div>
           <div class="tl-badges"><span class="badge ${style.cls}">${style.label}</span></div>
           <div class="tl-event-desc">${info.desc}</div>
           ${warnHTML}
-          <div class="tl-event-id">${item.eventId ? `ID ${item.eventId} · ` : ''}Recorded: createdAtTimestamp${rawNote}</div>
+          ${occurrenceList}
+          ${effective}
         </div>
       </div>`;
   }).join('');
