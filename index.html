@@ -158,20 +158,25 @@
           <span class="disclaimer-toggle"></span>
         </summary>
         <div class="disclaimer-body">
-          <p>This is a personal, independent utility for viewing case data that you retrieve yourself from your own
-            USCIS online account. It has no connection to U.S. Citizenship and Immigration Services (USCIS), the
-            Department of Homeland Security, or any other government agency, law firm, or attorney, and nothing here
-            has been reviewed or endorsed by any of them.</p>
-          <p>Everything on this page is computed inside your browser from the JSON you paste in. Nothing is uploaded,
-            logged, or stored anywhere — close the tab and it's gone. The page's Content-Security-Policy blocks all
-            outbound connections and form submissions, so the browser itself enforces that your data cannot be
-            transmitted.</p>
-          <p>Event-code explanations are plain-language interpretations based on the publicly available NIEM v5.0
-            schema; they are not official definitions and may be incomplete or become outdated as USCIS changes its
-            systems.</p>
-          <p>None of this is legal advice, and no outcome is implied or guaranteed. For anything that matters, rely on
-            official USCIS communications and consult a licensed immigration attorney or a DOJ-accredited
-            representative.</p>
+          <p>This is an independent side project — a way to make a USCIS case record readable, shared in case it helps
+            someone else staring at the same wall of JSON. There is no company behind it, no support desk, and no
+            relationship of any kind with USCIS, DHS, any other agency, or any law firm. Nobody at USCIS has reviewed
+            it or knows it exists. The entire source is on GitHub under an MIT licence, so you can read exactly what it
+            does instead of taking my word for it.</p>
+          <p>Everything shown comes from the JSON you paste in. The event names and explanations are plain-language
+            readings of the public NIEM v5.0 code list — not official USCIS definitions. USCIS can change what a code
+            means, or use one in a way this page doesn't anticipate. The progress tracker, the grouping of repeated
+            entries, and flags such as "backdated entry" are this page's own inferences about your record, not
+            statements from USCIS. Please don't read a forecast into any of it: no arrangement of codes reliably
+            predicts a decision or how long one will take.</p>
+          <p>Your case data never leaves your device. There are no servers and no analytics; everything is computed in
+            your browser and nothing is stored, so closing the tab discards it. That isn't only a promise — the page's
+            Content-Security-Policy forbids outbound connections and form submissions, and your browser enforces that
+            whether the code behaves or not.</p>
+          <p>None of this is legal advice, and it comes with no warranty of any kind. If this page and an official
+            USCIS notice ever disagree, the notice is right. Immigration decisions turn on details a case record
+            doesn't capture, so for anything that actually matters, speak with a licensed immigration attorney or a
+            DOJ-accredited representative.</p>
         </div>
       </details>
 
