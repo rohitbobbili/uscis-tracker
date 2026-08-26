@@ -307,7 +307,7 @@ textarea#jsonInput:focus { outline: none; border-color: var(--navy); }
 .guide-note { margin-top: 9px; font-size: 11px; color: var(--text-dim); line-height: 1.6; }
 
 .tz-note {
-  grid-column: 1 / -1;
+  margin-top: 10px;
   font-size: 11.5px;
   font-style: italic;
   color: var(--text-dim);
@@ -315,12 +315,7 @@ textarea#jsonInput:focus { outline: none; border-color: var(--navy); }
 }
 
 /* ══ CARDS ════════════════════════════════════════════════ */
-.case-details-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 16px;
-  margin-top: 30px;
-}
+.case-details-grid { margin-top: 30px; }
 
 .card {
   background: var(--surface);
