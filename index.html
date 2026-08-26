@@ -110,27 +110,29 @@
       <!-- Instructions (collapsible) -->
       <details class="api-guide">
         <summary>
-          <span class="api-guide-title">📖 Instructions to Access Your USCIS Case JSON Data</span>
+          <span class="api-guide-title">📖 How to Get Your Case JSON</span>
           <span class="guide-toggle"></span>
         </summary>
         <div class="api-guide-body">
-            <p>Your case data lives in your own USCIS online account — this page can't fetch it for you. To pull it
-              yourself:</p>
-            <div class="api-step"><span class="step-num">1</span><span>Log in at <a
-                  href="https://myaccount.uscis.gov/sign-in" target="_blank"
-                  rel="noopener noreferrer">myaccount.uscis.gov/sign-in</a>.</span></div>
-            <div class="api-step"><span class="step-num">2</span><span>In the same browser, open a new tab to:<br />
-                <code class="api-url">https://my.uscis.gov/account/case-service/api/cases/IOE09XXXXXXXX</code></span>
-            </div>
-            <div class="api-step"><span class="step-num">3</span><span>Swap <code
-                  class="inline-code">IOE09XXXXXXXX</code> for your own receipt number (it starts with
-                <code class="inline-code">IOE</code>).</span></div>
-            <div class="api-step"><span class="step-num">4</span><span>The tab will show raw JSON. Copy all of it
-                (<strong>Ctrl+A</strong>, then <strong>Ctrl+C</strong>), paste it into the box above, and hit
-                <strong>Analyze Case</strong>.</span></div>
-            <p class="guide-note">The link only works while you're signed in, because your browser pulls the data
-              straight from USCIS. This page never sees your login and cannot fetch anything on its own — everything
-              you paste stays on your device.</p>
+          <p>The tracker reads a copy of your case record that you fetch yourself — it travels straight from USCIS to
+            your screen, and this page is never in the middle.</p>
+          <div class="api-step"><span class="step-num">1</span><span><strong>Sign in to USCIS</strong> — open
+              <a href="https://myaccount.uscis.gov/sign-in" target="_blank"
+                rel="noopener noreferrer">myaccount.uscis.gov</a> and log in the way you normally would.</span></div>
+          <div class="api-step"><span class="step-num">2</span><span><strong>Open your case's data URL</strong> — in a
+              new tab of that same browser, visit<br />
+              <code class="api-url">https://my.uscis.gov/account/case-service/api/cases/&lt;your-receipt-number&gt;</code><br />
+              with your own receipt number (the <code class="inline-code">IOE…</code> code printed on your USCIS
+              notices) at the end.</span></div>
+          <div class="api-step"><span class="step-num">3</span><span><strong>Copy everything on that page</strong> —
+              you'll see a wall of text beginning with <code class="inline-code">{"data":</code>. Select it all
+              (<strong>Ctrl+A</strong>, or <strong>Cmd+A</strong> on a Mac) and copy it (<strong>Ctrl+C</strong> /
+              <strong>Cmd+C</strong>).</span></div>
+          <div class="api-step"><span class="step-num">4</span><span><strong>Come back and analyze</strong> — paste
+              into the box at the top of this page and press <strong>Analyze Case</strong>.</span></div>
+          <p class="guide-note">Seeing an error page instead of text at that URL? Your USCIS session expired — sign in
+            again, then reload the tab. The whole trip happens between your browser and USCIS: this site has no
+            servers, cannot reach USCIS on your behalf, and never sees your login.</p>
         </div>
       </details>
 
