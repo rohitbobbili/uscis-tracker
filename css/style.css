@@ -212,7 +212,7 @@ textarea#jsonInput:focus { outline: none; border-color: var(--navy); }
 
 .error-bar.show { display: block; }
 
-.input-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
+.input-actions { display: flex; justify-content: center; gap: 12px; margin-top: 14px; }
 
 .btn {
   font-family: 'DM Sans', sans-serif;
