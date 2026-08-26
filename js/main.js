@@ -213,7 +213,6 @@ function catStyle(cat, formType) {
 function clearAll() {
   $('jsonInput').value = '';
   $('output').style.display = 'none';
-  $('emptyState').style.display = 'block';
   $('errorBar').classList.remove('show');
   currentData = null;
 }
@@ -242,7 +241,6 @@ function parseAndRender() {
   }
 
   currentData = d;
-  $('emptyState').style.display = 'none';
   $('output').style.display = 'block';
   renderAll(d);
   window.scrollTo({ top: $('caseDetailsGrid').offsetTop - 20, behavior: 'smooth' });
@@ -296,7 +294,8 @@ function renderAll(d) {
       <div class="detail-row"><span class="detail-key">Last Updated</span><span class="detail-val mono small">${f(updTs)}</span></div>
       <div class="detail-row"><span class="detail-key">Most Recent Update</span><span class="detail-val small">${latestRow}</span></div>
       <div class="detail-row" title="${daysTitle}"><span class="detail-key">${daysLabel}</span><span class="detail-val" style="color:var(--navy);font-weight:700">${daysSub}${daysSub === '—' ? '' : ' days'}</span></div>
-    </div>`;
+    </div>
+    <div class="tz-note">* All times shown in your local timezone — ${LOCAL_TZ.replace('_', ' ')} (${tzAbbr(new Date())}), converted from the UTC timestamps in the record.</div>`;
 
 
   // ── Timeline: destination flag + events + submission + silent update ──

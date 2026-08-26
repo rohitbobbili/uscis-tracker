@@ -115,8 +115,6 @@ a { color: var(--blue); }
   white-space: nowrap;
 }
 
-.hdr-sub { color: #b9c5e0; font-size: 12.5px; margin-top: 4px; letter-spacing: .3px; }
-
 /* ══ STRIPES — full-width band under the canton ═══════════ */
 .flag-ribbon {
   height: 28px;
@@ -308,11 +306,13 @@ textarea#jsonInput:focus { outline: none; border-color: var(--navy); }
 
 .guide-note { margin-top: 9px; font-size: 11px; color: var(--text-dim); line-height: 1.6; }
 
-/* Empty state */
-.empty-state { text-align: center; padding: 70px 20px; color: var(--text-muted); }
-.empty-icon { font-size: 44px; margin-bottom: 12px; }
-.empty-title { font-family: 'DM Serif Display', serif; font-size: 21px; color: var(--navy); margin-bottom: 6px; }
-.empty-sub { font-size: 13.5px; }
+.tz-note {
+  grid-column: 1 / -1;
+  font-size: 11.5px;
+  font-style: italic;
+  color: var(--text-dim);
+  padding: 2px 4px 0;
+}
 
 /* ══ CARDS ════════════════════════════════════════════════ */
 .case-details-grid {
