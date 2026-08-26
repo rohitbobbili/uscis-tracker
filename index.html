@@ -12,7 +12,7 @@
     content="Unofficial, browser-only viewer for USCIS case JSON. Paste the data from your own USCIS account to see an event timeline, progress overview, and plain-language explanations. Nothing is uploaded or stored." />
   <link rel="icon"
     href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇺🇸</text></svg>" />
-  <link rel="stylesheet" href="css/style.css?v=3" />
+  <link rel="stylesheet" href="css/style.css?v=4" />
 </head>
 
 <body>
@@ -90,10 +90,30 @@
           <button class="btn btn-analyze" id="analyzeBtn">Analyze Case</button>
         </div>
 
-        <!-- Instructions -->
-        <div class="api-guide">
-          <div class="api-guide-title">📖 Instructions to Access Your USCIS Case JSON Data</div>
-          <div class="api-guide-body">
+      </section>
+
+      <!-- Output -->
+      <div id="output" style="display:none">
+        <div class="case-details-grid" id="caseDetailsGrid"></div>
+
+        <section>
+          <div class="sec-heading"><span class="star">★</span> The Road So Far — Event Timeline</div>
+          <div class="timeline" id="timeline"></div>
+        </section>
+
+        <section>
+          <div class="sec-heading"><span class="star">★</span> Where Things Stand</div>
+          <div class="summary-card" id="summaryCard"></div>
+        </section>
+      </div>
+
+      <!-- Instructions (collapsible) -->
+      <details class="api-guide">
+        <summary>
+          <span class="api-guide-title">📖 Instructions to Access Your USCIS Case JSON Data</span>
+          <span class="guide-toggle"></span>
+        </summary>
+        <div class="api-guide-body">
             <p>Your case data lives in your own USCIS online account — this page can't fetch it for you. To pull it
               yourself:</p>
             <div class="api-step"><span class="step-num">1</span><span>Log in at <a
@@ -111,24 +131,8 @@
             <p class="guide-note">The link only works while you're signed in, because your browser pulls the data
               straight from USCIS. This page never sees your login and cannot fetch anything on its own — everything
               you paste stays on your device.</p>
-          </div>
         </div>
-      </section>
-
-      <!-- Output -->
-      <div id="output" style="display:none">
-        <div class="case-details-grid" id="caseDetailsGrid"></div>
-
-        <section>
-          <div class="sec-heading"><span class="star">★</span> The Road So Far — Event Timeline</div>
-          <div class="timeline" id="timeline"></div>
-        </section>
-
-        <section>
-          <div class="sec-heading"><span class="star">★</span> Where Things Stand</div>
-          <div class="summary-card" id="summaryCard"></div>
-        </section>
-      </div>
+      </details>
 
       <!-- Disclaimer (collapsible) -->
       <details class="disclaimer">
@@ -165,7 +169,7 @@
     </footer>
   </div>
 
-  <script src="js/main.js?v=3"></script>
+  <script src="js/main.js?v=4"></script>
 </body>
 
 </html>
