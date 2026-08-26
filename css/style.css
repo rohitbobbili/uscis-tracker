@@ -2,11 +2,20 @@
 
 /* ── Red / White / Blue — flag palette ─────────────────────── */
 :root {
-  --bg: #e9eff8;
+  /* Page — deep navy, picked to continue the banner's own dark tone */
+  --bg: #16223f;
+  --on-page: #f2f6ff;
+  --on-page-muted: #b6c4e4;
+  --page-border: #35456f;
+  --page-panel: #1e2c4f;
+  --page-panel-inset: #2b3b64;
+  --page-link: #9ec1ff;
+  --page-accent: #ef7d88;
+  --rule-blue: #6f85c6;
   --surface: #ffffff;
   --surface2: #dfe8f5;
   --border: #c7d3e6;
-  --shadow: rgba(28, 42, 82, .10);
+  --shadow: rgba(0, 0, 0, .28);
   --navy: #1c2a52;
   --navy-dim: rgba(28, 42, 82, .08);
   --red-flag: #b22234;
@@ -27,9 +36,9 @@
   --text: #1f2637;
   --text-muted: #55617a;
   --text-dim: #5f6d8c;
-  --statue: rgba(28, 42, 82, .10);
-  --road: #b9c8e2;
-  --road-dash: #8ba0c4;
+  --statue: rgba(190, 212, 255, .11);
+  --road: #35456f;
+  --road-dash: #7387bd;
   --star-done: #1c2a52;
   --stripe-red: #b22234;
   --stripe-white: #f2f5fb;
@@ -130,7 +139,7 @@ a { color: var(--blue); }
   font-family: 'DM Serif Display', serif;
   font-size: 22px;
   letter-spacing: .5px;
-  color: var(--navy);
+  color: var(--on-page);
   margin: 36px 0 18px;
   padding-bottom: 12px;
   position: relative;
@@ -145,11 +154,11 @@ a { color: var(--blue); }
   background: linear-gradient(to bottom,
     var(--stripe-red) 0 33%,
     #ffffff 33% 67%,
-    var(--canton) 67% 100%);
-  box-shadow: 0 0 0 1px var(--border);
+    var(--rule-blue) 67% 100%);
+  box-shadow: 0 0 0 1px var(--page-border);
 }
 
-.sec-heading .star { color: var(--red-flag); font-size: 15px; }
+.sec-heading .star { color: var(--page-accent); font-size: 15px; }
 
 /* Input panel */
 .privacy-note {
@@ -257,9 +266,9 @@ textarea#jsonInput:focus { outline: none; border-color: var(--navy); }
 /* Instructions guide (collapsible) */
 .api-guide {
   margin-top: 44px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--navy);
+  background: var(--page-panel);
+  border: 1px solid var(--page-border);
+  border-left: 3px solid var(--rule-blue);
   border-radius: 10px;
   padding: 14px 18px;
 }
@@ -281,26 +290,26 @@ textarea#jsonInput:focus { outline: none; border-color: var(--navy); }
   font-size: 12px;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: var(--navy);
+  color: var(--on-page);
 }
 
 .guide-toggle {
   font-size: 11.5px;
   font-weight: 600;
-  color: var(--blue);
+  color: var(--page-link);
   white-space: nowrap;
 }
 
 .guide-toggle::after { content: 'Show steps ▾'; }
 .api-guide[open] .guide-toggle::after { content: 'Hide ▴'; }
 
-.api-guide-body { font-size: 13px; color: var(--text-muted); margin-top: 12px; border-top: 1px dashed var(--border); padding-top: 12px; }
+.api-guide-body { font-size: 13px; color: var(--on-page-muted); margin-top: 12px; border-top: 1px dashed var(--page-border); padding-top: 12px; }
 .api-guide-body > p { margin-bottom: 8px; }
 
 .api-step {
   display: flex; align-items: flex-start; gap: 10px;
   font-size: 13px;
-  color: var(--text-muted);
+  color: var(--on-page-muted);
   margin-bottom: 8px;
   line-height: 1.6;
 }
@@ -308,8 +317,8 @@ textarea#jsonInput:focus { outline: none; border-color: var(--navy); }
 .step-num {
   flex-shrink: 0;
   width: 20px; height: 20px;
-  background: var(--navy);
-  color: #fff;
+  background: var(--rule-blue);
+  color: #0d1730;
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   font-size: 11px;
@@ -318,35 +327,35 @@ textarea#jsonInput:focus { outline: none; border-color: var(--navy); }
 }
 
 .inline-code {
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: var(--page-panel-inset);
+  border: 1px solid var(--page-border);
   padding: 1px 5px;
   border-radius: 3px;
   font-family: 'DM Mono', monospace;
   font-size: 11px;
-  color: var(--red-flag);
+  color: #ffb3bc;
 }
 
 .api-url {
   display: inline-block;
   font-family: 'DM Mono', monospace;
   font-size: 11.5px;
-  color: var(--navy);
-  background: var(--surface);
-  border: 1px solid var(--border);
+  color: var(--on-page);
+  background: var(--page-panel-inset);
+  border: 1px solid var(--page-border);
   border-radius: 6px;
   padding: 6px 10px;
   margin-top: 6px;
   word-break: break-all;
 }
 
-.guide-note { margin-top: 9px; font-size: 11px; color: var(--text-dim); line-height: 1.6; }
+.guide-note { margin-top: 9px; font-size: 11px; color: var(--on-page-muted); opacity: .85; line-height: 1.6; }
 
 .tz-note {
   margin-top: 10px;
   font-size: 11.5px;
   font-style: italic;
-  color: var(--text-dim);
+  color: var(--on-page-muted);
   padding: 2px 4px 0;
 }
 
@@ -467,7 +476,7 @@ textarea#jsonInput:focus { outline: none; border-color: var(--navy); }
   font-size: 13.5px;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: var(--navy);
+  color: var(--on-page);
 }
 
 .flag {
@@ -486,8 +495,8 @@ textarea#jsonInput:focus { outline: none; border-color: var(--navy); }
 .timeline-item { display: grid; grid-template-columns: 110px 34px 1fr; gap: 12px; }
 
 .tl-date { text-align: right; padding-top: 4px; }
-.tl-date-main { font-size: 12.5px; font-weight: 600; }
-.tl-date-time { font-family: 'DM Mono', monospace; font-size: 10.5px; color: var(--text-muted); margin-top: 2px; }
+.tl-date-main { font-size: 12.5px; font-weight: 600; color: var(--on-page); }
+.tl-date-time { font-family: 'DM Mono', monospace; font-size: 10.5px; color: var(--on-page-muted); margin-top: 2px; }
 
 .tl-spine { display: flex; flex-direction: column; align-items: center; }
 
@@ -563,7 +572,7 @@ textarea#jsonInput:focus { outline: none; border-color: var(--navy); }
 
 .sec-note {
   font-size: 12px;
-  color: var(--text-muted);
+  color: var(--on-page-muted);
   margin: -8px 0 16px;
 }
 
@@ -693,13 +702,13 @@ textarea#jsonInput:focus { outline: none; border-color: var(--navy); }
 /* ══ DISCLAIMER / FOOTER ══════════════════════════════════ */
 .disclaimer {
   margin-top: 14px;
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: var(--page-panel);
+  border: 1px solid var(--page-border);
   border-left: 4px solid var(--red-flag);
   border-radius: 12px;
   padding: 14px 20px;
   font-size: 12px;
-  color: var(--text-muted);
+  color: var(--on-page-muted);
   line-height: 1.7;
 }
 
@@ -719,24 +728,24 @@ textarea#jsonInput:focus { outline: none; border-color: var(--navy); }
   font-family: 'DM Mono', monospace;
   font-size: 11.5px;
   letter-spacing: .5px;
-  color: var(--red-flag);
+  color: var(--page-accent);
 }
 
 .disclaimer-toggle {
   font-size: 11.5px;
   font-weight: 600;
-  color: var(--blue);
+  color: var(--page-link);
   white-space: nowrap;
 }
 
 .disclaimer-toggle::after { content: 'Read full disclaimer ▾'; }
 .disclaimer[open] .disclaimer-toggle::after { content: 'Hide ▴'; }
 
-.disclaimer-body { margin-top: 12px; border-top: 1px dashed var(--border); padding-top: 12px; }
+.disclaimer-body { margin-top: 12px; border-top: 1px dashed var(--page-border); padding-top: 12px; }
 .disclaimer-body p { margin-bottom: 8px; }
 
 .footer {
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--page-border);
   padding: 18px 24px 26px;
   display: flex;
   align-items: center;
@@ -747,8 +756,11 @@ textarea#jsonInput:focus { outline: none; border-color: var(--navy); }
   margin: 30px auto 0;
   font-family: 'DM Mono', monospace;
   font-size: 11px;
-  color: var(--text-dim);
+  color: var(--on-page-muted);
 }
+
+.footer a { color: var(--page-link); }
+.api-guide a, .disclaimer a { color: var(--page-link); }
 
 /* ══ RESPONSIVE ═══════════════════════════════════════════ */
 @media (max-width: 900px) {
@@ -789,7 +801,13 @@ textarea#jsonInput:focus { outline: none; border-color: var(--navy); }
 
 /* ══ PRINT ════════════════════════════════════════════════ */
 @media print {
-  body { background: #fff; }
+  body { background: #fff; color: #1f2637; }
+
+  /* On paper the dark page furniture has to flip back to ink on white */
+  .sec-heading, .tl-date-main, .tl-terminus .label, .api-guide-title { color: #1c2a52; }
+  .sec-note, .tz-note, .tl-date-time, .disclaimer { color: #444d63; }
+  .disclaimer { background: #fff; border-color: #c7d3e6; }
+  .tl-line { background: #d3dded; }
   .statue-mark, .input-section, .api-guide, .footer, .flag-bg { display: none; }
 
   .header {
