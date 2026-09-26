@@ -144,6 +144,46 @@ a { color: var(--blue); }
 
 .skip-link:focus { top: 8px; }
 
+/* ══ SITE NAVIGATION ══════════════════════════════════════════
+   Shared across all four pages (tracker, quiz, study, progress).
+   Sits directly under the flag banner as its own strip. */
+.site-nav {
+  background: var(--page-panel);
+  border-bottom: 1px solid var(--page-border);
+}
+
+.site-nav-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 10px 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.site-nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--page-link);
+  text-decoration: none;
+  min-height: 36px;
+}
+
+.site-nav a:hover { background: var(--page-panel-inset); color: var(--on-page); }
+
+.site-nav a[aria-current="page"] {
+  background: var(--page-panel-inset);
+  color: var(--on-page);
+  box-shadow: inset 0 -2px 0 var(--rule-blue);
+}
+
+.site-nav a svg { width: 15px; height: 15px; flex-shrink: 0; }
+
 /* Panel titles are real headings now; keep them looking identical. */
 h2.api-guide-title, h2.disclaimer-line { margin: 0; font-weight: inherit; }
 
