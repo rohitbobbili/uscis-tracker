@@ -1,0 +1,5 @@
+# Unofficial USCIS Case Tracker — https://rohitbobbili.github.io/uscis-tracker/
+User-agent: *
+Allow: /
+
+Sitemap: https://rohitbobbili.github.io/uscis-tracker/sitemap.xml

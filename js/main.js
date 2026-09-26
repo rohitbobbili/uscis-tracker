@@ -230,10 +230,16 @@ function catStyle(cat, formType) {
 /* ═════════════════════════════════════════════════════════════
    INPUT HANDLING
    ═════════════════════════════════════════════════════════════ */
+function announce(msg) {
+  const el = $('statusMsg');
+  if (el) el.textContent = msg;
+}
+
 function clearAll() {
   $('jsonInput').value = '';
   $('output').style.display = 'none';
   $('errorBar').classList.remove('show');
+  announce('Cleared. The paste box is empty.');
   currentData = null;
 }
 
@@ -276,6 +282,9 @@ function parseAndRender() {
   currentData = d;
   $('output').style.display = 'block';
   renderAll(d);
+  announce(`Case ${d.receiptNumber || ''} analysed. `
+    + `${$('timeline').querySelectorAll('.timeline-item').length} timeline entries. `
+    + 'Results follow the paste box.');
   window.scrollTo({ top: $('caseDetailsGrid').offsetTop - 20, behavior: 'smooth' });
 }
 

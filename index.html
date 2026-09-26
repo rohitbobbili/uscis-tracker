@@ -7,12 +7,64 @@
   <!-- Browser-enforced privacy: no outbound connections, no form submissions.
        connect-src 'none' means this page is physically unable to transmit your data. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'" />
-  <title>USCIS Case Tracker (Unofficial)</title>
-  <meta name="description"
-    content="Unofficial, browser-only viewer for USCIS case JSON. Paste the data from your own USCIS account to see an event timeline, progress overview, and plain-language explanations. Nothing is uploaded or stored." />
+  <title>USCIS Case Tracker — Unofficial Case Status JSON Viewer</title>
+  <meta name="description" content="Paste the case JSON from your USCIS account to see a plain-language event timeline, appointment dates and progress. Unofficial and free — runs in your browser." />
   <link rel="icon"
     href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 38'><rect width='60' height='38' fill='%23f2f5fb'/><g fill='%23b22234'><rect y='0' width='60' height='2.9'/><rect y='5.8' width='60' height='2.9'/><rect y='11.6' width='60' height='2.9'/><rect y='17.4' width='60' height='2.9'/><rect y='23.2' width='60' height='2.9'/><rect y='29' width='60' height='2.9'/><rect y='34.8' width='60' height='2.9'/></g><rect width='25' height='20.3' fill='%233c3b6e'/></svg>" />
-  <link rel="stylesheet" href="css/style.css?v=10" />
+  <link rel="canonical" href="https://rohitbobbili.github.io/uscis-tracker/" />
+  <meta name="author" content="rohitbobbili" />
+  <meta name="theme-color" content="#16223f" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="USCIS Case Tracker" />
+  <meta property="og:title" content="USCIS Case Tracker — Unofficial Case Status JSON Viewer" />
+  <meta property="og:description" content="Paste the case JSON from your USCIS account to see a plain-language event timeline, appointment dates and progress. Unofficial and free — runs in your browser." />
+  <meta property="og:url" content="https://rohitbobbili.github.io/uscis-tracker/" />
+  <meta property="og:image" content="https://rohitbobbili.github.io/uscis-tracker/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="USCIS Case Tracker — an unofficial viewer for your own USCIS case data" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="USCIS Case Tracker — Unofficial Case Status JSON Viewer" />
+  <meta name="twitter:description" content="Paste the case JSON from your USCIS account to see a plain-language event timeline, appointment dates and progress. Unofficial and free — runs in your browser." />
+  <meta name="twitter:image" content="https://rohitbobbili.github.io/uscis-tracker/og-image.png" />
+  <link rel="stylesheet" href="css/style.css?v=13" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "USCIS Case Tracker",
+        "alternateName": "Unofficial USCIS Case Status JSON Viewer",
+        "url": "https://rohitbobbili.github.io/uscis-tracker/",
+        "description": "Paste the case JSON from your USCIS account to see a plain-language event timeline, appointment dates and progress. Unofficial and free — runs in your browser.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any browser",
+        "browserRequirements": "Requires JavaScript",
+        "isAccessibleForFree": true,
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "license": "https://opensource.org/licenses/MIT",
+        "isBasedOn": "https://github.com/rohitbobbili/uscis-tracker",
+        "dateModified": "2026-09-26",
+        "author": { "@type": "Person", "name": "rohitbobbili", "url": "https://github.com/rohitbobbili" },
+        "maintainer": { "@type": "Person", "name": "rohitbobbili", "url": "https://github.com/rohitbobbili" },
+        "disambiguatingDescription": "Independent open-source tool. Not affiliated with, endorsed by, or operated by USCIS or DHS, and not legal advice."
+      },
+      {
+        "@type": "HowTo",
+        "name": "How to get your USCIS case JSON",
+        "description": "Retrieve your own case record from your USCIS online account so it can be read locally in the browser.",
+        "totalTime": "PT3M",
+        "step": [
+          { "@type": "HowToStep", "position": 1, "name": "Sign in to USCIS", "text": "Open myaccount.uscis.gov and log in the way you normally would.", "url": "https://rohitbobbili.github.io/uscis-tracker/#instructions" },
+          { "@type": "HowToStep", "position": 2, "name": "Open your case's data URL", "text": "In a new tab of the same browser, visit my.uscis.gov/account/case-service/api/cases/ followed by your own receipt number.", "url": "https://rohitbobbili.github.io/uscis-tracker/#instructions" },
+          { "@type": "HowToStep", "position": 3, "name": "Copy everything on that page", "text": "Select all the text beginning with {\"data\": and copy it.", "url": "https://rohitbobbili.github.io/uscis-tracker/#instructions" },
+          { "@type": "HowToStep", "position": 4, "name": "Paste and analyze", "text": "Paste it into the box at the top of the page and press Analyze Case.", "url": "https://rohitbobbili.github.io/uscis-tracker/#instructions" }
+        ]
+      }
+    ]
+  }
+  </script>
 </head>
 
 <body>
@@ -36,6 +88,8 @@
     <path d="M52 330 L156 330 L166 356 L42 356 Z" />
     <path d="M56 356 L152 356 L152 396 L56 396 Z" />
   </svg>
+
+  <a class="skip-link" href="#main">Skip to the paste box</a>
 
   <div class="page">
 
@@ -82,7 +136,7 @@
     </header>
 
     <!-- ══ MAIN ══════════════════════════════════════════════ -->
-    <main class="main">
+    <main class="main" id="main">
 
       <section class="input-section">
         <div class="privacy-note">🔒 <strong>Private by design:</strong> your case data never leaves your browser.
@@ -91,7 +145,8 @@
         <textarea id="jsonInput" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" aria-label="Paste your USCIS case JSON here" placeholder='Paste the JSON from your USCIS online account here, then click Analyze Case.
 
 (It will look something like  { "data": { "receiptNumber": "IOE…", … } }  — see the instructions below for how to get it.)'></textarea>
-        <div class="error-bar" id="errorBar"></div>
+        <div class="error-bar" id="errorBar" role="alert"></div>
+        <p id="statusMsg" class="visually-hidden" role="status" aria-live="polite"></p>
 
         <div class="input-actions">
           <button class="btn btn-clear" id="clearBtn">Clear</button>
@@ -122,9 +177,9 @@
       </div>
 
       <!-- Instructions (collapsible) -->
-      <details class="api-guide">
+      <details class="api-guide" id="instructions">
         <summary>
-          <span class="api-guide-title">📖 How to Get Your Case JSON</span>
+          <h2 class="api-guide-title">📖 How to Get Your Case JSON</h2>
           <span class="guide-toggle"></span>
         </summary>
         <div class="api-guide-body">
@@ -150,18 +205,57 @@
         </div>
       </details>
 
+      <!-- About (collapsible) — who is behind this, and on what authority -->
+      <details class="api-guide" id="about">
+        <summary>
+          <h2 class="api-guide-title">🗽 About This Tool</h2>
+          <span class="guide-toggle"></span>
+        </summary>
+        <div class="api-guide-body">
+          <p>I built this while trying to make sense of my own USCIS case record — the data your account
+            returns is accurate but unreadable, and I wanted to see it as a timeline instead of a wall of JSON.
+            It is a personal project maintained by one person
+            (<a href="https://github.com/rohitbobbili" target="_blank" rel="noopener noreferrer">rohitbobbili</a>),
+            not a company, and there is no organisation behind it.</p>
+
+          <p><strong>What I am not:</strong> I am not an immigration attorney, a DOJ-accredited representative,
+            or a USCIS employee, and nothing here is legal advice. This page does one narrow thing — it reformats
+            data you already have. It cannot look anything up, predict a decision, or tell you what to do about
+            your case. For that, talk to someone qualified.</p>
+
+          <p><strong>Where the information comes from:</strong> event-code names follow the publicly published
+            <a href="https://niem.github.io/model/5.0/scr/BenefitDocumentStatusCategoryCodeSimpleType/" target="_blank" rel="noopener noreferrer">NIEM
+            v5.0 code list</a>; the plain-language explanations are my own reading of those codes and are not
+            official USCIS definitions. Your case data comes from your own account at
+            <a href="https://my.uscis.gov/" target="_blank" rel="noopener noreferrer">my.uscis.gov</a>. The
+            authority on your case is always
+            <a href="https://www.uscis.gov/" target="_blank" rel="noopener noreferrer">USCIS itself</a> — if this
+            page and an official notice disagree, the notice is right.</p>
+
+          <p><strong>How to check my work, or tell me I got it wrong:</strong> the entire source is public under
+            an MIT licence at
+            <a href="https://github.com/rohitbobbili/uscis-tracker" target="_blank" rel="noopener noreferrer">github.com/rohitbobbili/uscis-tracker</a>,
+            so you can read exactly what it does rather than trust a claim on a page. If an event code is
+            explained wrongly or something looks broken, please
+            <a href="https://github.com/rohitbobbili/uscis-tracker/issues" target="_blank" rel="noopener noreferrer">open
+            an issue</a> — that is the fastest way to reach me, and corrections are welcome.</p>
+
+          <p class="guide-note">Last reviewed <time datetime="2026-09-26">26 September 2026</time>. Event-code
+            coverage and wording are checked against the NIEM list when USCIS changes it; the date above is when
+            that was last done.</p>
+        </div>
+      </details>
+
       <!-- Disclaimer (collapsible) -->
       <details class="disclaimer">
         <summary>
-          <span class="disclaimer-line">⚠ Disclaimer — Unofficial Tool</span>
+          <h2 class="disclaimer-line">⚠ Disclaimer — Unofficial Tool</h2>
           <span class="disclaimer-toggle"></span>
         </summary>
         <div class="disclaimer-body">
-          <p>This is an independent side project — a way to make a USCIS case record readable, shared in case it helps
-            someone else staring at the same wall of JSON. There is no company behind it, no support desk, and no
-            relationship of any kind with USCIS, DHS, any other agency, or any law firm. Nobody at USCIS has reviewed
-            it or knows it exists. The entire source is on GitHub under an MIT licence, so you can read exactly what it
-            does instead of taking my word for it.</p>
+          <p>This tool has no relationship of any kind with USCIS, DHS, any other government agency, or any law
+            firm. Nobody at USCIS has reviewed it or knows it exists. See <a href="#about">About This Tool</a> for who
+            maintains it, where the information comes from, and how to verify it.</p>
           <p>Everything shown comes from the JSON you paste in. The event names and explanations are plain-language
             readings of the public NIEM v5.0 code list — not official USCIS definitions. USCIS can change what a code
             means, or use one in a way this page doesn't anticipate. The progress tracker, the grouping of repeated
@@ -183,13 +277,13 @@
 
     <!-- ══ FOOTER ════════════════════════════════════════════ -->
     <footer class="footer">
-      <div>Open source · Built with Claude · Not affiliated with USCIS or DHS</div>
+      <div><a href="#about">About</a> · <a href="https://github.com/rohitbobbili/uscis-tracker" target="_blank" rel="noopener noreferrer">Source on GitHub</a> · Not affiliated with USCIS or DHS</div>
       <div>Event codes: <a href="https://niem.github.io/model/5.0/scr/BenefitDocumentStatusCategoryCodeSimpleType/"
           target="_blank" rel="noopener noreferrer">NIEM v5.0</a></div>
     </footer>
   </div>
 
-  <script src="js/main.js?v=10"></script>
+  <script src="js/main.js?v=13"></script>
 </body>
 
 </html>
