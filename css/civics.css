@@ -496,27 +496,7 @@ a.btn, a.btn-ghost-panel, a.btn:visited, a.btn-ghost-panel:visited {
 }
 .hub-tagline { color: var(--on-page-muted); font-size: 15.5px; max-width: 52ch; }
 
-.version-banner {
-  display: flex; align-items: flex-start; gap: 12px;
-  background: var(--page-panel); border: 1px solid var(--page-border);
-  border-left: 3px solid var(--rule-blue);
-  border-radius: 10px; padding: 14px 16px; margin: 20px 0 28px;
-  font-size: 13px; color: var(--on-page-muted); line-height: 1.55;
-}
-.version-banner strong { color: var(--on-page); }
-.version-banner a { color: var(--page-link); }
-.version-banner-stats {
-  display: inline-block;
-  font-family: 'DM Mono', monospace;
-  font-size: 11.5px;
-  color: var(--on-page);
-  background: var(--page-panel-inset);
-  border-radius: 6px;
-  padding: 3px 8px;
-  margin: 4px 0;
-}
-
-.hub-journey { margin: 0 0 32px; }
+.hub-journey { margin: 24px 0 32px; }
 .hub-journey-label {
   font-size: 11.5px; color: var(--on-page-muted); text-transform: none;
   margin-bottom: 12px;
