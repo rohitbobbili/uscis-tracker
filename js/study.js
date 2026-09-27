@@ -43,6 +43,7 @@ function renderItem(q) {
       <button type="button" class="study-item-head" data-toggle="${q.id}">
         <span class="study-item-num">${q.id}</span>
         <span class="badge ${badge}" style="flex-shrink:0">${esc(q.category)}</span>
+        ${q.timeSensitive ? `<span class="q-current-chip" style="margin:0;flex-shrink:0" title="This answer can change with an election or appointment">CURRENT</span>` : ''}
         <span class="study-item-q">${esc(q.question)}</span>
         ${stat.bookmarked ? `<span style="color:var(--gold);flex-shrink:0">${ICONS.bookmarkFill}</span>` : ''}
         <span class="study-item-chevron">${ICONS.chevron}</span>

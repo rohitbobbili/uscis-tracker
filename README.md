@@ -1,8 +1,9 @@
 # N-400 Journey (Unofficial)
 
 A browser-only companion for people navigating their N-400 naturalization
-case on their own: *"Track your case. Prepare for your interview."* It has
-two independent tools, joined by a hub page (`index.html`):
+case on their own: *"Check your case status. Prepare for your interview."*
+The core journey is Submit → Track → Study → Practice → Interview →
+Decision. It has two independent tools, joined by a hub page (`index.html`):
 
 **Case Journey** (`case.html`) — paste the JSON from your own USCIS online
 account and get:
@@ -17,16 +18,30 @@ account and get:
 the 128 official 2025 USCIS civics test questions (the question set that
 applies to Form N-400 applications filed on or after October 20, 2025):
 
+- **2025 Civics Test Simulation** (the primary mode): mirrors the real
+  interview format — up to 20 questions drawn from the 128-question bank,
+  stopping as soon as 12 correct is reached or is no longer reachable. Never
+  claims to be the actual USCIS test or that the applicant "passed" it —
+  results read "Practice threshold reached" or "Keep practicing," with the
+  gap to 12 stated plainly and a direct path into the missed questions.
 - Quick (10), Standard (20), Intensive (50) and Full (128) practice modes,
-  plus a Daily Practice session and a Missed Questions round
+  plus a Daily Practice session and a Missed Questions round, as secondary
+  ways to practice
 - immediate feedback per question, with the official answer shown on a miss
 - multiple-choice wrong answers are hand-curated per question (see
   `data/distractors.js`) rather than sampled randomly, so they stay
   genuinely plausible instead of guessable by elimination
+- questions whose accepted answer depends on current officeholders show a
+  small "CURRENT" indicator and a "verify before your interview" note
+  rather than presenting the name as a fixed fact
 - **Study Mode**: browse, search and bookmark all 128 questions and answers
   as a plain reference, no grading
-- **My Progress**: accuracy, a practice streak, and per-category mastery,
-  computed from local history — there is no server to compute it on
+- **My Progress**: questions practiced, accuracy, a practice streak,
+  per-category mastery, the last Test Simulation result, and a "Needs
+  review" count that opens those exact questions — all computed from local
+  history, there is no server to compute it on. Mastery means answered
+  correctly at least twice in a row after being seen at least twice, not
+  just answered right once.
 
 Question content lives in `data/questions.js`, kept separate from the UI so a
 future USCIS update only touches one file. Five questions whose answer
@@ -77,7 +92,9 @@ mismatch across pages caused a live bug once; see git history).
 This is an unofficial, independent tool with no affiliation to USCIS, DHS, or
 any government agency. Event-code explanations are informal interpretations of
 the public [NIEM v5.0 schema](https://niem.github.io/model/5.0/scr/BenefitDocumentStatusCategoryCodeSimpleType/)
-and are not legal advice. See the disclaimer on the page itself.
+and are not legal advice. See the "About N-400 Journey" section on
+`case.html` for the full disclaimer — it's one section with a clearly
+separated "Important" box, not a second redundant page.
 
 ## License
 

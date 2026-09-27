@@ -14,17 +14,35 @@ function lastSimulationLabel() {
   return last ? `${last.correct}/${TEST_PASSING_THRESHOLD}` : '—';
 }
 
+function missedQuestionIds() {
+  return GRADED_QUESTIONS.filter(q => masteryOf(progress.questionStats[q.id]) === 'missed').map(q => q.id);
+}
+
 function renderStats() {
   const counts = masteryCounts(progress);
   const accuracy = progress.totalAnswered ? Math.round((progress.totalCorrect / progress.totalAnswered) * 100) : 0;
+  const hasLastSim = [...progress.sessions].some(s => s.mode === 'simulation');
 
   $('statRow').innerHTML = `
     <div class="stat-tile"><div class="stat-tile-icon">${ICONS.layers}</div><div class="stat-tile-val">${progress.totalAnswered}</div><div class="stat-tile-lbl">Questions practiced</div></div>
     <div class="stat-tile"><div class="stat-tile-icon">${ICONS.trophy}</div><div class="stat-tile-val">${counts.mastered}/${GRADED_QUESTIONS.length}</div><div class="stat-tile-lbl">Mastered</div></div>
     <div class="stat-tile"><div class="stat-tile-icon">${ICONS.target}</div><div class="stat-tile-val">${accuracy}%</div><div class="stat-tile-lbl">Overall accuracy</div></div>
     <div class="stat-tile streak"><div class="stat-tile-icon">${ICONS.flame}</div><div class="stat-tile-val">${progress.streakCurrent}</div><div class="stat-tile-lbl">Day streak</div></div>
-    <div class="stat-tile"><div class="stat-tile-icon">${ICONS.chart}</div><div class="stat-tile-val">${lastSimulationLabel()}</div><div class="stat-tile-lbl">Last Test Simulation</div></div>
-    <div class="stat-tile"><div class="stat-tile-icon">${ICONS.refresh}</div><div class="stat-tile-val">${counts.missed}</div><div class="stat-tile-lbl">Needs review</div></div>`;
+    <button type="button" class="stat-tile${hasLastSim ? ' stat-tile-action' : ''}" id="lastSimTile" ${hasLastSim ? '' : 'disabled'}>
+      <div class="stat-tile-icon">${ICONS.chart}</div><div class="stat-tile-val">${lastSimulationLabel()}</div>
+      <div class="stat-tile-lbl">Last Test Simulation${hasLastSim ? ' →' : ''}</div>
+    </button>
+    <button type="button" class="stat-tile${counts.missed ? ' stat-tile-action' : ''}" id="needsReviewTile" ${counts.missed ? '' : 'disabled'}>
+      <div class="stat-tile-icon">${ICONS.refresh}</div><div class="stat-tile-val">${counts.missed}</div>
+      <div class="stat-tile-lbl">Needs review${counts.missed ? ' →' : ''}</div>
+    </button>`;
+
+  if (counts.missed) {
+    $('needsReviewTile').addEventListener('click', () => requestPractice(missedQuestionIds()));
+  }
+  if (hasLastSim) {
+    $('lastSimTile').addEventListener('click', () => { location.href = 'quiz.html'; });
+  }
 }
 
 function renderMasteryBar() {

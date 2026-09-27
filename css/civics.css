@@ -80,8 +80,9 @@ a.btn, a.btn-ghost-panel, a.btn:visited, a.btn-ghost-panel:visited {
 
 /* ══ TEST SIMULATION — the primary quiz experience ═══════════ */
 .sim-hero {
-  background: linear-gradient(155deg, var(--navy) 0%, #24346a 100%);
-  border-radius: 18px;
+  background: var(--navy);
+  border-left: 4px solid var(--red-flag);
+  border-radius: 4px;
   padding: 28px 28px 26px;
   margin-bottom: 26px;
   color: #fff;
@@ -170,6 +171,20 @@ a.btn, a.btn-ghost-panel, a.btn:visited, a.btn-ghost-panel:visited {
   padding: 3px 10px;
   border-radius: 20px;
   margin-bottom: 14px;
+}
+
+.q-current-chip {
+  display: inline-flex;
+  align-items: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .8px;
+  color: var(--orange);
+  border: 1px solid var(--orange);
+  border-radius: 20px;
+  padding: 2px 8px;
+  margin: 0 0 14px 6px;
 }
 
 .q-text {
@@ -283,6 +298,14 @@ a.btn, a.btn-ghost-panel, a.btn:visited, a.btn-ghost-panel:visited {
   box-shadow: 0 4px 18px var(--shadow);
 }
 
+.results-kicker {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 10px;
+}
+.results-kicker.short-of-goal { color: var(--text-muted); }
+
 .results-score {
   font-family: 'DM Serif Display', serif;
   font-size: 56px;
@@ -339,10 +362,18 @@ a.btn, a.btn-ghost-panel, a.btn:visited, a.btn-ghost-panel:visited {
   text-align: left; font-family: inherit; min-height: 44px;
 }
 .study-item-num { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-dim); flex-shrink: 0; width: 26px; }
-.study-item-q { flex: 1; font-size: 14.5px; font-weight: 500; }
+.study-item-q { flex: 1; font-size: 14.5px; font-weight: 500; min-width: 0; }
 .study-item-chevron { width: 16px; height: 16px; flex-shrink: 0; transition: transform .15s ease; color: var(--text-muted); }
 .study-item.is-open .study-item-chevron { transform: rotate(180deg); }
 @media (prefers-reduced-motion: reduce) { .study-item-chevron { transition: none; } }
+
+/* Narrow screens: badge/CURRENT chip stay on one line, the question drops
+   to its own full-width line rather than getting squeezed sideways. */
+@media (max-width: 480px) {
+  .study-item-head { flex-wrap: wrap; row-gap: 6px; }
+  .study-item-q { flex-basis: 100%; order: 4; }
+  .badge { flex-shrink: 0; }
+}
 
 .study-item-body { display: none; padding: 0 16px 16px 54px; }
 .study-item.is-open .study-item-body { display: block; }
@@ -362,12 +393,22 @@ a.btn, a.btn-ghost-panel, a.btn:visited, a.btn-ghost-panel:visited {
 
 /* ══ PROGRESS DASHBOARD ═══════════════════════════════════════ */
 .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 24px; }
-.stat-tile { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center; }
+.stat-tile {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  padding: 16px; text-align: center;
+  font-family: 'DM Sans', sans-serif; width: 100%; min-height: 44px;
+}
 .stat-tile-icon { width: 22px; height: 22px; margin: 0 auto 8px; color: var(--navy); }
 .stat-tile-val { font-family: 'DM Serif Display', serif; font-size: 26px; color: var(--navy); line-height: 1; }
 .stat-tile-lbl { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
 .stat-tile.streak .stat-tile-icon { color: var(--red-flag); }
 .stat-tile.streak .stat-tile-val { color: var(--red-flag); }
+
+button.stat-tile:disabled { cursor: default; }
+.stat-tile-action { cursor: pointer; transition: border-color .12s ease, transform .12s ease; }
+.stat-tile-action .stat-tile-lbl { color: var(--rule-blue); font-weight: 600; }
+.stat-tile-action:hover { border-color: var(--rule-blue); transform: translateY(-1px); }
+.stat-tile-action:active { transform: translateY(0); }
 
 .mastery-bar {
   display: flex; height: 22px; border-radius: 11px; overflow: hidden;
@@ -501,6 +542,9 @@ a.btn, a.btn-ghost-panel, a.btn:visited, a.btn-ghost-panel:visited {
   font-size: 11.5px; color: var(--on-page-muted); text-transform: none;
   margin-bottom: 12px;
 }
+.hub-journey-note {
+  font-size: 11px; color: var(--on-page-muted); opacity: .8; margin-top: 10px;
+}
 
 .pillar-grid {
   display: grid;
@@ -521,6 +565,10 @@ a.btn, a.btn-ghost-panel, a.btn:visited, a.btn-ghost-panel:visited {
   margin: 4px 0 8px;
 }
 .pillar-card-desc { font-size: 13.5px; color: var(--text-muted); line-height: 1.55; flex: 1; }
+.pillar-card-statline {
+  font-family: 'DM Mono', monospace; font-size: 11.5px; color: var(--text-muted);
+  margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--border);
+}
 .pillar-card-stats {
   display: flex; gap: 18px; margin: 16px 0 4px; padding-top: 14px;
   border-top: 1px dashed var(--border);

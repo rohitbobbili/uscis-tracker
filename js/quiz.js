@@ -126,10 +126,12 @@ function renderQuestion() {
   $('qHint').textContent = hint;
   $('qHint').style.display = hint ? '' : 'none';
 
+  $('qCurrentChip').style.display = q.timeSensitive ? '' : 'none';
+
   const flagEl = $('qFlag');
   if (q.timeSensitive) {
     flagEl.style.display = '';
-    flagEl.textContent = 'This answer can change over time, verify at uscis.gov';
+    flagEl.textContent = 'Current answer — verify before your interview';
   } else {
     flagEl.style.display = 'none';
   }
@@ -265,13 +267,20 @@ function scoreMessage(pct) {
 }
 
 function renderResults(pct, total, durationSec, streakMilestone, simOutcome) {
+  const kicker = $('resultsKicker');
   if (simOutcome) {
-    $('resultsScore').innerHTML = state.correct + '<span class="pct-sign">/' + TEST_PASSING_THRESHOLD + '</span>';
-    $('resultsLabel').textContent = `${total} question${total === 1 ? '' : 's'} asked, Test Simulation`;
-    $('resultsMessage').textContent = simOutcome === 'reached'
-      ? `You reached ${TEST_PASSING_THRESHOLD} correct answers. Practice passing threshold reached.`
-      : `You answered ${state.correct} correctly. You need at least ${TEST_PASSING_THRESHOLD} correct answers on the 2025 civics test.`;
+    const reached = simOutcome === 'reached';
+    kicker.style.display = '';
+    kicker.className = 'results-kicker' + (reached ? '' : ' short-of-goal');
+    kicker.textContent = reached ? 'Practice threshold reached 🎉' : 'Keep practicing';
+    $('resultsScore').innerHTML = state.correct + '<span class="pct-sign">/' + total + '</span>';
+    $('resultsLabel').textContent = 'correct, Test Simulation';
+    const away = TEST_PASSING_THRESHOLD - state.correct;
+    $('resultsMessage').textContent = reached
+      ? `You reached the ${TEST_PASSING_THRESHOLD}-correct practice threshold.`
+      : `You're ${away} correct answer${away === 1 ? '' : 's'} away from the practice threshold.`;
   } else {
+    kicker.style.display = 'none';
     $('resultsScore').innerHTML = pct + '<span class="pct-sign">%</span>';
     $('resultsLabel').textContent = `${state.correct} of ${total} correct, ${MODE_LABEL[state.mode] || 'Practice'}`;
     $('resultsMessage').textContent = scoreMessage(pct);
@@ -291,10 +300,14 @@ function renderResults(pct, total, durationSec, streakMilestone, simOutcome) {
   practiceMissedBtn.style.display = missed.length ? '' : 'none';
   const simFellShort = simOutcome && simOutcome !== 'reached';
   practiceMissedBtn.className = simFellShort ? 'btn btn-analyze' : 'btn-ghost-panel';
-  practiceMissedBtn.textContent = simFellShort
-    ? `Practice Your Missed Questions (${missed.length})`
+  practiceMissedBtn.textContent = simOutcome
+    ? 'Review Missed Questions'
     : `Practice ${missed.length} missed question${missed.length === 1 ? '' : 's'}`;
   practiceMissedBtn.onclick = () => startCustomSet(missed.map(m => m.q), 'missed-review');
+
+  $('tryAgainBtn').textContent = simOutcome
+    ? (simOutcome === 'reached' ? 'Try Another Simulation' : 'Try Again')
+    : 'Try again';
 
   const reviewSection = $('reviewSection');
   if (!missed.length) {
