@@ -90,7 +90,7 @@ a.btn, a.btn-ghost-panel, a.btn:visited, a.btn-ghost-panel:visited {
 .sim-hero-eyebrow { font-size: 12.5px; color: #aebbe6; font-weight: 600; }
 .sim-hero-title {
   font-family: 'DM Serif Display', serif;
-  font-size: 27px;
+  font-size: 24px;
   margin: 5px 0 10px;
 }
 .sim-hero-desc { font-size: 14px; color: #ccd6f4; max-width: 58ch; line-height: 1.6; }
@@ -495,15 +495,14 @@ button.stat-tile:disabled { cursor: default; }
 }
 .milestone-path .ms-step { display: flex; flex-direction: column; align-items: center; flex: 1; min-width: 0; }
 .milestone-path .ms-dot {
-  width: 22px; height: 22px; border-radius: 50%;
+  width: 26px; height: 26px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  border: 2px solid var(--ui-line); background: transparent; flex-shrink: 0;
-  font-size: 11px; color: var(--on-page-muted);
+  border: 1.5px solid var(--ui-line); background: transparent; flex-shrink: 0;
+  color: var(--on-page-muted);
 }
-.milestone-path .ms-dot svg { width: 11px; height: 11px; stroke: #fff; opacity: 0; }
-.milestone-path .ms-step.done .ms-dot { background: var(--star-done); border-color: var(--star-done); }
-.milestone-path .ms-step.done .ms-dot svg { opacity: 1; }
-.milestone-path .ms-step.active .ms-dot { border-color: var(--gold-bright, #d4a843); color: var(--gold-bright, #d4a843); font-weight: 700; }
+.milestone-path .ms-dot svg { width: 13px; height: 13px; stroke: currentColor; }
+.milestone-path .ms-step.done .ms-dot { background: var(--star-done); border-color: var(--star-done); color: #fff; }
+.milestone-path .ms-step.active .ms-dot { border-color: var(--gold-bright, #d4a843); color: var(--gold-bright, #d4a843); border-width: 2px; }
 .milestone-path .ms-line { flex: 1; height: 2px; background: var(--page-border); margin-top: 10px; }
 .milestone-path .ms-step.done + .ms-line, .milestone-path .ms-line.done { background: var(--star-done); }
 .milestone-path .ms-label {
@@ -511,14 +510,6 @@ button.stat-tile:disabled { cursor: default; }
   line-height: 1.25; max-width: 70px;
 }
 .milestone-path .ms-step.active .ms-label { color: var(--on-page); font-weight: 600; }
-
-/* Compact row variant (Simulation header: no labels, just the line) */
-.milestone-path.compact { gap: 3px; }
-.milestone-path.compact .ms-step { flex: 0 0 auto; }
-.milestone-path.compact .ms-dot { width: 9px; height: 9px; border-width: 0; background: var(--page-panel-inset); }
-.milestone-path.compact .ms-step.done .ms-dot { background: var(--star-done); }
-.milestone-path.compact .ms-step.active .ms-dot { background: var(--red-flag); }
-.milestone-path.compact .ms-line { flex: 1 1 6px; height: 2px; margin-top: 0; align-self: center; }
 
 @media (prefers-reduced-motion: no-preference) {
   .milestone-path .ms-step.done .ms-dot { transition: background .25s ease, border-color .25s ease; }
