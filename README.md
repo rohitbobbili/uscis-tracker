@@ -3,7 +3,17 @@
 A browser-only companion for people navigating their N-400 naturalization
 case on their own: *"Check your case status. Prepare for your interview."*
 The core journey is Submit → Track → Study → Practice → Interview →
-Decision. It has two independent tools, joined by a hub page (`index.html`):
+Decision. It has two independent tools, joined by a hub page (`index.html`)
+whose nav also includes an explicit Home link back to itself on every page.
+The hub also carries an **N-400 Processing Trends** section — a single
+filterable line chart (`data/n400-quarterly.js`, `js/n400-chart.js`) over
+22 quarters of official USCIS N-400 receipts/approvals/denials/pending/
+processing-time data, switchable between per-quarter and fiscal-year-
+cumulative views, hand-built as inline SVG (no charting library, keeping
+the zero-third-party-request policy) with a real `<table>` fallback for
+screen readers. To refresh it when USCIS publishes a new quarter, re-pull
+the report from `N400_DATA_SOURCE_URL` in that data file, append a row,
+and bump `N400_DATA_UPDATED`.
 
 **Case Journey** (`case.html`) — paste the JSON from your own USCIS online
 account and get:

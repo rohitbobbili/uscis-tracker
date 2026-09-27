@@ -585,6 +585,65 @@ button.stat-tile:disabled { cursor: default; }
 .disclaimer-strip a { color: var(--page-link); }
 
 /* ═════════════════════════════════════════════════════════════
+   N-400 PROCESSING TRENDS — hub-only. A single filterable line
+   chart, hand-built inline SVG (no charting library).
+   ═════════════════════════════════════════════════════════════ */
+.trends-section { margin-bottom: 32px; }
+.trends-eyebrow { font-size: 12px; color: var(--on-page-muted); font-weight: 600; }
+.trends-title {
+  font-family: 'DM Serif Display', serif; font-size: 24px; color: var(--on-page);
+  margin: 4px 0 8px;
+}
+.trends-desc { color: var(--on-page-muted); font-size: 13.5px; max-width: 60ch; margin-bottom: 18px; }
+
+.trends-card {
+  background: var(--surface); border: 1px solid var(--border); border-top: 4px solid var(--navy);
+  border-radius: 14px; padding: 22px;
+}
+
+.trends-controls { display: flex; flex-wrap: wrap; gap: 10px 18px; margin-bottom: 18px; }
+.trends-btn-group { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+.trends-btn-group.is-disabled { opacity: .45; }
+.trends-btn {
+  font-family: 'DM Sans', sans-serif; font-size: 12.5px; font-weight: 600;
+  color: var(--text-muted); background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 20px; padding: 6px 13px; min-height: 32px; cursor: pointer;
+}
+.trends-btn:hover:not(:disabled):not(.is-active) { border-color: var(--navy); color: var(--navy); }
+.trends-btn:disabled { cursor: not-allowed; }
+.trends-btn.is-active { background: var(--navy); border-color: var(--navy); color: #fff; }
+
+.trends-chart-caption { font-size: 12.5px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
+.trends-chart-svg { width: 100%; height: auto; display: block; }
+.n400-grid { stroke: var(--border); stroke-width: 1; }
+.n400-axis-label { font-family: 'DM Mono', monospace; font-size: 9.5px; fill: var(--text-dim); }
+.n400-line { stroke: var(--red-flag); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+.n400-point { fill: var(--surface); stroke: var(--red-flag); stroke-width: 2; cursor: pointer; }
+.n400-point:hover, .n400-point:focus-visible { fill: var(--red-flag); outline: none; }
+
+.trends-table-toggle { margin-top: 16px; padding-top: 12px; border-top: 1px dashed var(--border); }
+.trends-table-toggle summary {
+  cursor: pointer; list-style: none; font-size: 12.5px; font-weight: 600; color: var(--blue);
+  min-height: 32px; display: flex; align-items: center;
+}
+.trends-table-toggle summary::-webkit-details-marker { display: none; }
+.trends-table-toggle summary::before { content: '▾ '; font-size: 10px; }
+.trends-table-toggle[open] summary::before { content: '▴ '; }
+.trends-table-wrap { max-height: 260px; overflow-y: auto; margin-top: 10px; }
+.trends-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.trends-table th { text-align: left; color: var(--text-muted); font-weight: 600; padding: 6px 8px; position: sticky; top: 0; background: var(--surface); }
+.trends-table td { padding: 6px 8px; border-top: 1px dashed var(--border); }
+.trends-table tr:hover td { background: var(--surface2); }
+
+.trends-source { font-size: 11.5px; color: var(--text-dim); margin: 14px 0 0; }
+.trends-source a { color: var(--blue); }
+
+@media (max-width: 560px) {
+  .trends-card { padding: 16px; }
+  .n400-axis-label { font-size: 8px; }
+}
+
+/* ═════════════════════════════════════════════════════════════
    CASE UPDATE TRACKING — the "last known status" strip on
    case.html and the matching recap on the hub's Case Journey card.
    ═════════════════════════════════════════════════════════════ */
