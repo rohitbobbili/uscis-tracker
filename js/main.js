@@ -282,6 +282,8 @@ function parseAndRender() {
   currentData = d;
   $('output').style.display = 'block';
   renderAll(d);
+  recordCaseSnapshot(d);
+  renderCaseStatusStrip();
   announce(`Case ${d.receiptNumber || ''} analysed. `
     + `${$('timeline').querySelectorAll('.timeline-item').length} timeline entries. `
     + 'Results follow the paste box.');
@@ -864,6 +866,23 @@ function showInstructions() {
 }
 
 /* ═════════════════════════════════════════════════════════════
+   CASE UPDATE TRACKING — reads/writes the minimal snapshot from
+   js/case-history.js. Shows "last known status" + what changed
+   since the last check, entirely from localStorage.
+   ═════════════════════════════════════════════════════════════ */
+function renderCaseStatusStrip() {
+  const strip = $('caseStatusStrip');
+  const snap = loadCaseSnapshot();
+  if (!snap) { strip.style.display = 'none'; strip.innerHTML = ''; return; }
+
+  strip.style.display = '';
+  strip.innerHTML = caseStatusStripHTML(snap);
+  wireCaseStatusStrip(strip, {
+    onCleared: () => { renderCaseStatusStrip(); announce('Saved case status cleared.'); },
+  });
+}
+
+/* ═════════════════════════════════════════════════════════════
    INIT
    ═════════════════════════════════════════════════════════════ */
 window.addEventListener('DOMContentLoaded', () => {
@@ -871,4 +890,5 @@ window.addEventListener('DOMContentLoaded', () => {
   $('analyzeBtn').addEventListener('click', parseAndRender);
   $('helpLink').addEventListener('click', showInstructions);
   $('demoBtn').addEventListener('click', loadDemo);
+  renderCaseStatusStrip();
 });

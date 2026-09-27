@@ -495,6 +495,7 @@ button.stat-tile:disabled { cursor: default; }
 }
 .milestone-path .ms-step { display: flex; flex-direction: column; align-items: center; flex: 1; min-width: 0; }
 .milestone-path .ms-dot {
+  position: relative;
   width: 26px; height: 26px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   border: 1.5px solid var(--ui-line); background: transparent; flex-shrink: 0;
@@ -503,6 +504,11 @@ button.stat-tile:disabled { cursor: default; }
 .milestone-path .ms-dot svg { width: 13px; height: 13px; stroke: currentColor; }
 .milestone-path .ms-step.done .ms-dot { background: var(--star-done); border-color: var(--star-done); color: #fff; }
 .milestone-path .ms-step.active .ms-dot { border-color: var(--gold-bright, #d4a843); color: var(--gold-bright, #d4a843); border-width: 2px; }
+.journey-badge-dot {
+  position: absolute; top: -2px; right: -2px;
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--red-flag); border: 1.5px solid var(--bg);
+}
 .milestone-path .ms-line { flex: 1; height: 2px; background: var(--page-border); margin-top: 10px; }
 .milestone-path .ms-step.done + .ms-line, .milestone-path .ms-line.done { background: var(--star-done); }
 .milestone-path .ms-label {
@@ -577,6 +583,55 @@ button.stat-tile:disabled { cursor: default; }
   font-size: 12.5px; color: var(--on-page-muted); line-height: 1.55;
 }
 .disclaimer-strip a { color: var(--page-link); }
+
+/* ═════════════════════════════════════════════════════════════
+   CASE UPDATE TRACKING — the "last known status" strip on
+   case.html and the matching recap on the hub's Case Journey card.
+   ═════════════════════════════════════════════════════════════ */
+.case-status-strip {
+  background: var(--page-panel); border: 1px solid var(--page-border);
+  border-left: 3px solid var(--rule-blue);
+  border-radius: 10px; padding: 14px 16px; margin-bottom: 22px;
+  font-size: 13px; color: var(--on-page-muted);
+}
+.case-status-line {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap;
+}
+.case-status-line strong { color: var(--on-page); }
+.case-status-line .link-btn { font-size: 11.5px; color: var(--on-page-muted); }
+
+.whats-new-toggle { margin-top: 8px; }
+.whats-new-toggle summary {
+  cursor: pointer; list-style: none; display: flex; align-items: center; gap: 7px;
+  font-weight: 600; color: var(--page-link); font-size: 13px; min-height: 32px;
+}
+.whats-new-toggle summary::-webkit-details-marker { display: none; }
+.whats-new-toggle summary::before { content: '▾'; font-size: 10px; opacity: .8; }
+.whats-new-toggle[open] summary::before { content: '▴'; }
+.whats-new-dot {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--red-flag); flex-shrink: 0;
+  box-shadow: 0 0 0 3px var(--red-flag-dim);
+}
+.whats-new-body { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--page-border); }
+.whats-new-empty { font-size: 12.5px; margin: 0; }
+.whats-new-list { list-style: none; margin: 0; padding: 0; font-size: 12.5px; }
+.whats-new-list li { padding: 5px 0; border-bottom: 1px dashed var(--page-border); }
+.whats-new-list li:last-child { border-bottom: none; }
+.wn-from { color: var(--on-page-muted); text-decoration: line-through; opacity: .8; }
+.wn-to { color: var(--on-page); font-weight: 600; }
+
+/* Compact variant reused inside the hub's Case Journey pillar card,
+   which sits on the light .surface card background instead of the
+   dark page. */
+.case-status-strip.on-light {
+  background: var(--surface2); border-color: var(--border); color: var(--text-muted);
+}
+.case-status-strip.on-light .case-status-line strong { color: var(--navy); }
+.case-status-strip.on-light .whats-new-toggle summary { color: var(--blue); }
+.case-status-strip.on-light .whats-new-body { border-top-color: var(--border); }
+.case-status-strip.on-light .whats-new-list li { border-bottom-color: var(--border); }
+.case-status-strip.on-light .wn-to { color: var(--navy); }
 
 @media (max-width: 560px) {
   .hub-hero h1 { font-size: 27px; }

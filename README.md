@@ -13,6 +13,15 @@ account and get:
 - a journey-style progress tracker (Filed → Receipt → Checks → Interview → Decision)
 - warnings for backdated event entries
 - all timestamps converted from UTC to your local timezone
+- **"What's new since my last case update?"** — each analysis is compared
+  against a small normalized snapshot saved from the previous one (see
+  `js/case-history.js`), surfacing status changes, new milestones,
+  rescheduled dates, and new event codes with a from → to view. The raw
+  JSON is never stored, only the minimal fields needed to compare: receipt
+  number, form type, a derived status label, key milestone dates, and the
+  set of event codes seen. A small red dot marks an unreviewed change on
+  the hub's Case Journey card and its "Track" journey-strip icon until you
+  open "What's new," and "Clear saved status" removes it entirely.
 
 **Learning Journey** (`quiz.html`, `study.html`, `progress.html`) — practice
 the 128 official 2025 USCIS civics test questions (the question set that
@@ -65,8 +74,9 @@ Fonts are self-hosted, so the page contacts **no third party at all** —
 no CDN, no analytics, no font service. The CSP permits only this origin.
 Pasted input is HTML-escaped before it reaches the DOM.
 
-Both tools share this privacy model. Quiz progress lives in `localStorage`
-on your device only, and the same policy above covers every page.
+Both tools share this privacy model. Quiz progress and the minimal case
+snapshot both live in `localStorage` on your device only, and the same
+policy above covers every page.
 
 ## Usage
 

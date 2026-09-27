@@ -20,13 +20,59 @@
     $('learningCta').textContent = 'Continue Practicing →';
   }
 
-  // The journey strip only marks the two stages this device can honestly
-  // know about (Study/Practice, from local quiz progress) — Case Journey
-  // status is never persisted, so Submit/Track/Interview/Decision stay
-  // neutral rather than faking a status this app doesn't actually track.
+  // Case Journey: show the last known status + what's new, right on the
+  // pillar card, using only the minimal snapshot from case-history.js —
+  // never the full case record.
+  function renderHubCaseStatus() {
+    const strip = $('hubCaseStatus');
+    const snap = loadCaseSnapshot();
+    if (!snap) { strip.style.display = 'none'; return; }
+    strip.style.display = '';
+    strip.innerHTML = caseStatusStripHTML(snap);
+    wireCaseStatusStrip(strip, {
+      onReviewed: updateJourneyPath,
+      onCleared: () => { renderHubCaseStatus(); updateJourneyPath(); },
+    });
+  }
+  renderHubCaseStatus();
+
+  // The journey strip marks only what this device can honestly know:
+  // Submit/Track from a saved case snapshot (having one at all implies the
+  // form was filed), Study/Practice from local quiz progress. Interview
+  // and Decision stay neutral — nothing on this device tracks them.
   const hasPracticed = progress.totalAnswered > 0;
   const hasSimulated = progress.sessions.some(s => s.mode === 'simulation');
   const path = $('journeyPath');
+
+  function updateJourneyPath() {
+    if (!path) return;
+    const step = name => path.querySelector(`[data-step="${name}"]`);
+    ['submit', 'track'].forEach(name => step(name).classList.remove('done', 'active'));
+
+    const caseSnap = loadCaseSnapshot();
+    const notes = [];
+    const trackDot = step('track').querySelector('.ms-dot');
+    trackDot?.querySelector('.journey-badge-dot')?.remove();
+    if (caseSnap) {
+      step('submit').classList.add('done');
+      const unreviewed = hasUnreviewedCaseChange();
+      step('track').classList.toggle('active', unreviewed);
+      step('track').classList.toggle('done', !unreviewed);
+      if (unreviewed && trackDot) {
+        const dot = document.createElement('span');
+        dot.className = 'journey-badge-dot';
+        dot.setAttribute('aria-hidden', 'true');
+        trackDot.appendChild(dot);
+      }
+      notes.push('your Case Journey status');
+    }
+    if (hasPracticed) notes.push('your Learning Journey activity');
+
+    $('journeyNote').textContent = notes.length
+      ? `Reflects ${notes.join(' and ')} on this device.`
+      : 'Check your case or start practicing to fill this in.';
+  }
+
   if (path) {
     const step = name => path.querySelector(`[data-step="${name}"]`);
     if (hasPracticed) {
@@ -37,8 +83,6 @@
     }
     if (hasSimulated) step('practice').classList.add('done');
     else if (hasPracticed) step('practice').classList.add('active');
-    $('journeyNote').textContent = hasPracticed
-      ? 'Reflects your Learning Journey activity on this device.'
-      : 'Your Learning Journey starts at Study — Case Journey status isn’t tracked here.';
+    updateJourneyPath();
   }
 })();
