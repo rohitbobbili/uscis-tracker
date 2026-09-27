@@ -78,6 +78,41 @@ a.btn, a.btn-ghost-panel, a.btn:visited, a.btn-ghost-panel:visited {
   margin: 26px 0 10px;
 }
 
+/* ══ TEST SIMULATION — the primary quiz experience ═══════════ */
+.sim-hero {
+  background: linear-gradient(155deg, var(--navy) 0%, #24346a 100%);
+  border-radius: 18px;
+  padding: 28px 28px 26px;
+  margin-bottom: 26px;
+  color: #fff;
+}
+.sim-hero-eyebrow { font-size: 12.5px; color: #aebbe6; font-weight: 600; }
+.sim-hero-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 27px;
+  margin: 5px 0 10px;
+}
+.sim-hero-desc { font-size: 14px; color: #ccd6f4; max-width: 58ch; line-height: 1.6; }
+.sim-hero-stats {
+  display: flex; flex-wrap: wrap; row-gap: 4px; column-gap: 18px;
+  margin: 18px 0 20px;
+  font-family: 'DM Mono', monospace; font-size: 12.5px; color: #dbe3f7;
+}
+.sim-hero-stats strong { color: #fff; }
+.sim-hero .btn-sim-start {
+  background: #fff; color: var(--navy); border: 1px solid #fff;
+}
+.sim-hero .btn-sim-start:hover { background: #eef2fb; }
+
+.sim-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .3px;
+  color: var(--rule-blue); margin-bottom: 8px;
+}
+.sim-badge::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--rule-blue);
+}
+
 /* ══ QUESTION SESSION ═════════════════════════════════════════ */
 .session-head {
   display: flex;
@@ -470,6 +505,16 @@ a.btn, a.btn-ghost-panel, a.btn:visited, a.btn-ghost-panel:visited {
 }
 .version-banner strong { color: var(--on-page); }
 .version-banner a { color: var(--page-link); }
+.version-banner-stats {
+  display: inline-block;
+  font-family: 'DM Mono', monospace;
+  font-size: 11.5px;
+  color: var(--on-page);
+  background: var(--page-panel-inset);
+  border-radius: 6px;
+  padding: 3px 8px;
+  margin: 4px 0;
+}
 
 .hub-journey { margin: 0 0 32px; }
 .hub-journey-label {

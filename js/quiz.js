@@ -31,7 +31,7 @@ const INCORRECT_MSGS = [
 let progress = loadProgress();
 let state = null; // { mode, questions, idx, correct, incorrect, startedAt, results }
 
-const MODE_LABEL = { quick: 'Quick Practice', standard: 'Standard Practice', intensive: 'Intensive Practice', full: 'Full Practice', daily: 'Daily Practice', missed: 'Missed Questions' };
+const MODE_LABEL = { quick: 'Quick Practice', standard: 'Standard Practice', intensive: 'Intensive Practice', full: 'Full Practice', daily: 'Daily Practice', missed: 'Missed Questions', simulation: 'Test Simulation' };
 
 function showView(name) {
   ['modes', 'session', 'results'].forEach(v => {
@@ -50,6 +50,8 @@ function daysAgoLabel(dateStr) {
 }
 
 function renderModes() {
+  $('simBankCount').textContent = CIVICS_QUESTIONS.length;
+
   const counts = masteryCounts(progress);
   const missedCard = $('mode-missed');
   const missedDisabled = counts.missed === 0;
@@ -74,6 +76,14 @@ function startQuiz(mode) {
   renderQuestion();
 }
 
+function startSimulation() {
+  const questions = pickSimulationSet();
+  if (!questions.length) return;
+  state = { mode: 'simulation', questions, idx: 0, correct: 0, incorrect: 0, startedAt: Date.now(), results: [] };
+  showView('session');
+  renderQuestion();
+}
+
 function startCustomSet(questions, label) {
   if (!questions.length) return;
   state = { mode: label, questions: shuffle(questions), idx: 0, correct: 0, incorrect: 0, startedAt: Date.now(), results: [] };
@@ -83,11 +93,18 @@ function startCustomSet(questions, label) {
 
 function updateSessionHead() {
   $('qNum').textContent = state.idx + 1;
-  $('qTotal').textContent = state.questions.length;
-  $('scoreCorrect').textContent = state.correct;
-  $('scoreIncorrect').textContent = state.incorrect;
-  const pct = Math.round((state.idx / state.questions.length) * 100);
-  $('progressFill').style.width = pct + '%';
+  if (state.mode === 'simulation') {
+    $('qTotal').textContent = TEST_MAX_QUESTIONS;
+    $('scoreLabel').innerHTML = `<span class="n-correct" id="scoreCorrect">${state.correct}</span> / ${TEST_PASSING_THRESHOLD} correct`;
+    const pct = Math.round((state.idx / TEST_MAX_QUESTIONS) * 100);
+    $('progressFill').style.width = pct + '%';
+  } else {
+    $('qTotal').textContent = state.questions.length;
+    $('scoreLabel').innerHTML = `<span class="n-correct" id="scoreCorrect">${state.correct}</span> correct ·
+      <span class="n-incorrect" id="scoreIncorrect">${state.incorrect}</span> incorrect`;
+    const pct = Math.round((state.idx / state.questions.length) * 100);
+    $('progressFill').style.width = pct + '%';
+  }
 }
 
 let currentChoiceSet = null;
@@ -95,6 +112,7 @@ let currentChoiceSet = null;
 function renderQuestion() {
   const q = state.questions[state.idx];
   currentChoiceSet = buildChoices(q);
+  $('simBadge').style.display = state.mode === 'simulation' ? '' : 'none';
   updateSessionHead();
 
   const badgeClass = CAT_BADGE[q.category] || 'badge-gray';
@@ -192,22 +210,35 @@ function gradeAnswer(q, chosenTexts, box) {
   fb.innerHTML = html;
 
   $('nextBtn').style.display = '';
-  $('nextBtn').textContent = state.idx + 1 >= state.questions.length ? 'See results' : 'Next question';
+  $('nextBtn').textContent = sessionEndsAfter(state.idx + 1) ? 'See results' : 'Next question';
   $('nextBtn').focus();
   updateSessionHead();
 }
 
+// True once `asked` questions means there's nothing left to ask: either the
+// set is exhausted, or (Test Simulation only) 12 correct has been reached
+// or is no longer reachable within 20 questions.
+function sessionEndsAfter(asked) {
+  if (state.mode === 'simulation') return simulationOutcome(state.correct, asked) !== 'continue';
+  return asked >= state.questions.length;
+}
+
 function nextQuestion() {
   state.idx++;
-  if (state.idx >= state.questions.length) finishQuiz();
+  if (sessionEndsAfter(state.idx)) finishQuiz();
   else renderQuestion();
 }
 
 function finishQuiz() {
-  const total = state.questions.length;
-  const pct = Math.round((state.correct / total) * 100);
+  // state.idx has already been advanced past the last question answered,
+  // so it equals the count actually asked — the full set length for every
+  // ordinary mode, and possibly fewer than 20 for an early-stopped
+  // Test Simulation.
+  const total = state.idx;
+  const pct = total ? Math.round((state.correct / total) * 100) : 0;
   const durationSec = Math.round((Date.now() - state.startedAt) / 1000);
   const prevStreak = progress.streakCurrent;
+  const simOutcome = state.mode === 'simulation' ? simulationOutcome(state.correct, total) : null;
 
   recordSession(progress, {
     id: 'sess-' + Date.now(),
@@ -218,10 +249,11 @@ function finishQuiz() {
   });
 
   const streakMilestone = [3, 7, 14, 30, 60, 100].includes(progress.streakCurrent) && progress.streakCurrent !== prevStreak;
-  if (pct >= 90 || total >= 128 || streakMilestone) celebrate();
+  const worthCelebrating = simOutcome === 'reached' || (!simOutcome && pct >= 90) || total >= 128 || streakMilestone;
+  if (worthCelebrating) celebrate();
 
   showView('results');
-  renderResults(pct, total, durationSec, streakMilestone);
+  renderResults(pct, total, durationSec, streakMilestone, simOutcome);
 }
 
 function scoreMessage(pct) {
@@ -232,10 +264,18 @@ function scoreMessage(pct) {
   return "Early days. Everyone starts here, review the answers below and go again.";
 }
 
-function renderResults(pct, total, durationSec, streakMilestone) {
-  $('resultsScore').innerHTML = pct + '<span class="pct-sign">%</span>';
-  $('resultsLabel').textContent = `${state.correct} of ${total} correct, ${MODE_LABEL[state.mode] || 'Practice'}`;
-  $('resultsMessage').textContent = scoreMessage(pct);
+function renderResults(pct, total, durationSec, streakMilestone, simOutcome) {
+  if (simOutcome) {
+    $('resultsScore').innerHTML = state.correct + '<span class="pct-sign">/' + TEST_PASSING_THRESHOLD + '</span>';
+    $('resultsLabel').textContent = `${total} question${total === 1 ? '' : 's'} asked, Test Simulation`;
+    $('resultsMessage').textContent = simOutcome === 'reached'
+      ? `You reached ${TEST_PASSING_THRESHOLD} correct answers. Practice passing threshold reached.`
+      : `You answered ${state.correct} correctly. You need at least ${TEST_PASSING_THRESHOLD} correct answers on the 2025 civics test.`;
+  } else {
+    $('resultsScore').innerHTML = pct + '<span class="pct-sign">%</span>';
+    $('resultsLabel').textContent = `${state.correct} of ${total} correct, ${MODE_LABEL[state.mode] || 'Practice'}`;
+    $('resultsMessage').textContent = scoreMessage(pct);
+  }
 
   const mins = Math.floor(durationSec / 60), secs = durationSec % 60;
   $('resultsStats').innerHTML = `
@@ -249,7 +289,11 @@ function renderResults(pct, total, durationSec, streakMilestone) {
   const missed = state.results.filter(r => !r.wasCorrect);
   const practiceMissedBtn = $('practiceMissedBtn');
   practiceMissedBtn.style.display = missed.length ? '' : 'none';
-  practiceMissedBtn.textContent = `Practice ${missed.length} missed question${missed.length === 1 ? '' : 's'}`;
+  const simFellShort = simOutcome && simOutcome !== 'reached';
+  practiceMissedBtn.className = simFellShort ? 'btn btn-analyze' : 'btn-ghost-panel';
+  practiceMissedBtn.textContent = simFellShort
+    ? `Practice Your Missed Questions (${missed.length})`
+    : `Practice ${missed.length} missed question${missed.length === 1 ? '' : 's'}`;
   practiceMissedBtn.onclick = () => startCustomSet(missed.map(m => m.q), 'missed-review');
 
   const reviewSection = $('reviewSection');
@@ -294,6 +338,7 @@ window.addEventListener('DOMContentLoaded', () => {
       startQuiz(btn.dataset.mode);
     });
   });
+  $('mode-simulation').addEventListener('click', startSimulation);
 
   $('nextBtn').addEventListener('click', nextQuestion);
   $('exitSessionBtn').addEventListener('click', () => { state = null; renderModes(); showView('modes'); });
@@ -305,10 +350,13 @@ window.addEventListener('DOMContentLoaded', () => {
     btn.innerHTML = (on ? ICONS.bookmarkFill : ICONS.bookmark) + '<span>' + (on ? 'Saved' : 'Save') + '</span>';
   });
 
-  $('tryAgainBtn').addEventListener('click', () => startQuiz(state.mode in MODE_LABEL ? state.mode : 'quick'));
+  $('tryAgainBtn').addEventListener('click', () => {
+    if (state.mode === 'simulation') startSimulation();
+    else startQuiz(state.mode in MODE_LABEL ? state.mode : 'quick');
+  });
   $('backToModesBtn').addEventListener('click', () => { renderModes(); showView('modes'); });
   $('shareBtn').addEventListener('click', () => {
-    const total = state.questions.length;
-    shareResults(Math.round((state.correct / total) * 100), total);
+    const total = state.idx;
+    shareResults(total ? Math.round((state.correct / total) * 100) : 0, total);
   });
 });

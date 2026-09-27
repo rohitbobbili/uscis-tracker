@@ -27,8 +27,8 @@
   <meta name="twitter:title" content="Case Journey — Track Your N-400 Status | N-400 Journey" />
   <meta name="twitter:description" content="Paste the case JSON from your own USCIS account to see a plain-language event timeline, appointment dates and where things stand." />
   <meta name="twitter:image" content="https://rohitbobbili.github.io/uscis-tracker/og-image.png" />
-  <link rel="stylesheet" href="css/style.css?v=17" />
-  <link rel="stylesheet" href="css/civics.css?v=17" />
+  <link rel="stylesheet" href="css/style.css?v=18" />
+  <link rel="stylesheet" href="css/civics.css?v=18" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -201,72 +201,56 @@
         </div>
       </details>
 
-      <!-- About (collapsible) — who is behind this, and on what authority -->
+      <!-- About & Important (collapsible) — one section, not two -->
       <details class="api-guide" id="about">
         <summary>
-          <h2 class="api-guide-title">🗽 About This Tool</h2>
+          <h2 class="api-guide-title">🗽 About N-400 Journey</h2>
           <span class="guide-toggle"></span>
         </summary>
         <div class="api-guide-body">
-          <p>I built this while trying to make sense of my own USCIS case record — the data your account
-            returns is accurate but unreadable, and I wanted to see it as a timeline instead of a wall of JSON.
-            It is a personal project maintained by one person
+          <p>N-400 Journey is a personal project by one person
             (<a href="https://github.com/rohitbobbili" target="_blank" rel="noopener noreferrer">rohitbobbili</a>),
-            not a company, and there is no organisation behind it.</p>
+            not a company — a free companion for people navigating their own N-400 naturalization case. It has
+            two independent tools.</p>
 
-          <p><strong>What I am not:</strong> I am not an immigration attorney, a DOJ-accredited representative,
-            or a USCIS employee, and nothing here is legal advice. This page does one narrow thing — it reformats
-            data you already have. It cannot look anything up, predict a decision, or tell you what to do about
-            your case. For that, talk to someone qualified.</p>
-
-          <p><strong>Where the information comes from:</strong> event-code names follow the publicly published
+          <p><strong>Case Journey</strong> reformats the case JSON your own USCIS account already gives you into
+            a plain-language event timeline. It can't look anything up or predict a decision — it only
+            reorganizes data you already have. Event-code names follow the publicly published
             <a href="https://niem.github.io/model/5.0/scr/BenefitDocumentStatusCategoryCodeSimpleType/" target="_blank" rel="noopener noreferrer">NIEM
-            v5.0 code list</a>; the plain-language explanations are my own reading of those codes and are not
-            official USCIS definitions. Your case data comes from your own account at
-            <a href="https://my.uscis.gov/" target="_blank" rel="noopener noreferrer">my.uscis.gov</a>. The
-            authority on your case is always
-            <a href="https://www.uscis.gov/" target="_blank" rel="noopener noreferrer">USCIS itself</a> — if this
-            page and an official notice disagree, the notice is right.</p>
+            v5.0 code list</a>; the plain-language explanations are my own reading of those codes, not official
+            USCIS definitions.</p>
 
-          <p><strong>How to check my work, or tell me I got it wrong:</strong> the entire source is public under
-            an MIT licence at
-            <a href="https://github.com/rohitbobbili/uscis-tracker" target="_blank" rel="noopener noreferrer">github.com/rohitbobbili/uscis-tracker</a>,
-            so you can read exactly what it does rather than trust a claim on a page. If an event code is
-            explained wrongly or something looks broken, please
+          <p><strong>Learning Journey</strong> is a practice quiz for the 2025 civics test's 128 official
+            questions, sourced from the
+            <a href="https://www.uscis.gov/sites/default/files/document/questions-and-answers/2025-Civics-Test-128-Questions-and-Answers.pdf" target="_blank" rel="noopener noreferrer">official
+            USCIS 2025 Civics Test PDF</a>, including a Test Simulation mode built to the real interview format
+            (up to 20 questions, 12 correct required).</p>
+
+          <p><strong>Both run entirely in your browser.</strong> There are no servers, no accounts, and no
+            analytics — case data and practice progress never leave your device. That isn't only a promise: the
+            page's Content-Security-Policy forbids outbound connections and form submissions, and your browser
+            enforces that whether the code behaves or not (view source to verify).</p>
+
+          <p>The entire source is public under an MIT licence at
+            <a href="https://github.com/rohitbobbili/uscis-tracker" target="_blank" rel="noopener noreferrer">github.com/rohitbobbili/uscis-tracker</a>.
+            If something looks wrong, please
             <a href="https://github.com/rohitbobbili/uscis-tracker/issues" target="_blank" rel="noopener noreferrer">open
-            an issue</a> — that is the fastest way to reach me, and corrections are welcome.</p>
+            an issue</a> — that's the fastest way to reach me.</p>
 
-          <p class="guide-note">Last reviewed <time datetime="2026-09-26">26 September 2026</time>. Event-code
-            coverage and wording are checked against the NIEM list when USCIS changes it; the date above is when
-            that was last done.</p>
-        </div>
-      </details>
+          <p class="guide-note">Last reviewed <time datetime="2026-09-27">27 September 2026</time>.</p>
 
-      <!-- Disclaimer (collapsible) -->
-      <details class="disclaimer">
-        <summary>
-          <h2 class="disclaimer-line">⚠ Disclaimer — Unofficial Tool</h2>
-          <span class="disclaimer-toggle"></span>
-        </summary>
-        <div class="disclaimer-body">
-          <p><strong>N-400 Journey is an independent study and case-organization tool and is not affiliated with
-            or endorsed by USCIS.</strong> For official information, always go to USCIS directly. Nobody at USCIS has
-            reviewed this tool or knows it exists. See <a href="#about">About This Tool</a> for who maintains it,
-            where the information comes from, and how to verify it.</p>
-          <p>Everything shown comes from the JSON you paste in. The event names and explanations are plain-language
-            readings of the public NIEM v5.0 code list — not official USCIS definitions. USCIS can change what a code
-            means, or use one in a way this page doesn't anticipate. The progress tracker, the grouping of repeated
-            entries, and flags such as "backdated entry" are this page's own inferences about your record, not
-            statements from USCIS. Please don't read a forecast into any of it: no arrangement of codes reliably
-            predicts a decision or how long one will take.</p>
-          <p>Your case data never leaves your device. There are no servers and no analytics; everything is computed in
-            your browser and nothing is stored, so closing the tab discards it. That isn't only a promise — the page's
-            Content-Security-Policy forbids outbound connections and form submissions, and your browser enforces that
-            whether the code behaves or not.</p>
-          <p>None of this is legal advice, and it comes with no warranty of any kind. If this page and an official
-            USCIS notice ever disagree, the notice is right. Immigration decisions turn on details a case record
-            doesn't capture, so for anything that actually matters, speak with a licensed immigration attorney or a
-            DOJ-accredited representative.</p>
+          <div class="about-important">
+            <h3>IMPORTANT</h3>
+            <p><strong>N-400 Journey is an independent tool and is not affiliated with, endorsed by, or operated
+              by USCIS.</strong> Nobody at USCIS has reviewed it or knows it exists. For official information
+              about your case or the naturalization process, always rely on
+              <a href="https://www.uscis.gov/" target="_blank" rel="noopener noreferrer">USCIS directly</a> — if
+              this page and an official notice ever disagree, the notice is right.</p>
+            <p>Nothing here is legal advice, and it comes with no warranty of any kind. No arrangement of
+              case-status codes reliably predicts a decision or how long one will take, and civics-test practice
+              doesn't guarantee a real-test result. For anything that actually matters, speak with a licensed
+              immigration attorney or a DOJ-accredited representative.</p>
+          </div>
         </div>
       </details>
 
@@ -274,13 +258,13 @@
 
     <!-- ══ FOOTER ════════════════════════════════════════════ -->
     <footer class="footer">
-      <div><a href="#about">About</a> · <a href="https://github.com/rohitbobbili/uscis-tracker" target="_blank" rel="noopener noreferrer">Source on GitHub</a> · Not affiliated with USCIS or DHS</div>
+      <div><a href="#about">About</a> · <a href="https://github.com/rohitbobbili/uscis-tracker" target="_blank" rel="noopener noreferrer">Source on GitHub</a> · Independent tool · Not affiliated with USCIS</div>
       <div>Event codes: <a href="https://niem.github.io/model/5.0/scr/BenefitDocumentStatusCategoryCodeSimpleType/"
           target="_blank" rel="noopener noreferrer">NIEM v5.0</a></div>
     </footer>
   </div>
 
-  <script src="js/main.js?v=17"></script>
+  <script src="js/main.js?v=18"></script>
 </body>
 
 </html>

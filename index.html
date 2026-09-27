@@ -7,7 +7,7 @@
   <!-- Browser-enforced privacy: no outbound connections, no form submissions.
        connect-src 'none' means this page is physically unable to transmit your data. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'" />
-  <title>N-400 Journey — Track Your Case. Prepare for Your Interview.</title>
+  <title>N-400 Journey — Check Your Case Status. Prepare for Your Interview.</title>
   <meta name="description" content="A free, unofficial companion for the N-400 naturalization process: an offline case-status timeline reader plus a 2025 civics test practice quiz. Runs entirely in your browser." />
   <link rel="icon"
     href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 38'><rect width='60' height='38' fill='%23f2f5fb'/><g fill='%23b22234'><rect y='0' width='60' height='2.9'/><rect y='5.8' width='60' height='2.9'/><rect y='11.6' width='60' height='2.9'/><rect y='17.4' width='60' height='2.9'/><rect y='23.2' width='60' height='2.9'/><rect y='29' width='60' height='2.9'/><rect y='34.8' width='60' height='2.9'/></g><rect width='25' height='20.3' fill='%233c3b6e'/></svg>" />
@@ -16,7 +16,7 @@
   <meta name="theme-color" content="#16223f" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="N-400 Journey" />
-  <meta property="og:title" content="N-400 Journey — Track Your Case. Prepare for Your Interview." />
+  <meta property="og:title" content="N-400 Journey — Check Your Case Status. Prepare for Your Interview." />
   <meta property="og:description" content="A free, unofficial companion for the N-400 naturalization process: an offline case-status timeline reader plus a 2025 civics test practice quiz." />
   <meta property="og:url" content="https://rohitbobbili.github.io/uscis-tracker/" />
   <meta property="og:image" content="https://rohitbobbili.github.io/uscis-tracker/og-image.png" />
@@ -24,11 +24,11 @@
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="N-400 Journey — an unofficial case tracker and civics test study companion" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="N-400 Journey — Track Your Case. Prepare for Your Interview." />
+  <meta name="twitter:title" content="N-400 Journey — Check Your Case Status. Prepare for Your Interview." />
   <meta name="twitter:description" content="A free, unofficial companion for the N-400 naturalization process: an offline case-status timeline reader plus a 2025 civics test practice quiz." />
   <meta name="twitter:image" content="https://rohitbobbili.github.io/uscis-tracker/og-image.png" />
-  <link rel="stylesheet" href="css/style.css?v=17" />
-  <link rel="stylesheet" href="css/civics.css?v=17" />
+  <link rel="stylesheet" href="css/style.css?v=18" />
+  <link rel="stylesheet" href="css/civics.css?v=18" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -116,16 +116,17 @@
     <main class="main civics-main wide" id="main">
 
       <div class="hub-hero">
-        <h1>Your N-400 Journey</h1>
-        <p class="hub-tagline">Track your case. Prepare for your interview.</p>
+        <h1>N-400 Journey</h1>
+        <p class="hub-tagline">Check your case status. Prepare for your interview.</p>
       </div>
 
       <div class="version-banner">
         <span aria-hidden="true">ℹ️</span>
-        <span><strong>Taking the 2025 civics test?</strong> For Form N-400 applications filed on or after
-          <strong>October 20, 2025</strong>, USCIS asks up to 20 questions from an updated 128-question bank and
-          requires 12 correct answers to pass. The <a href="quiz.html">Learning Journey</a> below is built around
-          this current test — see the
+        <span><strong>For applicants who filed Form N-400 on or after October 20, 2025:</strong> USCIS now asks
+          up to 20 questions from an updated 128-question bank and requires 12 correct answers to pass. The
+          <a href="quiz.html">Learning Journey</a> below is built around this current test.
+          <span class="version-banner-stats">2025 Civics Test · 128 questions · Up to 20 asked · 12 correct required</span>
+          — see the
           <a href="https://www.uscis.gov/sites/default/files/document/questions-and-answers/2025-Civics-Test-128-Questions-and-Answers.pdf" target="_blank" rel="noopener noreferrer">official USCIS question list</a>.</span>
       </div>
 
@@ -149,7 +150,7 @@
       <div class="pillar-grid">
         <div class="pillar-card">
           <div class="pillar-card-eyebrow">CASE JOURNEY</div>
-          <div class="pillar-card-title">Where your case stands</div>
+          <div class="pillar-card-title">Follow your N-400 application</div>
           <p class="pillar-card-desc">Paste the case JSON from your own USCIS account to see a plain-language
             event timeline, appointment dates, and where things stand right now — nothing is saved between
             visits.</p>
@@ -158,9 +159,9 @@
 
         <div class="pillar-card learning">
           <div class="pillar-card-eyebrow">LEARNING JOURNEY</div>
-          <div class="pillar-card-title">Ready for the interview</div>
-          <p class="pillar-card-desc" id="learningDesc">Practice the 128 official 2025 civics questions, study the
-            full answer key, and track your progress toward the interview — all saved on this device only.</p>
+          <div class="pillar-card-title">Prepare for the 2025 Civics Test</div>
+          <p class="pillar-card-desc" id="learningDesc">Take a realistic Test Simulation, study the full answer
+            key, and track your progress toward the interview — all saved on this device only.</p>
           <div class="pillar-card-stats" id="learningStats" style="display:none">
             <div><div class="pillar-stat-val" id="statAnswered">0</div><div class="pillar-stat-lbl">Practiced</div></div>
             <div><div class="pillar-stat-val" id="statAccuracy">0%</div><div class="pillar-stat-lbl">Accuracy</div></div>
@@ -171,27 +172,27 @@
       </div>
 
       <div class="disclaimer-strip">
-        N-400 Journey is an independent study and case-organization tool and is not affiliated with or endorsed
-        by USCIS. For official information, always go to <a href="https://www.uscis.gov/" target="_blank"
-          rel="noopener noreferrer">USCIS directly</a>. See <a href="case.html#about">About This Tool</a> for
-        who maintains it and how the case timeline and civics content are sourced.
+        N-400 Journey is an independent tool and is not affiliated with, endorsed by, or operated by USCIS. For
+        official case and naturalization information, always rely on
+        <a href="https://www.uscis.gov/" target="_blank" rel="noopener noreferrer">USCIS directly</a>. See
+        <a href="case.html#about">About N-400 Journey</a> for details.
       </div>
 
     </main>
 
     <!-- ══ FOOTER ════════════════════════════════════════════ -->
     <footer class="footer">
-      <div><a href="case.html#about">About</a> · <a href="https://github.com/rohitbobbili/uscis-tracker" target="_blank" rel="noopener noreferrer">Source on GitHub</a> · Not affiliated with USCIS or DHS</div>
+      <div><a href="case.html#about">About</a> · <a href="https://github.com/rohitbobbili/uscis-tracker" target="_blank" rel="noopener noreferrer">Source on GitHub</a> · Independent tool · Not affiliated with USCIS</div>
       <div>2025 Civics Test · <a href="https://www.uscis.gov/sites/default/files/document/questions-and-answers/2025-Civics-Test-128-Questions-and-Answers.pdf"
           target="_blank" rel="noopener noreferrer">Official USCIS source</a></div>
     </footer>
   </div>
 
-  <script src="data/current-officials.js?v=17"></script>
-  <script src="data/questions.js?v=17"></script>
-  <script src="data/distractors.js?v=17"></script>
-  <script src="js/civics-shared.js?v=17"></script>
-  <script src="js/hub.js?v=17"></script>
+  <script src="data/current-officials.js?v=18"></script>
+  <script src="data/questions.js?v=18"></script>
+  <script src="data/distractors.js?v=18"></script>
+  <script src="js/civics-shared.js?v=18"></script>
+  <script src="js/hub.js?v=18"></script>
 </body>
 
 </html>

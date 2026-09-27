@@ -186,7 +186,7 @@ a { color: var(--blue); }
 .site-nav a svg { width: 15px; height: 15px; flex-shrink: 0; }
 
 /* Panel titles are real headings now; keep them looking identical. */
-h2.api-guide-title, h2.disclaimer-line { margin: 0; font-weight: inherit; }
+h2.api-guide-title { margin: 0; font-weight: inherit; }
 
 .visually-hidden {
   position: absolute;
@@ -515,6 +515,28 @@ textarea#jsonInput:focus { border-color: var(--navy); }
 
 .guide-note { margin-top: 9px; font-size: 11px; color: var(--on-page-muted); opacity: .85; line-height: 1.6; }
 
+/* The "Important" subsection inside the merged About section — visually
+   separated from the general About copy without duplicating a whole
+   second disclaimer block elsewhere on the site. */
+.about-important {
+  margin-top: 16px;
+  padding: 14px 16px;
+  background: var(--red-flag-dim);
+  border: 1px solid rgba(178, 34, 52, .3);
+  border-radius: 10px;
+}
+.about-important h3 {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .4px;
+  color: var(--page-accent);
+  margin: 0 0 8px;
+}
+.about-important p { font-size: 12.5px; color: var(--on-page-muted); margin-bottom: 8px; line-height: 1.6; }
+.about-important p:last-child { margin-bottom: 0; }
+.about-important strong { color: var(--on-page); }
+
 .tz-note {
   margin-top: 10px;
   font-size: 11.5px;
@@ -826,53 +848,7 @@ textarea#jsonInput:focus { border-color: var(--navy); }
 .ok-line { color: var(--green); }
 .code-chip { font-size: 12px; color: var(--navy); }
 
-/* ══ DISCLAIMER / FOOTER ══════════════════════════════════ */
-.disclaimer {
-  margin-top: 14px;
-  background: var(--page-panel);
-  border: 1px solid var(--page-border);
-  border-left: 3px solid var(--red-flag);
-  border-radius: 10px;
-  padding: 14px 18px;
-  font-size: 12px;
-  color: var(--on-page-muted);
-  line-height: 1.7;
-}
-
-.disclaimer summary {
-  cursor: pointer;
-  list-style: none;
-  min-height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  flex-wrap: wrap;
-}
-
-.disclaimer summary::-webkit-details-marker { display: none; }
-
-.disclaimer-line {
-  font-family: 'DM Mono', monospace;
-  font-size: 12px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--page-accent);
-}
-
-.disclaimer-toggle {
-  font-size: 11.5px;
-  font-weight: 600;
-  color: var(--page-link);
-  white-space: nowrap;
-}
-
-.disclaimer-toggle::after { content: 'Read full disclaimer ▾'; }
-.disclaimer[open] .disclaimer-toggle::after { content: 'Hide ▴'; }
-
-.disclaimer-body { margin-top: 12px; border-top: 1px dashed var(--page-border); padding-top: 12px; }
-.disclaimer-body p { margin-bottom: 8px; }
-
+/* ══ FOOTER ═══════════════════════════════════════════════ */
 .footer {
   border-top: 1px solid var(--page-border);
   padding: 18px 24px 26px;
@@ -889,7 +865,7 @@ textarea#jsonInput:focus { border-color: var(--navy); }
 }
 
 .footer a { color: var(--page-link); }
-.api-guide a, .disclaimer a { color: var(--page-link); }
+.api-guide a { color: var(--page-link); }
 
 /* ══ RESPONSIVE ═══════════════════════════════════════════ */
 @media (max-width: 700px) {
@@ -930,8 +906,7 @@ textarea#jsonInput:focus { border-color: var(--navy); }
 
   /* On paper the dark page furniture has to flip back to ink on white */
   .sec-heading, .tl-date-main, .tl-terminus .label, .api-guide-title { color: #1c2a52; }
-  .sec-note, .tz-note, .tl-date-time, .disclaimer { color: #444d63; }
-  .disclaimer { background: #fff; border-color: #c7d3e6; }
+  .sec-note, .tz-note, .tl-date-time { color: #444d63; }
   .tl-line { background: #d3dded; }
   .statue-mark, .input-section, .api-guide, .footer { display: none; }
 
@@ -944,7 +919,7 @@ textarea#jsonInput:focus { border-color: var(--navy); }
   .hdr-word, .hdr-brand { color: #1c2a52; }
   .unofficial-chip { color: #b22234; background: none; border-color: #b22234; }
 
-  .card, .summary-card, .tl-content, .disclaimer {
+  .card, .summary-card, .tl-content {
     background: #fff;
     box-shadow: none;
     break-inside: avoid;
@@ -952,7 +927,6 @@ textarea#jsonInput:focus { border-color: var(--navy); }
 
   .card-title { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .timeline-item { break-inside: avoid; }
-  .disclaimer[open] .disclaimer-body, .disclaimer-body { display: block; }
-  .disclaimer-toggle, .guide-toggle { display: none; }
+  .guide-toggle { display: none; }
   .main { padding-top: 12px; }
 }

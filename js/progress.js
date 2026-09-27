@@ -9,15 +9,22 @@ function fmtDate(iso) {
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
+function lastSimulationLabel() {
+  const last = [...progress.sessions].reverse().find(s => s.mode === 'simulation');
+  return last ? `${last.correct}/${TEST_PASSING_THRESHOLD}` : '—';
+}
+
 function renderStats() {
   const counts = masteryCounts(progress);
   const accuracy = progress.totalAnswered ? Math.round((progress.totalCorrect / progress.totalAnswered) * 100) : 0;
 
   $('statRow').innerHTML = `
-    <div class="stat-tile"><div class="stat-tile-icon">${ICONS.layers}</div><div class="stat-tile-val">${progress.totalAnswered}</div><div class="stat-tile-lbl">Questions answered</div></div>
+    <div class="stat-tile"><div class="stat-tile-icon">${ICONS.layers}</div><div class="stat-tile-val">${progress.totalAnswered}</div><div class="stat-tile-lbl">Questions practiced</div></div>
+    <div class="stat-tile"><div class="stat-tile-icon">${ICONS.trophy}</div><div class="stat-tile-val">${counts.mastered}/${GRADED_QUESTIONS.length}</div><div class="stat-tile-lbl">Mastered</div></div>
     <div class="stat-tile"><div class="stat-tile-icon">${ICONS.target}</div><div class="stat-tile-val">${accuracy}%</div><div class="stat-tile-lbl">Overall accuracy</div></div>
     <div class="stat-tile streak"><div class="stat-tile-icon">${ICONS.flame}</div><div class="stat-tile-val">${progress.streakCurrent}</div><div class="stat-tile-lbl">Day streak</div></div>
-    <div class="stat-tile"><div class="stat-tile-icon">${ICONS.trophy}</div><div class="stat-tile-val">${counts.mastered}/${GRADED_QUESTIONS.length}</div><div class="stat-tile-lbl">Mastered</div></div>`;
+    <div class="stat-tile"><div class="stat-tile-icon">${ICONS.chart}</div><div class="stat-tile-val">${lastSimulationLabel()}</div><div class="stat-tile-lbl">Last Test Simulation</div></div>
+    <div class="stat-tile"><div class="stat-tile-icon">${ICONS.refresh}</div><div class="stat-tile-val">${counts.missed}</div><div class="stat-tile-lbl">Needs review</div></div>`;
 }
 
 function renderMasteryBar() {
@@ -61,12 +68,15 @@ function renderSessions() {
     return;
   }
   $('sessionHistorySection').style.display = '';
-  const modeName = { quick: 'Quick Practice', standard: 'Standard Practice', intensive: 'Intensive Practice', full: 'Full Practice', daily: 'Daily Practice', missed: 'Missed Questions', 'missed-review': 'Missed review', selected: 'Selected questions' };
+  const modeName = { quick: 'Quick Practice', standard: 'Standard Practice', intensive: 'Intensive Practice', full: 'Full Practice', daily: 'Daily Practice', missed: 'Missed Questions', 'missed-review': 'Missed review', selected: 'Selected questions', simulation: 'Test Simulation' };
   $('sessionHistory').innerHTML = recent.map(s => {
-    const pct = Math.round((s.correct / s.total) * 100);
+    const pct = s.total ? Math.round((s.correct / s.total) * 100) : 0;
+    const isSim = s.mode === 'simulation';
+    const passed = isSim ? s.correct >= TEST_PASSING_THRESHOLD : pct >= 80;
+    const scoreText = isSim ? `${s.correct}/${TEST_PASSING_THRESHOLD} · ${s.total} asked` : `${s.correct}/${s.total} · ${pct}%`;
     return `<div class="session-row">
       <div><div class="session-row-mode">${esc(modeName[s.mode] || s.mode)}</div><div class="session-row-when">${fmtDate(s.finishedAt)}</div></div>
-      <div class="session-row-score ${pct >= 80 ? 'pass' : 'fail'}">${s.correct}/${s.total} · ${pct}%</div>
+      <div class="session-row-score ${passed ? 'pass' : 'fail'}">${scoreText}</div>
     </div>`;
   }).join('');
 }

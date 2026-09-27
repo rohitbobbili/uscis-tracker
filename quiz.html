@@ -24,8 +24,8 @@
   <meta name="twitter:title" content="Practice the 2025 Civics Test — N-400 Journey" />
   <meta name="twitter:description" content="Take a realistic Test Simulation (up to 20 questions, 12 correct to reach the practice threshold) or flexible Practice Mode, built on the official 2025 USCIS 128-question civics test." />
   <meta name="twitter:image" content="https://rohitbobbili.github.io/uscis-tracker/og-image.png" />
-  <link rel="stylesheet" href="css/style.css?v=17" />
-  <link rel="stylesheet" href="css/civics.css?v=17" />
+  <link rel="stylesheet" href="css/style.css?v=18" />
+  <link rel="stylesheet" href="css/civics.css?v=18" />
 </head>
 
 <body>
@@ -91,10 +91,26 @@
       <section id="view-modes">
         <div class="page-intro">
           <h1>Civics Practice</h1>
-          <p>Practice the 128 official USCIS naturalization civics questions. Pick a session length, or let today's
-            practice focus on what needs the most work.</p>
+          <p>For applicants who filed Form N-400 on or after October 20, 2025. Take a realistic Test Simulation,
+            or pick a shorter practice session below.</p>
         </div>
 
+        <div class="sim-hero">
+          <div class="sim-hero-eyebrow">PRIMARY PRACTICE MODE</div>
+          <h2 class="sim-hero-title">2025 Civics Test Simulation</h2>
+          <p class="sim-hero-desc">Randomly drawn questions in the real interview format: the test stops as soon
+            as you reach 12 correct, or as soon as 12 is no longer possible within 20 questions.</p>
+          <div class="sim-hero-stats">
+            <span><strong id="simBankCount">128</strong> questions in the study bank</span>
+            <span>·</span>
+            <span>Up to <strong>20</strong> questions</span>
+            <span>·</span>
+            <span><strong>12</strong> correct required</span>
+          </div>
+          <button type="button" class="btn btn-sim-start" data-mode="simulation" id="mode-simulation">Start Test Simulation →</button>
+        </div>
+
+        <div class="mode-section-label">Practice by session length</div>
         <div class="mode-grid">
           <button type="button" class="mode-card" data-mode="quick">
             <div class="mode-card-count">10</div>
@@ -145,9 +161,10 @@
 
       <!-- ══ LIVE SESSION ═════════════════════════════════════ -->
       <section id="view-session" style="display:none">
+        <div class="sim-badge" id="simBadge" style="display:none">2025 Civics Test Simulation — real interview format</div>
         <div class="session-head">
           <div class="session-count">Question <strong id="qNum">1</strong> of <strong id="qTotal">10</strong></div>
-          <div class="session-score">
+          <div class="session-score" id="scoreLabel">
             <span class="n-correct" id="scoreCorrect">0</span> correct ·
             <span class="n-incorrect" id="scoreIncorrect">0</span> incorrect
           </div>
@@ -210,18 +227,18 @@
 
     <!-- ══ FOOTER ════════════════════════════════════════════ -->
     <footer class="footer">
-      <div><a href="case.html#about">About</a> · <a href="https://github.com/rohitbobbili/uscis-tracker" target="_blank" rel="noopener noreferrer">Source on GitHub</a> · Not affiliated with USCIS or DHS</div>
+      <div><a href="case.html#about">About</a> · <a href="https://github.com/rohitbobbili/uscis-tracker" target="_blank" rel="noopener noreferrer">Source on GitHub</a> · Independent tool · Not affiliated with USCIS</div>
       <div>2025 Civics Test · <a href="https://www.uscis.gov/sites/default/files/document/questions-and-answers/2025-Civics-Test-128-Questions-and-Answers.pdf"
           target="_blank" rel="noopener noreferrer">Official USCIS source</a></div>
     </footer>
 
   </div>
 
-  <script src="data/current-officials.js?v=17"></script>
-  <script src="data/questions.js?v=17"></script>
-  <script src="data/distractors.js?v=17"></script>
-  <script src="js/civics-shared.js?v=17"></script>
-  <script src="js/quiz.js?v=17"></script>
+  <script src="data/current-officials.js?v=18"></script>
+  <script src="data/questions.js?v=18"></script>
+  <script src="data/distractors.js?v=18"></script>
+  <script src="js/civics-shared.js?v=18"></script>
+  <script src="js/quiz.js?v=18"></script>
 </body>
 
 </html>
