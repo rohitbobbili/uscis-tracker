@@ -406,3 +406,115 @@ a.btn, a.btn-ghost-panel, a.btn:visited, a.btn-ghost-panel:visited {
   .session-actions { flex-direction: column; align-items: stretch; }
   .session-actions-right { margin-left: 0; }
 }
+
+/* ═════════════════════════════════════════════════════════════
+   MILESTONE PATH — the journey motif. A calm alternative to the
+   flag/star system: dots on a line, done / active / upcoming.
+   Used on the hub hero and the Test Simulation progress header.
+   ═════════════════════════════════════════════════════════════ */
+.milestone-path {
+  display: flex;
+  align-items: flex-start;
+  gap: 2px;
+}
+.milestone-path .ms-step { display: flex; flex-direction: column; align-items: center; flex: 1; min-width: 0; }
+.milestone-path .ms-dot {
+  width: 22px; height: 22px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid var(--ui-line); background: transparent; flex-shrink: 0;
+  font-size: 11px; color: var(--on-page-muted);
+}
+.milestone-path .ms-dot svg { width: 11px; height: 11px; stroke: #fff; opacity: 0; }
+.milestone-path .ms-step.done .ms-dot { background: var(--star-done); border-color: var(--star-done); }
+.milestone-path .ms-step.done .ms-dot svg { opacity: 1; }
+.milestone-path .ms-step.active .ms-dot { border-color: var(--gold-bright, #d4a843); color: var(--gold-bright, #d4a843); font-weight: 700; }
+.milestone-path .ms-line { flex: 1; height: 2px; background: var(--page-border); margin-top: 10px; }
+.milestone-path .ms-step.done + .ms-line, .milestone-path .ms-line.done { background: var(--star-done); }
+.milestone-path .ms-label {
+  font-size: 10.5px; color: var(--on-page-muted); text-align: center; margin-top: 6px;
+  line-height: 1.25; max-width: 70px;
+}
+.milestone-path .ms-step.active .ms-label { color: var(--on-page); font-weight: 600; }
+
+/* Compact row variant (Simulation header: no labels, just the line) */
+.milestone-path.compact { gap: 3px; }
+.milestone-path.compact .ms-step { flex: 0 0 auto; }
+.milestone-path.compact .ms-dot { width: 9px; height: 9px; border-width: 0; background: var(--page-panel-inset); }
+.milestone-path.compact .ms-step.done .ms-dot { background: var(--star-done); }
+.milestone-path.compact .ms-step.active .ms-dot { background: var(--red-flag); }
+.milestone-path.compact .ms-line { flex: 1 1 6px; height: 2px; margin-top: 0; align-self: center; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .milestone-path .ms-step.done .ms-dot { transition: background .25s ease, border-color .25s ease; }
+}
+
+/* ═════════════════════════════════════════════════════════════
+   HUB PAGE — index.html only. Hero, version banner, the two
+   pillar cards, and the compact disclaimer strip.
+   ═════════════════════════════════════════════════════════════ */
+.hub-hero { margin-bottom: 22px; }
+.hub-hero h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 34px;
+  color: var(--on-page);
+  margin-bottom: 8px;
+}
+.hub-tagline { color: var(--on-page-muted); font-size: 15.5px; max-width: 52ch; }
+
+.version-banner {
+  display: flex; align-items: flex-start; gap: 12px;
+  background: var(--page-panel); border: 1px solid var(--page-border);
+  border-left: 3px solid var(--rule-blue);
+  border-radius: 10px; padding: 14px 16px; margin: 20px 0 28px;
+  font-size: 13px; color: var(--on-page-muted); line-height: 1.55;
+}
+.version-banner strong { color: var(--on-page); }
+.version-banner a { color: var(--page-link); }
+
+.hub-journey { margin: 0 0 32px; }
+.hub-journey-label {
+  font-size: 11.5px; color: var(--on-page-muted); text-transform: none;
+  margin-bottom: 12px;
+}
+
+.pillar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.pillar-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-top: 4px solid var(--navy);
+  border-radius: 14px; padding: 22px 22px 20px;
+  display: flex; flex-direction: column;
+}
+.pillar-card.learning { border-top-color: var(--red-flag); }
+.pillar-card-eyebrow { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+.pillar-card-title {
+  font-family: 'DM Serif Display', serif; font-size: 21px; color: var(--navy);
+  margin: 4px 0 8px;
+}
+.pillar-card-desc { font-size: 13.5px; color: var(--text-muted); line-height: 1.55; flex: 1; }
+.pillar-card-stats {
+  display: flex; gap: 18px; margin: 16px 0 4px; padding-top: 14px;
+  border-top: 1px dashed var(--border);
+}
+.pillar-stat-val { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--navy); line-height: 1; }
+.pillar-card.learning .pillar-stat-val { color: var(--red-flag); }
+.pillar-stat-lbl { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+.pillar-card-cta {
+  margin-top: 16px; align-self: flex-start;
+}
+
+.disclaimer-strip {
+  background: var(--page-panel); border: 1px solid var(--page-border);
+  border-radius: 10px; padding: 14px 16px; margin-bottom: 32px;
+  font-size: 12.5px; color: var(--on-page-muted); line-height: 1.55;
+}
+.disclaimer-strip a { color: var(--page-link); }
+
+@media (max-width: 560px) {
+  .hub-hero h1 { font-size: 27px; }
+  .pillar-card-stats { flex-wrap: wrap; gap: 14px; }
+}

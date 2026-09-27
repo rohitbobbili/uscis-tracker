@@ -33,6 +33,24 @@ function announce(pageId, msg) {
 /* ═════════════════════════════════════════════════════════════
    QUESTION POOL — filtering and the distractor engine
    ═════════════════════════════════════════════════════════════ */
+/* ═════════════════════════════════════════════════════════════
+   Fill in the "who holds this office right now" questions from
+   CURRENT_OFFICIALS (data/current-officials.js) before anything
+   else reads CIVICS_QUESTIONS. This is the only place that reads
+   that file, so updating one office there is enough — nothing
+   else needs to change.
+   ═════════════════════════════════════════════════════════════ */
+(function hydrateDynamicQuestions() {
+  CIVICS_QUESTIONS.forEach(q => {
+    if (!q.dynamic || !q.officialKey) return;
+    const official = CURRENT_OFFICIALS[q.officialKey];
+    if (!official) return;
+    q.answers = q.dynamicField === 'party'
+      ? [official.party]
+      : [official.name, official.short].filter(Boolean);
+  });
+})();
+
 const GRADED_QUESTIONS = CIVICS_QUESTIONS.filter(q => !q.studyOnly);
 
 function shuffle(arr) {
@@ -49,8 +67,9 @@ function sample(arr, n) {
 }
 
 // Flat pool of every official answer, tagged with its source question and
-// category, so wrong choices are always real USCIS answers to some other
-// question rather than invented text.
+// category. Used only as a last-resort top-up when a curated distractor set
+// (data/distractors.js) runs short for a multi-select question — the primary
+// source of wrong choices is always the hand-written, question-specific set.
 const ANSWER_POOL = (() => {
   const pool = [];
   const seen = new Set();
@@ -67,46 +86,84 @@ const ANSWER_POOL = (() => {
   return pool;
 })();
 
-function distractorsFor(q, count, excludeTexts) {
-  const excl = new Set(excludeTexts.map(t => t.toLowerCase()));
-  const candidates = ANSWER_POOL.filter(a => a.qid !== q.id && !excl.has(a.text.toLowerCase()));
-  const sameCategory = candidates.filter(a => a.category === q.category);
-  const picked = [];
-  const pickedText = new Set();
-  const tryAdd = list => {
-    for (const a of shuffle(list)) {
-      if (picked.length >= count) break;
-      if (pickedText.has(a.text.toLowerCase())) continue;
-      pickedText.add(a.text.toLowerCase());
+function topUpFromAnswerPool(q, picked, excludeSet, count) {
+  const sameCategory = shuffle(ANSWER_POOL.filter(a => a.qid !== q.id && a.category === q.category));
+  const rest = shuffle(ANSWER_POOL.filter(a => a.qid !== q.id));
+  for (const list of [sameCategory, rest]) {
+    for (const a of list) {
+      if (picked.length >= count) return picked;
+      const key = a.text.toLowerCase();
+      if (excludeSet.has(key)) continue;
+      excludeSet.add(key);
       picked.push(a.text);
     }
-  };
-  tryAdd(sameCategory);
-  if (picked.length < count) tryAdd(candidates);
+  }
   return picked;
+}
+
+// Curated, question-specific wrong answers from data/distractors.js — every
+// set was hand-written for that exact question (see the file header there).
+function curatedDistractorsFor(q, count, excludeTexts) {
+  const excl = new Set(excludeTexts.map(t => t.toLowerCase()));
+  const pool = (QUESTION_DISTRACTORS[q.id] || []).map(cleanAnswer);
+  const picked = [];
+  shuffle(pool).forEach(text => {
+    if (picked.length >= count) return;
+    const key = text.toLowerCase();
+    if (excl.has(key)) return;
+    excl.add(key);
+    picked.push(text);
+  });
+  if (picked.length < count) topUpFromAnswerPool(q, picked, excl, count);
+  return picked;
+}
+
+// Dynamic officeholder questions (28/29/40/47, plus their study-only
+// duplicates 98/99) draw wrong choices from the other current officials in
+// CURRENT_OFFICIALS — exactly the "real recognizable federal officials, one
+// of them right" bar the quiz aims for, with no hardcoding per question.
+function dynamicDistractorsFor(q) {
+  if (q.dynamicField === 'party') {
+    const otherMajor = CURRENT_OFFICIALS[q.officialKey].party === 'Republican' ? 'Democratic' : 'Republican';
+    return [otherMajor, 'Independent', 'Libertarian'];
+  }
+  return Object.entries(CURRENT_OFFICIALS)
+    .filter(([key]) => key !== q.officialKey)
+    .map(([, official]) => official.name);
+}
+
+// The three "where you live" questions (Senator/Governor/state capital) have
+// no single correct answer, so a real example is rotated in as the "correct"
+// choice each time (see the on-question `note` for the caveat shown to the
+// learner) with other real examples from the same pool as wrong choices.
+function variesByStateChoices(q) {
+  const pool = shuffle((VARIES_BY_STATE_EXAMPLES[q.id] || []).slice());
+  const correct = pool[0];
+  const wrong = pool.slice(1, 4);
+  return { correct, wrong };
 }
 
 // Build the on-screen choice set for one question. Single-answer questions
 // ("Name one...") become 4-way multiple choice. Questions that officially
 // require more than one example ("Name two...", "Name three...") become a
-// checkbox set: the required number of correct answers mixed with plausible
-// wrong ones from the same category.
+// checkbox set: the required number of correct answers mixed with curated
+// wrong ones written specifically for that question.
 function buildChoices(q) {
+  if (q.variesByState) {
+    const { correct, wrong } = variesByStateChoices(q);
+    return { type: 'single', options: shuffle([correct, ...wrong]), correct: [correct] };
+  }
   if (q.needCount > 1) {
     const correct = sample(q.answers.map(cleanAnswer), q.needCount);
     const wrongCount = Math.max(6 - correct.length, 2);
-    const wrong = distractorsFor(q, wrongCount, q.answers.map(cleanAnswer));
+    const wrong = curatedDistractorsFor(q, wrongCount, q.answers.map(cleanAnswer));
     return { type: 'multi', options: shuffle([...correct, ...wrong]), correct };
   }
   const correct = cleanAnswer(q.answers[0]);
-  const wrong = distractorsFor(q, 3, q.answers.map(cleanAnswer));
-  // pad if the answer pool ran short (only possible for tiny categories)
-  while (wrong.length < 3) {
-    const extra = sample(ANSWER_POOL, 1)[0];
-    if (extra && !wrong.includes(extra.text) && extra.text !== correct) wrong.push(extra.text);
-    else break;
-  }
-  return { type: 'single', options: shuffle([correct, ...wrong]), correct: [correct] };
+  const wrong = q.dynamic
+    ? dynamicDistractorsFor(q)
+    : curatedDistractorsFor(q, 3, q.answers.map(cleanAnswer));
+  return { type: 'single', options: shuffle([correct, ...wrong.slice(0, 3)]), correct: [correct] };
 }
 
 /* ═════════════════════════════════════════════════════════════
@@ -326,4 +383,38 @@ function consumePracticeRequest() {
     if (!Array.isArray(ids) || !ids.length) return null;
     return CIVICS_QUESTIONS.filter(q => ids.includes(q.id));
   } catch { return null; }
+}
+
+/* ═════════════════════════════════════════════════════════════
+   2025 CIVICS TEST — official parameters. Change these three
+   lines if USCIS revises the test format; nothing else in the
+   app hardcodes these numbers.
+   ═════════════════════════════════════════════════════════════ */
+const TEST_FILED_ON_OR_AFTER = 'October 20, 2025';
+const TEST_MAX_QUESTIONS = 20;
+const TEST_PASSING_THRESHOLD = 12;
+const USCIS_TEST_UPDATES_URL = 'https://www.uscis.gov/citizenship/testupdates';
+const USCIS_2025_TEST_PDF_URL = 'https://www.uscis.gov/sites/default/files/document/questions-and-answers/2025-Civics-Test-128-Questions-and-Answers.pdf';
+
+/* ═════════════════════════════════════════════════════════════
+   TEST SIMULATION — mirrors the real interview format: up to 20
+   questions, stop as soon as 12 correct is reached (or as soon as
+   12 is mathematically out of reach), no per-question grading UI.
+   ═════════════════════════════════════════════════════════════ */
+
+// Can the applicant still reach the passing threshold given what's left?
+function simulationStillWinnable(correct, asked) {
+  const remaining = TEST_MAX_QUESTIONS - asked;
+  return correct + remaining >= TEST_PASSING_THRESHOLD;
+}
+
+function simulationOutcome(correct, asked) {
+  if (correct >= TEST_PASSING_THRESHOLD) return 'reached';
+  if (asked >= TEST_MAX_QUESTIONS) return 'ended';
+  if (!simulationStillWinnable(correct, asked)) return 'unreachable';
+  return 'continue';
+}
+
+function pickSimulationSet() {
+  return shuffle(GRADED_QUESTIONS).slice(0, TEST_MAX_QUESTIONS);
 }

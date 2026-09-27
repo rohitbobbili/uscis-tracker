@@ -1,4 +1,4 @@
-# Unofficial USCIS Case Tracker — https://rohitbobbili.github.io/uscis-tracker/
+# N-400 Journey (unofficial) — https://rohitbobbili.github.io/uscis-tracker/
 User-agent: *
 Allow: /
 

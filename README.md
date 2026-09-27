@@ -1,9 +1,10 @@
-# USCIS Case Tracker (Unofficial)
+# N-400 Journey (Unofficial)
 
-A browser-only site for people navigating USCIS on their own. It has two
-independent tools:
+A browser-only companion for people navigating their N-400 naturalization
+case on their own: *"Track your case. Prepare for your interview."* It has
+two independent tools, joined by a hub page (`index.html`):
 
-**Case Tracker** (`index.html`) — paste the JSON from your own USCIS online
+**Case Journey** (`case.html`) — paste the JSON from your own USCIS online
 account and get:
 
 - an event timeline with plain-language explanations of NIEM v5.0 event codes
@@ -12,25 +13,32 @@ account and get:
 - warnings for backdated event entries
 - all timestamps converted from UTC to your local timezone
 
-**Civics Practice** (`quiz.html`, `study.html`, `progress.html`) — practice
-the 128 official USCIS naturalization civics questions:
+**Learning Journey** (`quiz.html`, `study.html`, `progress.html`) — practice
+the 128 official 2025 USCIS civics test questions (the question set that
+applies to Form N-400 applications filed on or after October 20, 2025):
 
 - Quick (10), Standard (20), Intensive (50) and Full (128) practice modes,
   plus a Daily Practice session and a Missed Questions round
 - immediate feedback per question, with the official answer shown on a miss
+- multiple-choice wrong answers are hand-curated per question (see
+  `data/distractors.js`) rather than sampled randomly, so they stay
+  genuinely plausible instead of guessable by elimination
 - **Study Mode**: browse, search and bookmark all 128 questions and answers
   as a plain reference, no grading
 - **My Progress**: accuracy, a practice streak, and per-category mastery,
   computed from local history — there is no server to compute it on
 
 Question content lives in `data/questions.js`, kept separate from the UI so a
-future USCIS update only touches one file. Four questions whose answer
-changes over time (current President, Vice President, party, Speaker of the
-House) are flagged in the quiz; two more that USCIS gives no fixed answer for
-at all (numbers 98 and 99 in the official list) appear in Study Mode only.
-Three questions are answered differently depending on where you live (your
-state's senator, governor, and capital) and are labeled as such rather than
-graded as a single fact.
+future USCIS update only touches one file. Five questions whose answer
+changes over time (current President, Vice President, Chief Justice, party,
+Speaker of the House) are flagged `dynamic: true` and hydrated at load time
+from `data/current-officials.js` — the one file to edit when an office
+changes hands — rather than hardcoded per question. Two more that USCIS
+gives no fixed answer for at all (numbers 98 and 99 in the official list)
+appear in Study Mode only. Three questions are answered differently
+depending on where you live (your state's senator, governor, and capital)
+and are labeled as such, with a rotating real example rather than a single
+graded fact.
 
 **Everything runs locally in your browser.** The page makes no network
 requests with your data; nothing is uploaded, logged, or stored. This is
@@ -48,7 +56,8 @@ on your device only, and the same policy above covers every page.
 ## Usage
 
 Open `index.html` (or serve the folder with any static file server) for the
-case tracker. Sign in to your USCIS account, open
+hub page, which links to both journeys. For the case tracker, open
+`case.html`, sign in to your USCIS account, open
 `https://my.uscis.gov/account/case-service/api/cases/<your-receipt-number>`
 in another tab, copy the JSON, paste it into the tracker, and click
 **Analyze Case**. A fake but realistic example lives in `sample-case.json`.

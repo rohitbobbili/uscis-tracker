@@ -1,10 +1,20 @@
 // USCIS 2025 Civics Test — 128 official questions and acceptable answers.
-// Source: USCIS 128-question civics test list (2025 version), transcribed verbatim.
-// This file is the single source of truth for question content; do not edit
-// question text or answers without checking uscis.gov/citizenship/testupdates.
+// Applies to N-400 applications filed on or after October 20, 2025. The
+// officer asks up to 20 of these during the interview; 12 correct passes
+// the civics portion. Source: the official USCIS 2025 Civics Test PDF,
+// transcribed verbatim. This file is the single source of truth for
+// question content; do not edit question text or answers without checking
+// uscis.gov/citizenship/testupdates.
+//
+// Five questions (28, 29, 40, 46, 47) ask about a currently-serving
+// official and carry `dynamic: true` instead of a hardcoded name — their
+// `answers` array is filled in at load time from data/current-officials.js,
+// which is the one file to edit when an office changes hands. See that
+// file's header for how.
 const QUESTION_SET_VERSION = '2025';
-const QUESTION_SET_SOURCE = 'https://www.uscis.gov/citizenship/find-study-materials-and-resources/study-for-the-test';
-const QUESTION_SET_UPDATED = '2026-09-26';
+const QUESTION_SET_SOURCE = 'https://www.uscis.gov/sites/default/files/document/questions-and-answers/2025-Civics-Test-128-Questions-and-Answers.pdf';
+const QUESTION_SET_FILED_ON_OR_AFTER = 'October 20, 2025';
+const QUESTION_SET_UPDATED = '2026-09-27';
 
 const CIVICS_QUESTIONS = [
   {
@@ -15,7 +25,8 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "The (U.S.) Constitution"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "document"
   },
   {
     "id": 2,
@@ -27,7 +38,8 @@ const CIVICS_QUESTIONS = [
       "Defines the government",
       "Protects basic rights of Americans"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 3,
@@ -37,7 +49,8 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "We the People"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 4,
@@ -51,7 +64,8 @@ const CIVICS_QUESTIONS = [
       "People should govern themselves",
       "(Example of) social contract"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 5,
@@ -62,7 +76,8 @@ const CIVICS_QUESTIONS = [
       "A change (to the Constitution)",
       "An addition (to the Constitution)"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 6,
@@ -72,7 +87,8 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "The Bill of Rights"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "document"
   },
   {
     "id": 7,
@@ -86,7 +102,8 @@ const CIVICS_QUESTIONS = [
       "Press",
       "Petition the government"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "right"
   },
   {
     "id": 8,
@@ -96,7 +113,8 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "Twenty-seven (27)"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "number"
   },
   {
     "id": 9,
@@ -108,7 +126,8 @@ const CIVICS_QUESTIONS = [
       "Declared our independence (from Great Britain)",
       "Said that the United States is free (from Great Britain)"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 10,
@@ -120,7 +139,8 @@ const CIVICS_QUESTIONS = [
       "Liberty",
       "Pursuit of happiness"
     ],
-    "needCount": 2
+    "needCount": 2,
+    "answerType": "right"
   },
   {
     "id": 11,
@@ -130,7 +150,8 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "You can practice any religion, or not practice a religion"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 12,
@@ -141,7 +162,8 @@ const CIVICS_QUESTIONS = [
       "Capitalist economy",
       "Market economy"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 13,
@@ -154,7 +176,8 @@ const CIVICS_QUESTIONS = [
       "Government must obey the law",
       "No one is above the law"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 14,
@@ -169,7 +192,8 @@ const CIVICS_QUESTIONS = [
       "The courts",
       "Judicial"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "government_branch"
   },
   {
     "id": 15,
@@ -180,7 +204,8 @@ const CIVICS_QUESTIONS = [
       "Checks and balances",
       "Separation of powers"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 16,
@@ -190,7 +215,8 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "The President"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "government_branch"
   },
   {
     "id": 17,
@@ -202,7 +228,8 @@ const CIVICS_QUESTIONS = [
       "Senate and House (of Representatives)",
       "(U.S. or national) legislature"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "government_branch"
   },
   {
     "id": 18,
@@ -212,7 +239,8 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "The Senate and House (of Representatives)"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 19,
@@ -222,7 +250,8 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "One hundred (100)"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "number"
   },
   {
     "id": 20,
@@ -232,7 +261,8 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "Six (6)"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "number"
   },
   {
     "id": 21,
@@ -243,7 +273,8 @@ const CIVICS_QUESTIONS = [
       "All people of the state",
       "People of their state"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 22,
@@ -255,7 +286,8 @@ const CIVICS_QUESTIONS = [
     ],
     "needCount": 1,
     "note": "District of Columbia residents and residents of U.S. territories should answer that D.C. (or the territory where the applicant lives) has no U.S. Senators.",
-    "variesByState": true
+    "variesByState": true,
+    "answerType": "person"
   },
   {
     "id": 23,
@@ -265,7 +297,8 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "Four hundred thirty-five (435)"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "number"
   },
   {
     "id": 24,
@@ -275,7 +308,8 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "Two (2)"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "number"
   },
   {
     "id": 25,
@@ -287,7 +321,8 @@ const CIVICS_QUESTIONS = [
       "(Because) they are elected by (the people of) the district they represent",
       "(Because) some states have more people"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 26,
@@ -297,7 +332,8 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "Four (4)"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "number"
   },
   {
     "id": 27,
@@ -307,53 +343,56 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "November"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "date"
   },
   {
     "id": 28,
     "category": "System of Government",
     "exempt65_20": false,
     "question": "What is the name of the President of the United States now?",
-    "answers": [
-      "Joe Biden",
-      "Biden"
-    ],
+    "answers": [],
     "needCount": 1,
-    "note": "NOTE: Check USCIS test updates for current answer",
-    "timeSensitive": true
+    "note": "This office is currently held by someone whose name can change with an election, resignation, or appointment. This app keeps that name in one place and verifies it against an official U.S. government source; it is not hardcoded per question. Confirm who holds the office at the time of your interview at uscis.gov/citizenship/testupdates.",
+    "timeSensitive": true,
+    "dynamic": true,
+    "officialKey": "president",
+    "answerType": "person"
   },
   {
     "id": 29,
     "category": "System of Government",
     "exempt65_20": false,
     "question": "What is the name of the Vice President of the United States now?",
-    "answers": [
-      "Kamala Harris",
-      "Harris"
-    ],
+    "answers": [],
     "needCount": 1,
-    "note": "NOTE: Check USCIS test updates for current answer",
-    "timeSensitive": true
+    "note": "This office is currently held by someone whose name can change with an election, resignation, or appointment. This app keeps that name in one place and verifies it against an official U.S. government source; it is not hardcoded per question. Confirm who holds the office at the time of your interview at uscis.gov/citizenship/testupdates.",
+    "timeSensitive": true,
+    "dynamic": true,
+    "officialKey": "vicePresident",
+    "answerType": "person"
   },
   {
     "id": 30,
     "category": "System of Government",
     "exempt65_20": false,
-    "question": "If the President can no longer serve",
+    "question": "If the President can no longer serve, who becomes President?",
     "answers": [
-      "who becomes President?"
+      "The Vice President"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "process"
   },
   {
     "id": 31,
     "category": "System of Government",
     "exempt65_20": false,
-    "question": "If both the President and the Vice President can no longer serve",
+    "question": "If both the President and the Vice President can no longer serve, who becomes President?",
     "answers": [
-      "who becomes President?"
+      "The Speaker of the House"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "process"
   },
   {
     "id": 32,
@@ -363,7 +402,8 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "The President"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "government_branch"
   },
   {
     "id": 33,
@@ -373,7 +413,8 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "The President"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "government_branch"
   },
   {
     "id": 34,
@@ -383,7 +424,8 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "The President"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "government_branch"
   },
   {
     "id": 35,
@@ -393,7 +435,8 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "Advises the President"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 36,
@@ -425,7 +468,8 @@ const CIVICS_QUESTIONS = [
       "Chair of the Council of Economic Advisers",
       "Director of the Office of Science and Technology Policy"
     ],
-    "needCount": 2
+    "needCount": 2,
+    "answerType": "institution"
   },
   {
     "id": 37,
@@ -438,7 +482,8 @@ const CIVICS_QUESTIONS = [
       "Resolves disputes (disagreements)",
       "Decides if a law goes against the Constitution"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 38,
@@ -448,7 +493,8 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "The Supreme Court"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "institution"
   },
   {
     "id": 39,
@@ -458,38 +504,50 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "Nine (9)"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "number"
   },
   {
     "id": 40,
     "category": "System of Government",
     "exempt65_20": false,
     "question": "Who is the Chief Justice of the United States now?",
-    "answers": [
-      "John Roberts",
-      "John G. Roberts, Jr."
-    ],
-    "needCount": 1
+    "answers": [],
+    "needCount": 1,
+    "dynamic": true,
+    "timeSensitive": true,
+    "note": "This office is currently held by someone whose name can change with an election, resignation, or appointment. This app keeps that name in one place and verifies it against an official U.S. government source; it is not hardcoded per question. Confirm who holds the office at the time of your interview at uscis.gov/citizenship/testupdates.",
+    "officialKey": "chiefJustice",
+    "answerType": "person"
   },
   {
     "id": 41,
     "category": "System of Government",
     "exempt65_20": false,
-    "question": "Under our Constitution",
+    "question": "Under our Constitution, some powers belong to the federal government. What is one power of the federal government?",
     "answers": [
-      "some powers belong to the federal government. What is one power of the federal government?"
+      "To print money",
+      "To declare war",
+      "To create an army",
+      "To make treaties"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 42,
     "category": "System of Government",
     "exempt65_20": false,
-    "question": "Under our Constitution",
+    "question": "Under our Constitution, some powers belong to the states. What is one power of the states?",
     "answers": [
-      "some powers belong to the states. What is one power of the states?"
+      "Provide schooling and education",
+      "Provide protection (police)",
+      "Provide safety (fire departments)",
+      "Give a driver's license",
+      "Approve zoning and land use"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 43,
@@ -501,7 +559,8 @@ const CIVICS_QUESTIONS = [
     ],
     "needCount": 1,
     "note": "District of Columbia residents should answer that D.C. does not have a Governor.",
-    "variesByState": true
+    "variesByState": true,
+    "answerType": "person"
   },
   {
     "id": 44,
@@ -513,7 +572,8 @@ const CIVICS_QUESTIONS = [
     ],
     "needCount": 1,
     "note": "District of Columbia residents should answer that D.C. is not a state and does not have a capital. Residents of U.S. territories should name the capital of the territory.",
-    "variesByState": true
+    "variesByState": true,
+    "answerType": "location"
   },
   {
     "id": 45,
@@ -523,31 +583,35 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "Democratic and Republican"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 46,
     "category": "System of Government",
     "exempt65_20": false,
     "question": "What is the political party of the President now?",
-    "answers": [
-      "Democratic (Party)"
-    ],
+    "answers": [],
     "needCount": 1,
-    "note": "NOTE: Check USCIS test updates for current answer",
-    "timeSensitive": true
+    "note": "This office is currently held by someone whose name can change with an election, resignation, or appointment. This app keeps that name in one place and verifies it against an official U.S. government source; it is not hardcoded per question. Confirm who holds the office at the time of your interview at uscis.gov/citizenship/testupdates.",
+    "timeSensitive": true,
+    "dynamic": true,
+    "officialKey": "president",
+    "dynamicField": "party",
+    "answerType": "party"
   },
   {
     "id": 47,
     "category": "System of Government",
     "exempt65_20": false,
     "question": "What is the name of the Speaker of the House of Representatives now?",
-    "answers": [
-      "Mike Johnson"
-    ],
+    "answers": [],
     "needCount": 1,
-    "note": "NOTE: Check USCIS test updates for current answer",
-    "timeSensitive": true
+    "note": "This office is currently held by someone whose name can change with an election, resignation, or appointment. This app keeps that name in one place and verifies it against an official U.S. government source; it is not hardcoded per question. Confirm who holds the office at the time of your interview at uscis.gov/citizenship/testupdates.",
+    "timeSensitive": true,
+    "dynamic": true,
+    "officialKey": "speakerOfHouse",
+    "answerType": "person"
   },
   {
     "id": 48,
@@ -559,7 +623,8 @@ const CIVICS_QUESTIONS = [
       "Vote in a federal election",
       "Run for federal office"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "responsibility"
   },
   {
     "id": 49,
@@ -572,7 +637,8 @@ const CIVICS_QUESTIONS = [
       "Any citizen can vote (women and men can vote)",
       "A male citizen of any race (can vote)"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 50,
@@ -583,7 +649,8 @@ const CIVICS_QUESTIONS = [
       "Vote in a federal election",
       "Run for federal office"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "right"
   },
   {
     "id": 51,
@@ -598,7 +665,8 @@ const CIVICS_QUESTIONS = [
       "Freedom of religion",
       "The right to bear arms"
     ],
-    "needCount": 2
+    "needCount": 2,
+    "answerType": "right"
   },
   {
     "id": 52,
@@ -609,7 +677,8 @@ const CIVICS_QUESTIONS = [
       "The United States",
       "The flag"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 53,
@@ -624,7 +693,8 @@ const CIVICS_QUESTIONS = [
       "Serve (do important work for) the nation (if needed)",
       "Be loyal to the United States"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 54,
@@ -634,7 +704,8 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "Eighteen (18) and older"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "number"
   },
   {
     "id": 55,
@@ -653,7 +724,8 @@ const CIVICS_QUESTIONS = [
       "Run for office",
       "Write to a newspaper"
     ],
-    "needCount": 2
+    "needCount": 2,
+    "answerType": "process"
   },
   {
     "id": 56,
@@ -663,7 +735,8 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "April 15"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "date"
   },
   {
     "id": 57,
@@ -674,7 +747,8 @@ const CIVICS_QUESTIONS = [
       "At age eighteen (18)",
       "Between eighteen (18) and twenty-six (26)"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "number"
   },
   {
     "id": 58,
@@ -689,7 +763,8 @@ const CIVICS_QUESTIONS = [
       "Practice their religion",
       "Escape persecution"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 59,
@@ -700,7 +775,8 @@ const CIVICS_QUESTIONS = [
       "American Indians",
       "Native Americans"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "historical_person"
   },
   {
     "id": 60,
@@ -711,7 +787,8 @@ const CIVICS_QUESTIONS = [
       "Africans",
       "People from Africa"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "historical_person"
   },
   {
     "id": 61,
@@ -723,7 +800,8 @@ const CIVICS_QUESTIONS = [
       "Because the British army stayed in their houses (boarding, quartering)",
       "Because they didn't have self-government"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 62,
@@ -733,7 +811,8 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "(Thomas) Jefferson"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "historical_person"
   },
   {
     "id": 63,
@@ -743,7 +822,8 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "July 4"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "date"
   },
   {
     "id": 64,
@@ -765,7 +845,8 @@ const CIVICS_QUESTIONS = [
       "South Carolina",
       "Georgia"
     ],
-    "needCount": 3
+    "needCount": 3,
+    "answerType": "location"
   },
   {
     "id": 65,
@@ -776,7 +857,8 @@ const CIVICS_QUESTIONS = [
       "The Constitution was written",
       "The Founding Fathers wrote the Constitution"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "event"
   },
   {
     "id": 66,
@@ -786,7 +868,8 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "1787"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "date"
   },
   {
     "id": 67,
@@ -799,7 +882,8 @@ const CIVICS_QUESTIONS = [
       "(John) Jay",
       "Publius"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "historical_person"
   },
   {
     "id": 68,
@@ -814,7 +898,8 @@ const CIVICS_QUESTIONS = [
       "Started the first free libraries",
       "Discovered electricity"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "historical_person"
   },
   {
     "id": 69,
@@ -824,7 +909,8 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "(George) Washington"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "historical_person"
   },
   {
     "id": 70,
@@ -834,7 +920,8 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "(George) Washington"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "historical_person"
   },
   {
     "id": 71,
@@ -845,7 +932,8 @@ const CIVICS_QUESTIONS = [
       "The Louisiana Territory",
       "Louisiana"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "location"
   },
   {
     "id": 72,
@@ -858,7 +946,8 @@ const CIVICS_QUESTIONS = [
       "Civil War",
       "Spanish-American War"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "event"
   },
   {
     "id": 73,
@@ -871,7 +960,8 @@ const CIVICS_QUESTIONS = [
       "(John) Jay",
       "Publius"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "historical_person"
   },
   {
     "id": 74,
@@ -882,7 +972,8 @@ const CIVICS_QUESTIONS = [
       "The Civil War",
       "The War between the States"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "event"
   },
   {
     "id": 75,
@@ -894,7 +985,8 @@ const CIVICS_QUESTIONS = [
       "Economic reasons",
       "States' rights"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 76,
@@ -906,7 +998,8 @@ const CIVICS_QUESTIONS = [
       "Saved (or preserved) the Union",
       "Led the United States during the Civil War"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "historical_person"
   },
   {
     "id": 77,
@@ -919,7 +1012,8 @@ const CIVICS_QUESTIONS = [
       "Freed slaves in the Confederate states",
       "Freed slaves in most Southern states"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 78,
@@ -930,7 +1024,8 @@ const CIVICS_QUESTIONS = [
       "Fought for women's rights",
       "Fought for civil rights"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "historical_person"
   },
   {
     "id": 79,
@@ -944,7 +1039,8 @@ const CIVICS_QUESTIONS = [
       "Vietnam War",
       "(Persian) Gulf War"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "event"
   },
   {
     "id": 80,
@@ -954,37 +1050,43 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "(Woodrow) Wilson"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "historical_person"
   },
   {
     "id": 81,
     "category": "Recent History",
     "exempt65_20": false,
-    "question": "The United States fought Japan",
+    "question": "Who did the United States fight in World War II?",
     "answers": [
-      "Germany"
+      "Japan",
+      "Germany",
+      "Italy"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "historical_person"
   },
   {
     "id": 82,
     "category": "Recent History",
     "exempt65_20": false,
-    "question": "Before he was President",
+    "question": "Before he was President, Eisenhower was a general. What war was he in?",
     "answers": [
-      "Eisenhower was a general. What war was he in?"
+      "World War II"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "event"
   },
   {
     "id": 83,
     "category": "Recent History",
     "exempt65_20": false,
-    "question": "During the Cold War",
+    "question": "During the Cold War, what was the main concern of the United States?",
     "answers": [
-      "what was the main concern of the United States?"
+      "Communism"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 84,
@@ -994,27 +1096,31 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "Civil rights (movement)"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "event"
   },
   {
     "id": 85,
     "category": "Recent History",
     "exempt65_20": false,
-    "question": "What did Martin Luther King",
+    "question": "What did Martin Luther King, Jr. do?",
     "answers": [
-      "Jr. do?"
+      "Fought for civil rights",
+      "Worked for equality for all Americans"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "historical_person"
   },
   {
     "id": 86,
     "category": "Recent History",
     "exempt65_20": false,
-    "question": "What major event happened on September 11",
+    "question": "What major event happened on September 11, 2001, in the United States?",
     "answers": [
-      "2001 in the United States?"
+      "Terrorists attacked the United States"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "event"
   },
   {
     "id": 87,
@@ -1028,7 +1134,8 @@ const CIVICS_QUESTIONS = [
       "Northern Mariana Islands",
       "Guam"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "location"
   },
   {
     "id": 88,
@@ -1050,7 +1157,8 @@ const CIVICS_QUESTIONS = [
       "Washington",
       "Alaska"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "location"
   },
   {
     "id": 89,
@@ -1063,7 +1171,8 @@ const CIVICS_QUESTIONS = [
       "New Mexico",
       "Texas"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "location"
   },
   {
     "id": 90,
@@ -1073,7 +1182,8 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "Washington, D.C."
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "location"
   },
   {
     "id": 91,
@@ -1085,7 +1195,8 @@ const CIVICS_QUESTIONS = [
       "Liberty Island"
     ],
     "needCount": 1,
-    "note": "Also acceptable: New Jersey; near New York City; on the Hudson (River)"
+    "note": "Also acceptable: New Jersey; near New York City; on the Hudson (River)",
+    "answerType": "location"
   },
   {
     "id": 92,
@@ -1096,7 +1207,8 @@ const CIVICS_QUESTIONS = [
       "Because there were 13 original colonies",
       "Because the stripes represent the original colonies"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 93,
@@ -1108,7 +1220,8 @@ const CIVICS_QUESTIONS = [
       "Because each star represents a state",
       "Because there are 50 states"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 94,
@@ -1118,7 +1231,8 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "The Star-Spangled Banner"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "document"
   },
   {
     "id": 95,
@@ -1128,7 +1242,8 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "July 4, 1776"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "date"
   },
   {
     "id": 96,
@@ -1138,7 +1253,8 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "Great Britain"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "location"
   },
   {
     "id": 97,
@@ -1158,7 +1274,8 @@ const CIVICS_QUESTIONS = [
       "Thanksgiving",
       "Christmas"
     ],
-    "needCount": 2
+    "needCount": 2,
+    "answerType": "event"
   },
   {
     "id": 98,
@@ -1168,7 +1285,8 @@ const CIVICS_QUESTIONS = [
     "answers": [],
     "needCount": 1,
     "note": "NOTE: Visit uscis.gov/citizenship/testupdates for current answer",
-    "studyOnly": true
+    "studyOnly": true,
+    "answerType": "person"
   },
   {
     "id": 99,
@@ -1178,7 +1296,8 @@ const CIVICS_QUESTIONS = [
     "answers": [],
     "needCount": 1,
     "note": "NOTE: Visit uscis.gov/citizenship/testupdates for current answer",
-    "studyOnly": true
+    "studyOnly": true,
+    "answerType": "person"
   },
   {
     "id": 100,
@@ -1188,7 +1307,8 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "(Franklin) Roosevelt"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "historical_person"
   },
   {
     "id": 101,
@@ -1200,7 +1320,8 @@ const CIVICS_QUESTIONS = [
       "Fought for equal rights for all Americans",
       "Fought to ensure the civil rights of all Americans"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 102,
@@ -1215,7 +1336,8 @@ const CIVICS_QUESTIONS = [
       "Vice President"
     ],
     "needCount": 2,
-    "note": "see full list in Q36"
+    "note": "see full list in Q36",
+    "answerType": "institution"
   },
   {
     "id": 103,
@@ -1226,7 +1348,8 @@ const CIVICS_QUESTIONS = [
       "(The Constitution prevents) the government from limiting basic rights",
       "(The Constitution prevents) the government from acting against the law"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 104,
@@ -1239,7 +1362,8 @@ const CIVICS_QUESTIONS = [
       "The people have a right to change or replace their government",
       "The government is established to protect the rights of the people"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 105,
@@ -1254,7 +1378,8 @@ const CIVICS_QUESTIONS = [
       "24th Amendment",
       "26th Amendment"
     ],
-    "needCount": 2
+    "needCount": 2,
+    "answerType": "document"
   },
   {
     "id": 106,
@@ -1268,7 +1393,8 @@ const CIVICS_QUESTIONS = [
       "Freedom of the press",
       "Right to petition the government"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "right"
   },
   {
     "id": 107,
@@ -1278,7 +1404,8 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "Powers not given to the federal government belong to the states or the people"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 108,
@@ -1289,7 +1416,8 @@ const CIVICS_QUESTIONS = [
       "(Rosa) Parks",
       "(Martin Luther King, Jr.)"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "historical_person"
   },
   {
     "id": 109,
@@ -1299,7 +1427,8 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "We hold these truths to be self-evident"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "document"
   },
   {
     "id": 110,
@@ -1309,7 +1438,8 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "Declaration of Independence"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "document"
   },
   {
     "id": 111,
@@ -1320,7 +1450,8 @@ const CIVICS_QUESTIONS = [
       "Basic rights of Americans",
       "Basic freedoms"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 112,
@@ -1332,7 +1463,8 @@ const CIVICS_QUESTIONS = [
       "Slavery ended",
       "The Confederate States rejoined the United States"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "event"
   },
   {
     "id": 113,
@@ -1342,7 +1474,8 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "Gave women the right to vote"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 114,
@@ -1352,7 +1485,8 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "A conflict between North Korea (with support from China) and South Korea (with support from the United Nations, including the United States)"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "event"
   },
   {
     "id": 115,
@@ -1366,7 +1500,8 @@ const CIVICS_QUESTIONS = [
       "Nearly 3000 people were killed",
       "Terrorists took over a plane aimed at Washington D.C. and crashed in a field in Pennsylvania"
     ],
-    "needCount": 2
+    "needCount": 2,
+    "answerType": "event"
   },
   {
     "id": 116,
@@ -1377,7 +1512,8 @@ const CIVICS_QUESTIONS = [
       "The war in Afghanistan",
       "The war in Iraq"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "event"
   },
   {
     "id": 117,
@@ -1388,7 +1524,8 @@ const CIVICS_QUESTIONS = [
       "Citizens 65 and older who have been legal permanent residents for 20 or more years may study a shorter list of questions",
       "They may take the civics test in the language of their choice"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 118,
@@ -1399,7 +1536,8 @@ const CIVICS_QUESTIONS = [
       "U.S. Senators",
       "U.S. Representative (Congressman/Congresswoman)"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "government_branch"
   },
   {
     "id": 119,
@@ -1411,7 +1549,8 @@ const CIVICS_QUESTIONS = [
       "Checks and balances",
       "Separation of powers"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 120,
@@ -1421,7 +1560,8 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "Atlantic (Ocean)"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "location"
   },
   {
     "id": 121,
@@ -1431,7 +1571,8 @@ const CIVICS_QUESTIONS = [
     "answers": [
       "Pacific (Ocean)"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "location"
   },
   {
     "id": 122,
@@ -1442,7 +1583,8 @@ const CIVICS_QUESTIONS = [
       "Missouri (River)",
       "Mississippi (River)"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "location"
   },
   {
     "id": 123,
@@ -1458,7 +1600,8 @@ const CIVICS_QUESTIONS = [
       "Landing on the moon",
       "Integrated circuit (IC)"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 124,
@@ -1495,7 +1638,8 @@ const CIVICS_QUESTIONS = [
       "Seneca"
     ],
     "needCount": 1,
-    "note": "and more"
+    "note": "and more",
+    "answerType": "historical_person"
   },
   {
     "id": 125,
@@ -1514,7 +1658,8 @@ const CIVICS_QUESTIONS = [
       "Support or oppose an issue or policy",
       "Write to a newspaper"
     ],
-    "needCount": 2
+    "needCount": 2,
+    "answerType": "process"
   },
   {
     "id": 126,
@@ -1527,7 +1672,8 @@ const CIVICS_QUESTIONS = [
       "Required by the U.S. Constitution (16th Amendment)",
       "Civic duty"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 127,
@@ -1539,7 +1685,8 @@ const CIVICS_QUESTIONS = [
       "Civic duty",
       "Makes the draft fair if needed"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   },
   {
     "id": 128,
@@ -1554,7 +1701,8 @@ const CIVICS_QUESTIONS = [
       "Practice their religion",
       "Escape persecution"
     ],
-    "needCount": 1
+    "needCount": 1,
+    "answerType": "concept"
   }
 ];
 
