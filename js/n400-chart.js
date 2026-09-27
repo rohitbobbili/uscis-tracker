@@ -26,7 +26,11 @@ const N400_METRICS = {
   processingMonths: { label: 'Median Processing Time', quarterField: 'processingMonths', fyField: null, unit: 'months', supportsCumulative: false },
 };
 
-let n400State = { metric: 'received', view: 'quarter' };
+// Quarters to show, most-recent-first logic applied at render time.
+// 'all' always includes every quarter on record, however many that grows to.
+const N400_RANGES = { '1y': 4, '2y': 8, '5y': 20, all: Infinity };
+
+let n400State = { metric: 'received', view: 'quarter', range: '2y' };
 
 function n400FormatCount(n) {
   if (n >= 1000) return (n / 1000).toFixed(n >= 100000 ? 0 : 1).replace(/\.0$/, '') + 'K';
@@ -44,13 +48,15 @@ function n400FormatAxis(n, unit) {
   return n400FormatCount(n);
 }
 
-function n400SeriesFor(metricKey, view) {
+function n400SeriesFor(metricKey, view, range) {
   const m = N400_METRICS[metricKey];
   const useFY = view === 'fy' && m.supportsCumulative;
-  return N400_QUARTERLY.map(row => {
+  const full = N400_QUARTERLY.map(row => {
     const value = m.compute ? m.compute(row, useFY) : row[useFY ? m.fyField : m.quarterField];
     return { label: row.label, quarter: row.quarter, value };
   });
+  const keep = N400_RANGES[range] || Infinity;
+  return keep >= full.length ? full : full.slice(full.length - keep);
 }
 
 function n400BuildPath(points, xScale, yScale) {
@@ -65,6 +71,41 @@ function n400BuildPath(points, xScale, yScale) {
   return d.trim();
 }
 
+// A constant step in quarters (1, 2, 4, or 8) so labels land on a real,
+// predictable calendar rhythm — every quarter, every half-year, every
+// year, every two years — instead of a mathematically "even" index split
+// that (because 22 doesn't divide cleanly by 9) actually produced
+// irregular 2-and-3-quarter gaps and read as random.
+function n400XAxisStep(n) {
+  const targetLabels = 7;
+  const raw = Math.ceil(n / targetLabels);
+  if (raw <= 1) return 1;
+  if (raw <= 2) return 2;
+  if (raw <= 4) return 4;
+  return 8;
+}
+
+function n400ShownLabelIndices(n) {
+  const step = n400XAxisStep(n);
+  const shown = new Set();
+  for (let i = 0; i < n; i += step) shown.add(i);
+  shown.add(n - 1); // always label the most recent point
+  // if the auto-stepped label right before the last one would crowd it,
+  // drop that one rather than the last (the last is more informative)
+  const sorted = [...shown].sort((a, b) => a - b);
+  const last = sorted[sorted.length - 1];
+  const prev = sorted[sorted.length - 2];
+  if (prev != null && last - prev < Math.max(1, Math.floor(step / 2))) shown.delete(prev);
+  return shown;
+}
+
+function n400UpdateReadout(p, m, view) {
+  const el = $('n400Readout');
+  if (!el) return;
+  el.innerHTML = `<span class="n400-readout-q">${esc(p.quarter)}</span>
+    <span class="n400-readout-val">${esc(n400FormatValue(p.value, m.unit))}</span>`;
+}
+
 function renderN400Chart() {
   const svgEl = $('n400ChartSvg');
   const tableBody = $('n400TableBody');
@@ -73,7 +114,7 @@ function renderN400Chart() {
 
   const m = N400_METRICS[n400State.metric];
   const view = m.supportsCumulative ? n400State.view : 'quarter';
-  const series = n400SeriesFor(n400State.metric, view);
+  const series = n400SeriesFor(n400State.metric, view, n400State.range);
   const values = series.map(p => p.value).filter(v => v != null);
   const dataMax = Math.max(...values);
   // Counts and months always start the axis at zero — truncating those
@@ -91,7 +132,7 @@ function renderN400Chart() {
   const padL = 54, padR = 16, padT = 16, padB = 34;
   const plotW = W - padL - padR, plotH = H - padT - padB;
   const n = series.length;
-  const xScale = i => padL + (i / (n - 1)) * plotW;
+  const xScale = i => n === 1 ? padL + plotW / 2 : padL + (i / (n - 1)) * plotW;
   const yScale = v => padT + plotH - ((v - minVal) / (maxVal - minVal || 1)) * plotH;
 
   const gridCount = 4;
@@ -103,14 +144,7 @@ function renderN400Chart() {
       + `<text x="${padL - 8}" y="${y + 4}" class="n400-axis-label" text-anchor="end">${esc(n400FormatAxis(val, m.unit))}</text>`);
   }
 
-  // Evenly-spaced label picks (always including first/last) rather than a
-  // fixed modulo, which can leave two labels crammed together at the end
-  // when n isn't a clean multiple of the step.
-  const targetLabels = Math.min(9, n);
-  const shownIdx = new Set();
-  for (let k = 0; k < targetLabels; k++) {
-    shownIdx.add(Math.round((k / (targetLabels - 1)) * (n - 1)));
-  }
+  const shownIdx = n400ShownLabelIndices(n);
   const xLabels = series.map((p, i) => {
     if (!shownIdx.has(i)) return '';
     const anchor = i === 0 ? 'start' : (i === n - 1 ? 'end' : 'middle');
@@ -120,9 +154,14 @@ function renderN400Chart() {
   const pathD = n400BuildPath(series, xScale, yScale);
   const points = series.map((p, i) => {
     if (p.value == null) return '';
-    return `<circle cx="${xScale(i)}" cy="${yScale(p.value)}" r="3.5" class="n400-point" tabindex="0">
-      <title>${esc(p.quarter)}: ${esc(n400FormatValue(p.value, m.unit))}</title>
-    </circle>`;
+    // A much bigger invisible circle carries the actual hit target (14px
+    // radius clears the 44px touch-target guideline once the SVG scales
+    // up to its rendered size) so the small visible dot doesn't have to
+    // be huge to stay tappable on mobile.
+    return `<g class="n400-point-group" data-i="${i}">
+      <circle cx="${xScale(i)}" cy="${yScale(p.value)}" r="14" class="n400-hit" tabindex="0"></circle>
+      <circle cx="${xScale(i)}" cy="${yScale(p.value)}" r="5" class="n400-point"></circle>
+    </g>`;
   }).join('');
 
   svgEl.setAttribute('viewBox', `0 0 ${W} ${H}`);
@@ -135,6 +174,23 @@ function renderN400Chart() {
     ${xLabels}`;
 
   captionEl.textContent = `${m.label}${view === 'fy' ? ' — fiscal-year cumulative' : ' — per quarter'}`;
+
+  svgEl.querySelectorAll('.n400-point-group').forEach(grp => {
+    const p = series[Number(grp.dataset.i)];
+    const hit = grp.querySelector('.n400-hit');
+    const show = () => {
+      svgEl.querySelectorAll('.n400-point-group.is-active').forEach(o => o.classList.remove('is-active'));
+      grp.classList.add('is-active');
+      n400UpdateReadout(p, m, view);
+    };
+    hit.addEventListener('mouseenter', show);
+    hit.addEventListener('focus', show);
+    hit.addEventListener('click', show);
+  });
+  // Default readout: the most recent point, so there's always a number
+  // showing rather than a blank prompt.
+  const lastWithValue = [...series].reverse().find(p => p.value != null);
+  if (lastWithValue) n400UpdateReadout(lastWithValue, m, view);
 
   tableBody.innerHTML = series.map(p =>
     `<tr><td>${esc(p.quarter)}</td><td>${esc(n400FormatValue(p.value, m.unit))}</td></tr>`).join('');
@@ -151,6 +207,10 @@ function renderN400Chart() {
     btn.disabled = !m.supportsCumulative;
   });
   $('n400ViewGroup').classList.toggle('is-disabled', !m.supportsCumulative);
+  document.querySelectorAll('.n400-range-btn').forEach(btn => {
+    btn.classList.toggle('is-active', btn.dataset.range === n400State.range);
+    btn.setAttribute('aria-pressed', String(btn.dataset.range === n400State.range));
+  });
 }
 
 // Client-side only — builds the CSV in memory and hands it to the browser
@@ -159,14 +219,14 @@ function renderN400Chart() {
 function n400ExportCSV() {
   const m = N400_METRICS[n400State.metric];
   const view = m.supportsCumulative ? n400State.view : 'quarter';
-  const series = n400SeriesFor(n400State.metric, view);
+  const series = n400SeriesFor(n400State.metric, view, n400State.range);
   const colLabel = m.label + (view === 'fy' ? ' (Fiscal Year Cumulative)' : ' (Per Quarter)');
   const lines = [`Quarter,"${colLabel}"`, ...series.map(p => `"${p.quarter}",${p.value == null ? '' : p.value}`)];
   const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `n400-${n400State.metric}-${view}.csv`;
+  a.download = `n400-${n400State.metric}-${view}-${n400State.range}.csv`;
   document.body.appendChild(a);
   a.click();
   a.remove();
@@ -189,6 +249,9 @@ window.addEventListener('DOMContentLoaded', () => {
       n400State.view = btn.dataset.view;
       renderN400Chart();
     });
+  });
+  document.querySelectorAll('.n400-range-btn').forEach(btn => {
+    btn.addEventListener('click', () => { n400State.range = btn.dataset.range; renderN400Chart(); });
   });
 
   renderN400Chart();

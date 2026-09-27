@@ -11,10 +11,18 @@ filterable line chart (`data/n400-quarterly.js`, `js/n400-chart.js`) over
 Approval Rate (approved ÷ decided, computed client-side — more meaningful
 than raw counts), Pending, and median Processing Time, switchable between
 per-quarter and fiscal-year-cumulative views (Pending and Processing Time
-have no cumulative form, so that toggle disables itself for them). Hand-
-built as inline SVG (no charting library, keeping the zero-third-party-
-request policy), with a real `<table>` fallback for screen readers and a
-client-side "Download data (CSV)" export of whatever's currently plotted.
+have no cumulative form, so that toggle disables itself for them), and a
+1/2/5-year or all-time range filter. X-axis labels land on a constant
+calendar step (every quarter/half-year/year/two years, chosen from however
+many quarters are in view) rather than an "evenly spaced by index" split,
+which for 22 quarters actually produced irregular gaps and read as
+confusing. Hovering, focusing, or tapping a point (a generously-sized
+invisible hit target over a small visible dot, so it's a real touch target
+on mobile) updates a live readout above the chart with the exact quarter
+and value. Hand-built as inline SVG (no charting library, keeping the
+zero-third-party-request policy), with a real `<table>` fallback for
+screen readers and a client-side "Download data (CSV)" export of
+whatever's currently plotted (metric, view, and range all included).
 `case.html` carries a one-line teaser of the latest backlog/processing-time
 figures linking back to the full chart. To refresh when USCIS publishes a
 new quarter: re-pull the report from `N400_DATA_SOURCE_URL` in the data
