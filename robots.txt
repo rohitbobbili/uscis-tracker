@@ -1,5 +1,5 @@
-# N-400 Journey (unofficial) — https://rohitbobbili.github.io/uscis-tracker/
+# N-400 Journey (unofficial) — https://app.n400journey.workers.dev/
 User-agent: *
 Allow: /
 
-Sitemap: https://rohitbobbili.github.io/uscis-tracker/sitemap.xml
+Sitemap: https://app.n400journey.workers.dev/sitemap.xml
