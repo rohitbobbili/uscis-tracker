@@ -97,6 +97,22 @@ every `*.html` file, bumps every asset reference to one new shared version
 number, and fails loudly if the counts don't match (a silent version
 mismatch across pages caused a live bug once; see git history).
 
+## Hosting
+
+Deployed on Cloudflare Workers (Static Assets), connected to this repo
+for auto-deploy on push — [app.n400journey.workers.dev](https://app.n400journey.workers.dev/)
+is the canonical URL. `_headers` sets response headers Cloudflare can't
+infer on its own: `frame-ancestors 'none'` (a `<meta>` CSP can't express
+that directive, so without this the site could otherwise be framed by
+another origin), the usual `X-Content-Type-Options` / `X-Frame-Options` /
+`Referrer-Policy` / `Permissions-Policy` baseline, and an explicit
+`charset=utf-8` on HTML/CSS/JS/XML/robots.txt (Cloudflare's default
+Content-Type for static assets omits it). See
+[Cloudflare's `_headers` docs](https://developers.cloudflare.com/workers/static-assets/headers/).
+The page's own Content-Security-Policy — the meta tag that blocks all
+outbound connections — is unaffected either way; it's part of each HTML
+file, not a server header, so it's identical on any static host.
+
 ## Disclaimer
 
 This is an unofficial, independent tool with no affiliation to USCIS, DHS, or
