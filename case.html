@@ -27,8 +27,8 @@
   <meta name="twitter:title" content="Case Journey — Track Your N-400 Status | N-400 Journey" />
   <meta name="twitter:description" content="Paste the case JSON from your own USCIS account to see a plain-language event timeline, appointment dates and where things stand." />
   <meta name="twitter:image" content="https://app.n400journey.workers.dev/og-image.png" />
-  <link rel="stylesheet" href="css/style.css?v=24" />
-  <link rel="stylesheet" href="css/civics.css?v=24" />
+  <link rel="stylesheet" href="css/style.css?v=25" />
+  <link rel="stylesheet" href="css/civics.css?v=25" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -136,6 +136,8 @@
       </div>
 
       <div class="case-status-strip" id="caseStatusStrip" style="display:none"></div>
+
+      <p class="n400-context-line" id="n400ContextLine"></p>
 
       <section class="input-section">
         <div class="privacy-note">🔒 <strong>Private by design:</strong> your case data never leaves your browser —
@@ -271,8 +273,9 @@
     </footer>
   </div>
 
-  <script src="js/case-history.js?v=24"></script>
-  <script src="js/main.js?v=24"></script>
+  <script src="js/case-history.js?v=25"></script>
+  <script src="data/n400-quarterly.js?v=25"></script>
+  <script src="js/main.js?v=25"></script>
 </body>
 
 </html>

@@ -621,7 +621,11 @@ button.stat-tile:disabled { cursor: default; }
 .n400-point { fill: var(--surface); stroke: var(--red-flag); stroke-width: 2; cursor: pointer; }
 .n400-point:hover, .n400-point:focus-visible { fill: var(--red-flag); outline: none; }
 
-.trends-table-toggle { margin-top: 16px; padding-top: 12px; border-top: 1px dashed var(--border); }
+.trends-table-row {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  margin-top: 16px; padding-top: 12px; border-top: 1px dashed var(--border);
+}
+.trends-table-toggle { flex: 1; min-width: 160px; }
 .trends-table-toggle summary {
   cursor: pointer; list-style: none; font-size: 12.5px; font-weight: 600; color: var(--blue);
   min-height: 32px; display: flex; align-items: center;
@@ -653,6 +657,12 @@ button.stat-tile:disabled { cursor: default; }
   border-radius: 10px; padding: 14px 16px; margin-bottom: 22px;
   font-size: 13px; color: var(--on-page-muted);
 }
+
+.n400-context-line {
+  font-size: 12.5px; color: var(--on-page-muted); margin: 0 0 22px;
+}
+.n400-context-line strong { color: var(--on-page); }
+.n400-context-line a { color: var(--page-link); }
 .case-status-line {
   display: flex; align-items: center; justify-content: space-between;
   gap: 12px; flex-wrap: wrap;

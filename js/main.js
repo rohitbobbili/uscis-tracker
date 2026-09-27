@@ -883,6 +883,23 @@ function renderCaseStatusStrip() {
 }
 
 /* ═════════════════════════════════════════════════════════════
+   NATIONAL CONTEXT LINE — a one-line teaser from the same
+   official USCIS quarterly data behind the hub's trends chart
+   (data/n400-quarterly.js), linking back to it. Purely national
+   figures, nothing derived from any case pasted on this page.
+   ═════════════════════════════════════════════════════════════ */
+function renderN400ContextLine() {
+  const el = $('n400ContextLine');
+  if (!el || typeof N400_QUARTERLY === 'undefined' || !N400_QUARTERLY.length) return;
+  const latest = N400_QUARTERLY[N400_QUARTERLY.length - 1];
+  const pendingK = (latest.pending / 1000).toFixed(0) + 'K';
+  el.innerHTML = `National N-400 backlog: <strong>${esc(pendingK)}</strong> pending ·
+    <strong>${esc(latest.processingMonths != null ? latest.processingMonths.toFixed(1) + ' mo' : '—')}</strong>
+    median processing time (${esc(latest.label)}) —
+    <a href="index.html#n400trends">see the full trend →</a>`;
+}
+
+/* ═════════════════════════════════════════════════════════════
    INIT
    ═════════════════════════════════════════════════════════════ */
 window.addEventListener('DOMContentLoaded', () => {
@@ -891,4 +908,5 @@ window.addEventListener('DOMContentLoaded', () => {
   $('helpLink').addEventListener('click', showInstructions);
   $('demoBtn').addEventListener('click', loadDemo);
   renderCaseStatusStrip();
+  renderN400ContextLine();
 });
