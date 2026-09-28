@@ -419,7 +419,7 @@ button.stat-tile:disabled { cursor: default; }
 .mastery-seg.learning { background: var(--gold-bright, #d4a843); }
 .mastery-seg.missed { background: var(--red); }
 .mastery-seg.new { background: var(--surface2); }
-.mastery-legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: var(--text-muted); margin-bottom: 26px; }
+.mastery-legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: var(--on-page-muted); margin-bottom: 26px; }
 .mastery-legend span { display: inline-flex; align-items: center; gap: 6px; }
 .mastery-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
 .mastery-dot.mastered { background: var(--green); }

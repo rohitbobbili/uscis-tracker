@@ -96,6 +96,7 @@
   --gold-dim: rgba(154, 103, 0, .12);
   --green: #1a6b37;
   --green-dim: rgba(26, 107, 55, .12);
+  --green-bright: #3aa866;
   --blue: #22518f;
   --blue-dim: rgba(34, 81, 143, .12);
   --purple: #5c3d94;
@@ -319,18 +320,18 @@ h2.api-guide-title { margin: 0; font-weight: inherit; }
 /* Input panel */
 /* ══ PRIVACY CARD — prominent, plain-English, ahead of the walkthrough ══ */
 .privacy-card {
-  background: var(--green-dim); border: 1px solid var(--green);
+  background: var(--green-dim); border: 1px solid var(--green-bright);
   border-radius: 12px; padding: 18px 20px; margin-bottom: 20px;
 }
-.privacy-card-title { font-family: 'DM Serif Display', serif; font-size: 17px; color: var(--green); margin-bottom: 10px; }
+.privacy-card-title { font-family: 'DM Serif Display', serif; font-size: 17px; color: var(--green-bright); margin-bottom: 10px; }
 .privacy-card-list { list-style: none; margin: 0 0 4px; padding: 0; }
 .privacy-card-list li {
-  font-size: 13.5px; color: var(--green); line-height: 1.7; padding-left: 18px; position: relative;
+  font-size: 13.5px; color: var(--green-bright); line-height: 1.7; padding-left: 18px; position: relative;
 }
 .privacy-card-list li::before { content: '✓'; position: absolute; left: 0; font-weight: 700; }
 .privacy-card-details { margin-top: 8px; }
 .privacy-card-details summary {
-  cursor: pointer; list-style: none; font-size: 12.5px; font-weight: 600; color: var(--green);
+  cursor: pointer; list-style: none; font-size: 12.5px; font-weight: 600; color: var(--green-bright);
   text-decoration: underline; text-underline-offset: 2px; min-height: 32px; display: inline-flex; align-items: center;
 }
 .privacy-card-details summary::-webkit-details-marker { display: none; }
