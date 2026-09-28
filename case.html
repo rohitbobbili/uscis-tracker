@@ -27,8 +27,8 @@
   <meta name="twitter:title" content="Case Journey — Track Your N-400 Status | N-400 Journey" />
   <meta name="twitter:description" content="Paste the case JSON from your own USCIS account to see a plain-language event timeline, appointment dates and where things stand." />
   <meta name="twitter:image" content="https://app.n400journey.workers.dev/og-image.png" />
-  <link rel="stylesheet" href="css/style.css?v=29" />
-  <link rel="stylesheet" href="css/civics.css?v=29" />
+  <link rel="stylesheet" href="css/style.css?v=30" />
+  <link rel="stylesheet" href="css/civics.css?v=30" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -237,35 +237,6 @@
         </details>
       </div>
 
-      <!-- Instructions (collapsible) -->
-      <details class="api-guide" id="instructions">
-        <summary>
-          <h2 class="api-guide-title">📖 How to Get Your Case JSON</h2>
-          <span class="guide-toggle"></span>
-        </summary>
-        <div class="api-guide-body">
-          <p>The tracker reads a copy of your case record that you fetch yourself — it travels straight from USCIS to
-            your screen, and this page is never in the middle.</p>
-          <div class="api-step"><span class="step-num">1</span><span><strong>Sign in to USCIS</strong> — open
-              <a href="https://myaccount.uscis.gov/sign-in" target="_blank"
-                rel="noopener noreferrer">myaccount.uscis.gov</a> and log in the way you normally would.</span></div>
-          <div class="api-step"><span class="step-num">2</span><span><strong>Open your case's data URL</strong> — in a
-              new tab of that same browser, visit<br />
-              <code class="api-url">https://my.uscis.gov/account/case-service/api/cases/&lt;your-receipt-number&gt;</code><br />
-              Replace <code class="inline-code">&lt;your-receipt-number&gt;</code> with your own receipt number (the
-              <code class="inline-code">IOE…</code> code printed on your USCIS notices) at the end.</span></div>
-          <div class="api-step"><span class="step-num">3</span><span><strong>Copy everything on that page</strong> —
-              you'll see a wall of text beginning with <code class="inline-code">{"data":</code>. Select it all
-              (<strong>Ctrl+A</strong>, or <strong>Cmd+A</strong> on a Mac) and copy it (<strong>Ctrl+C</strong> /
-              <strong>Cmd+C</strong>).</span></div>
-          <div class="api-step"><span class="step-num">4</span><span><strong>Come back and analyze</strong> — paste
-              into the box at the top of this page and press <strong>Analyze Case</strong>.</span></div>
-          <p class="guide-note">Seeing an error page instead of text at that URL? Your USCIS session expired — sign in
-            again, then reload the tab. The whole trip happens between your browser and USCIS: this site has no
-            servers, cannot reach USCIS on your behalf, and never sees your login.</p>
-        </div>
-      </details>
-
       <!-- About & Important (collapsible) — one section, not two -->
       <details class="api-guide" id="about">
         <summary>
@@ -332,9 +303,9 @@
     </footer>
   </div>
 
-  <script src="js/case-history.js?v=29"></script>
-  <script src="data/n400-quarterly.js?v=29"></script>
-  <script src="js/main.js?v=29"></script>
+  <script src="js/case-history.js?v=30"></script>
+  <script src="data/n400-quarterly.js?v=30"></script>
+  <script src="js/main.js?v=30"></script>
 </body>
 
 </html>
