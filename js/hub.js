@@ -20,6 +20,8 @@
     $('learningCta').textContent = 'Continue Practicing →';
   }
 
+  renderNextStep($('hubNextStep'), progress, loadCaseSnapshot());
+
   // Case Journey: show the last known status + what's new, right on the
   // pillar card, using only the minimal snapshot from case-history.js —
   // never the full case record.

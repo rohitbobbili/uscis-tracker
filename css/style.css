@@ -317,14 +317,25 @@ h2.api-guide-title { margin: 0; font-weight: inherit; }
 .sec-heading .star { color: var(--page-accent); font-size: 15px; }
 
 /* Input panel */
-.privacy-note {
-  background: var(--green-dim);
-  border: 1px solid var(--green);
-  border-radius: 8px;
-  color: var(--green);
-  font-size: 12.5px;
-  line-height: 1.6;
-  padding: 10px 14px;
+/* ══ PRIVACY CARD — prominent, plain-English, ahead of the walkthrough ══ */
+.privacy-card {
+  background: var(--green-dim); border: 1px solid var(--green);
+  border-radius: 12px; padding: 18px 20px; margin-bottom: 20px;
+}
+.privacy-card-title { font-family: 'DM Serif Display', serif; font-size: 17px; color: var(--green); margin-bottom: 10px; }
+.privacy-card-list { list-style: none; margin: 0 0 4px; padding: 0; }
+.privacy-card-list li {
+  font-size: 13.5px; color: var(--green); line-height: 1.7; padding-left: 18px; position: relative;
+}
+.privacy-card-list li::before { content: '✓'; position: absolute; left: 0; font-weight: 700; }
+.privacy-card-details { margin-top: 8px; }
+.privacy-card-details summary {
+  cursor: pointer; list-style: none; font-size: 12.5px; font-weight: 600; color: var(--green);
+  text-decoration: underline; text-underline-offset: 2px; min-height: 32px; display: inline-flex; align-items: center;
+}
+.privacy-card-details summary::-webkit-details-marker { display: none; }
+.privacy-card-details p {
+  margin-top: 8px; font-size: 12.5px; color: var(--text); line-height: 1.6; max-width: 68ch;
 }
 
 .input-section {
@@ -334,6 +345,8 @@ h2.api-guide-title { margin: 0; font-weight: inherit; }
   padding: 22px;
   box-shadow: 0 4px 18px var(--shadow);
 }
+.input-section-title { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--navy); margin-bottom: 12px; }
+.input-note { font-size: 12px; color: var(--text-muted); margin: 10px 0 0; }
 
 textarea#jsonInput {
   width: 100%;
@@ -514,6 +527,21 @@ textarea#jsonInput:focus { border-color: var(--navy); }
 }
 
 .guide-note { margin-top: 9px; font-size: 11px; color: var(--on-page-muted); opacity: .85; line-height: 1.6; }
+
+.tech-data-toggle { margin: 20px 0 0; }
+.tech-data-toggle summary {
+  cursor: pointer; list-style: none; font-size: 12.5px; font-weight: 600; color: var(--page-link);
+  min-height: 32px; display: inline-flex; align-items: center;
+}
+.tech-data-toggle summary::-webkit-details-marker { display: none; }
+.tech-data-toggle summary::before { content: '▾ '; font-size: 10px; }
+.tech-data-toggle[open] summary::before { content: '▴ '; }
+.tech-data-pre {
+  background: var(--page-panel-inset); border: 1px solid var(--page-border); border-radius: 10px;
+  padding: 14px 16px; margin-top: 10px; max-height: 340px; overflow: auto;
+  font-family: 'DM Mono', monospace; font-size: 11px; color: var(--on-page-muted); line-height: 1.6;
+  white-space: pre-wrap; word-break: break-word;
+}
 
 /* The "Important" subsection inside the merged About section — visually
    separated from the general About copy without duplicating a whole

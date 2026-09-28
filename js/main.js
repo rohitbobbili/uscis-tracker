@@ -252,24 +252,28 @@ function showErr(msg) {
   bar.classList.add('show');
 }
 
+// Friendly, non-technical error copy — every message says what happened
+// and what to do next, never a raw parser message or stack trace.
+const ERR_UNREADABLE = "We couldn't read this case information yet. Please make sure you copied the complete USCIS case response, then paste it in and try again.";
+
 function parseAndRender() {
   const raw = $('jsonInput').value.trim();
   $('errorBar').classList.remove('show');
-  if (!raw) { showErr('Please paste your USCIS API JSON first.'); return; }
+  if (!raw) { showErr('Please paste your case information first.'); return; }
   if (raw.length > MAX_INPUT_CHARS) {
-    showErr(`That paste is ${(raw.length / 1e6).toFixed(1)} MB — far larger than any USCIS case record. Please check you copied the right page.`);
+    showErr(`That paste is ${(raw.length / 1e6).toFixed(1)} MB — much larger than any USCIS case record. Please check you copied the right page.`);
     return;
   }
 
   let parsed;
   try { parsed = JSON.parse(raw); }
-  catch (e) { showErr('Invalid JSON — ' + e.message); return; }
+  catch { showErr(ERR_UNREADABLE); return; }
 
   let d = parsed.data || parsed;
   // Accept a bare array of event objects too
   if (Array.isArray(d)) d = { events: d, receiptNumber: d[0]?.receiptNumber };
   if (!d.receiptNumber && !d.formType && !d.events) {
-    showErr('This does not appear to be a USCIS API JSON. Expected fields like "receiptNumber", "formType", or "events".');
+    showErr(ERR_UNREADABLE);
     return;
   }
 
@@ -282,6 +286,7 @@ function parseAndRender() {
   currentData = d;
   $('output').style.display = 'block';
   renderAll(d);
+  if ($('techDataPre')) $('techDataPre').textContent = JSON.stringify(d, null, 2);
   recordCaseSnapshot(d);
   renderCaseStatusStrip();
   announce(`Case ${d.receiptNumber || ''} analysed. `

@@ -27,8 +27,8 @@
   <meta name="twitter:title" content="Case Journey — Track Your N-400 Status | N-400 Journey" />
   <meta name="twitter:description" content="Paste the case JSON from your own USCIS account to see a plain-language event timeline, appointment dates and where things stand." />
   <meta name="twitter:image" content="https://app.n400journey.workers.dev/og-image.png" />
-  <link rel="stylesheet" href="css/style.css?v=27" />
-  <link rel="stylesheet" href="css/civics.css?v=27" />
+  <link rel="stylesheet" href="css/style.css?v=28" />
+  <link rel="stylesheet" href="css/civics.css?v=28" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -130,30 +130,75 @@
     <main class="main" id="main">
 
       <div class="page-intro" style="margin-bottom:22px">
-        <h1 style="color:var(--on-page)">Case Journey</h1>
-        <p>Paste the case JSON from your own USCIS account to see a plain-language event timeline, appointment
-          dates, and where things stand right now.</p>
+        <h1 style="color:var(--on-page)">Bring your USCIS case information</h1>
+        <p>You stay in control. N-400 Journey does not ask for your USCIS password or log into your account.</p>
       </div>
 
       <p class="n400-context-line" id="n400ContextLine"></p>
 
-      <section class="input-section">
-        <div class="privacy-note">🔒 <strong>Private by design:</strong> your case data never leaves your browser —
-          outbound connections are blocked by its Content-Security-Policy, which the browser enforces (view
-          source to verify). A small status summary (not the full record) is saved here so this page can show
-          what's changed since your last check; nothing is ever transmitted, and you can clear it any time.</div>
-        <textarea id="jsonInput" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" aria-label="Paste your USCIS case JSON here" placeholder='Paste the JSON from your USCIS online account here, then click Analyze Case.
+      <div class="privacy-card">
+        <div class="privacy-card-title">🔒 Your case information stays on this device.</div>
+        <ul class="privacy-card-list">
+          <li>We don't need your USCIS password.</li>
+          <li>Your pasted case data is processed in your browser.</li>
+          <li>Your case information is not uploaded to a server.</li>
+          <li>You don't need to create an account.</li>
+        </ul>
+        <details class="privacy-card-details">
+          <summary>How privacy works</summary>
+          <p>Outbound connections are blocked by this page's Content-Security-Policy, which your browser enforces
+            whether the code behaves or not (view source to verify) — this page is not just promising not to send
+            data, it's technically unable to. A small status summary (not the full record) is saved on this
+            device so it can show you what's changed since your last check; nothing is ever transmitted, and
+            "Clear saved status" removes it at any time.</p>
+        </details>
+      </div>
 
-(It will look something like  { "data": { "receiptNumber": "IOE…", … } }  — see the instructions below for how to get it.)'></textarea>
+      <!-- Walkthrough — open by default so a first-time visitor sees it
+           without an extra click; still a <details> so it collapses out
+           of the way for anyone who already knows the steps. -->
+      <details class="api-guide" id="instructions" open>
+        <summary>
+          <h2 class="api-guide-title">📖 How to bring your case information</h2>
+          <span class="guide-toggle"></span>
+        </summary>
+        <div class="api-guide-body">
+          <p>You get a copy of your own case information directly from USCIS — it travels straight from USCIS to
+            your screen, and this page is never in the middle.</p>
+          <div class="api-step"><span class="step-num">1</span><span><strong>Sign in to your USCIS account</strong> — open
+              <a href="https://myaccount.uscis.gov/sign-in" target="_blank"
+                rel="noopener noreferrer">myaccount.uscis.gov</a> and log in the way you normally would.</span></div>
+          <div class="api-step"><span class="step-num">2</span><span><strong>Open your case information</strong> — in a
+              new tab of that same browser, visit<br />
+              <code class="api-url">https://my.uscis.gov/account/case-service/api/cases/&lt;your-receipt-number&gt;</code><br />
+              Replace <code class="inline-code">&lt;your-receipt-number&gt;</code> with your own receipt number (the
+              <code class="inline-code">IOE…</code> code printed on your USCIS notices) at the end.</span></div>
+          <div class="api-step"><span class="step-num">3</span><span><strong>Copy the case data</strong> —
+              you'll see a wall of text beginning with <code class="inline-code">{"data":</code>. Select it all
+              (<strong>Ctrl+A</strong>, or <strong>Cmd+A</strong> on a Mac) and copy it (<strong>Ctrl+C</strong> /
+              <strong>Cmd+C</strong>).</span></div>
+          <div class="api-step"><span class="step-num">4</span><span><strong>Return here and paste it</strong> —
+              paste into the box below and press <strong>Analyze My Case</strong>.</span></div>
+          <p class="guide-note">The information is formatted as JSON behind the scenes — you don't need to
+            understand it, just copy and paste it. Seeing an error page instead of text at that URL? Your USCIS
+            session expired — sign in again, then reload the tab. The whole trip happens between your browser and
+            USCIS: this site has no servers, cannot reach USCIS on your behalf, and never sees your login.</p>
+        </div>
+      </details>
+
+      <section class="input-section">
+        <h2 class="input-section-title">Paste your case information</h2>
+        <textarea id="jsonInput" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" aria-label="Paste your case information here" placeholder="Paste the case information you copied from USCIS here…"></textarea>
         <div class="error-bar" id="errorBar" role="alert"></div>
         <p id="statusMsg" class="visually-hidden" role="status" aria-live="polite"></p>
 
         <div class="input-actions">
           <button class="btn btn-clear" id="clearBtn">Clear</button>
-          <button class="btn btn-analyze" id="analyzeBtn">Analyze Case</button>
+          <button class="btn btn-analyze" id="analyzeBtn">Analyze My Case</button>
         </div>
+        <p class="input-note">Nothing is uploaded. Processing happens in your browser.</p>
         <div class="input-help">
-          <button type="button" class="link-btn" id="helpLink">How do I get my JSON? ↓</button>
+          <button type="button" class="link-btn" id="helpLink">How do I get my case information? ↓</button>
           <span class="help-sep">·</span>
           <button type="button" class="link-btn" id="demoBtn">See a demo with sample data</button>
         </div>
@@ -183,6 +228,13 @@
           <h2 class="sec-heading"><span class="star">★</span> Where Things Stand</h2>
           <div class="summary-card" id="summaryCard"></div>
         </section>
+
+        <details class="tech-data-toggle">
+          <summary>View technical case data</summary>
+          <p class="guide-note">This is the same information above, shown as the raw record USCIS returned — the
+            event codes, timestamps, and field names the timeline and summary were built from.</p>
+          <pre class="tech-data-pre" id="techDataPre"></pre>
+        </details>
       </div>
 
       <!-- Instructions (collapsible) -->
@@ -280,9 +332,9 @@
     </footer>
   </div>
 
-  <script src="js/case-history.js?v=27"></script>
-  <script src="data/n400-quarterly.js?v=27"></script>
-  <script src="js/main.js?v=27"></script>
+  <script src="js/case-history.js?v=28"></script>
+  <script src="data/n400-quarterly.js?v=28"></script>
+  <script src="js/main.js?v=28"></script>
 </body>
 
 </html>

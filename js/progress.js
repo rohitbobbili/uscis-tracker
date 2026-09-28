@@ -25,7 +25,7 @@ function renderStats() {
 
   $('statRow').innerHTML = `
     <div class="stat-tile"><div class="stat-tile-icon">${ICONS.layers}</div><div class="stat-tile-val">${progress.totalAnswered}</div><div class="stat-tile-lbl">Questions practiced</div></div>
-    <div class="stat-tile"><div class="stat-tile-icon">${ICONS.trophy}</div><div class="stat-tile-val">${counts.mastered}/${GRADED_QUESTIONS.length}</div><div class="stat-tile-lbl">Mastered</div></div>
+    <div class="stat-tile"><div class="stat-tile-icon">${ICONS.trophy}</div><div class="stat-tile-val">${counts.mastered}/${GRADED_QUESTIONS.length}</div><div class="stat-tile-lbl">Consistently answered</div></div>
     <div class="stat-tile"><div class="stat-tile-icon">${ICONS.target}</div><div class="stat-tile-val">${accuracy}%</div><div class="stat-tile-lbl">Overall accuracy</div></div>
     <div class="stat-tile streak"><div class="stat-tile-icon">${ICONS.flame}</div><div class="stat-tile-val">${progress.streakCurrent}</div><div class="stat-tile-lbl">Day streak</div></div>
     <button type="button" class="stat-tile${hasLastSim ? ' stat-tile-action' : ''}" id="lastSimTile" ${hasLastSim ? '' : 'disabled'}>
@@ -50,12 +50,12 @@ function renderMasteryBar() {
   const total = GRADED_QUESTIONS.length;
   const pct = n => (n / total * 100).toFixed(2) + '%';
   $('masteryBar').innerHTML = `
-    <div class="mastery-seg mastered" style="width:${pct(counts.mastered)}" title="Mastered: ${counts.mastered}"></div>
+    <div class="mastery-seg mastered" style="width:${pct(counts.mastered)}" title="Consistently answered: ${counts.mastered}"></div>
     <div class="mastery-seg learning" style="width:${pct(counts.learning)}" title="Learning: ${counts.learning}"></div>
     <div class="mastery-seg missed" style="width:${pct(counts.missed)}" title="Needs review: ${counts.missed}"></div>
     <div class="mastery-seg new" style="width:${pct(counts.new)}" title="Not seen: ${counts.new}"></div>`;
   $('masteryLegend').innerHTML = `
-    <span><span class="mastery-dot mastered"></span>Mastered (${counts.mastered})</span>
+    <span><span class="mastery-dot mastered"></span>Consistently answered (${counts.mastered})</span>
     <span><span class="mastery-dot learning"></span>Learning (${counts.learning})</span>
     <span><span class="mastery-dot missed"></span>Needs review (${counts.missed})</span>
     <span><span class="mastery-dot new"></span>Not seen yet (${counts.new})</span>`;
@@ -105,13 +105,29 @@ function renderEmptyOrContent() {
   $('dashboardContent').style.display = hasData ? '' : 'none';
 }
 
+function renderMissedCta() {
+  const missedIds = missedQuestionIds();
+  const missedBtn = $('practiceMissedBtn');
+  const continueLink = $('continuePracticingLink');
+  if (missedIds.length) {
+    missedBtn.style.display = 'inline-flex';
+    continueLink.style.display = 'none';
+    missedBtn.onclick = () => requestPractice(missedIds);
+  } else {
+    missedBtn.style.display = 'none';
+    continueLink.style.display = 'inline-flex';
+  }
+}
+
 function renderAll() {
   renderEmptyOrContent();
+  renderNextStep($('progressNextStep'), progress, loadCaseSnapshot());
   if (progress.totalAnswered > 0) {
     renderStats();
     renderMasteryBar();
     renderCategories();
     renderSessions();
+    renderMissedCta();
   }
 }
 
