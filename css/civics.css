@@ -568,28 +568,6 @@ button.stat-tile:disabled { cursor: default; }
 .how-step h3 { font-size: 15px; color: var(--on-page); margin-bottom: 5px; }
 .how-step p { font-size: 13px; color: var(--on-page-muted); line-height: 1.55; }
 
-/* ══ WHY PEOPLE USE N-400 JOURNEY ═════════════════════════════ */
-.why-us { margin-bottom: 30px; }
-.why-us h2 {
-  font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--on-page); margin-bottom: 14px;
-}
-.why-us-grid {
-  display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; max-width: 580px;
-}
-.why-us-item {
-  display: flex; align-items: center; gap: 12px;
-  background: var(--page-panel); border: 1px solid var(--page-border);
-  border-radius: 10px; padding: 14px 16px;
-}
-.why-us-icon {
-  width: 20px; height: 20px; flex-shrink: 0; color: var(--rule-blue);
-}
-.why-us-icon svg { width: 100%; height: 100%; }
-.why-us-label { font-size: 13.5px; color: var(--on-page-muted); line-height: 1.4; }
-@media (max-width: 480px) {
-  .why-us-grid { grid-template-columns: 1fr; }
-}
-
 .hub-journey { margin: 24px 0 32px; }
 .hub-journey-label {
   font-size: 11.5px; color: var(--on-page-muted); text-transform: none;
@@ -607,11 +585,10 @@ button.stat-tile:disabled { cursor: default; }
 }
 .pillar-card {
   background: var(--surface); border: 1px solid var(--border);
-  border-top: 4px solid var(--navy);
+  border-top: 4px solid var(--rule-blue);
   border-radius: 14px; padding: 22px 22px 20px;
   display: flex; flex-direction: column;
 }
-.pillar-card.learning { border-top-color: var(--red-flag); }
 .pillar-card-eyebrow { font-size: 12px; color: var(--text-muted); font-weight: 600; }
 .pillar-card-title {
   font-family: 'DM Serif Display', serif; font-size: 21px; color: var(--navy);
