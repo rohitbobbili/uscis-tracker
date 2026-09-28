@@ -27,8 +27,8 @@
   <meta name="twitter:title" content="Case Journey — Track Your N-400 Status | N-400 Journey" />
   <meta name="twitter:description" content="Paste the case JSON from your own USCIS account to see a plain-language event timeline, appointment dates and where things stand." />
   <meta name="twitter:image" content="https://app.n400journey.workers.dev/og-image.png" />
-  <link rel="stylesheet" href="css/style.css?v=26" />
-  <link rel="stylesheet" href="css/civics.css?v=26" />
+  <link rel="stylesheet" href="css/style.css?v=27" />
+  <link rel="stylesheet" href="css/civics.css?v=27" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -135,8 +135,6 @@
           dates, and where things stand right now.</p>
       </div>
 
-      <div class="case-status-strip" id="caseStatusStrip" style="display:none"></div>
-
       <p class="n400-context-line" id="n400ContextLine"></p>
 
       <section class="input-section">
@@ -161,6 +159,15 @@
         </div>
 
       </section>
+
+      <!-- Sits directly above the output it's summarizing, so the
+           post-Analyze auto-scroll (which targets this element when it
+           has content) lands the applicant on "what changed" first,
+           rather than skipping past it into the raw case details. Still
+           its own independently-shown element (not nested in #output),
+           so a returning visitor sees their last known status here even
+           before pasting anything new. -->
+      <div class="case-status-strip" id="caseStatusStrip" style="display:none"></div>
 
       <!-- Output -->
       <div id="output" style="display:none">
@@ -273,9 +280,9 @@
     </footer>
   </div>
 
-  <script src="js/case-history.js?v=26"></script>
-  <script src="data/n400-quarterly.js?v=26"></script>
-  <script src="js/main.js?v=26"></script>
+  <script src="js/case-history.js?v=27"></script>
+  <script src="data/n400-quarterly.js?v=27"></script>
+  <script src="js/main.js?v=27"></script>
 </body>
 
 </html>

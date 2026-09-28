@@ -287,7 +287,11 @@ function parseAndRender() {
   announce(`Case ${d.receiptNumber || ''} analysed. `
     + `${$('timeline').querySelectorAll('.timeline-item').length} timeline entries. `
     + 'Results follow the paste box.');
-  window.scrollTo({ top: $('caseDetailsGrid').offsetTop - 20, behavior: 'smooth' });
+  // Land on "what's new" first, not the raw case details — recordCaseSnapshot()
+  // + renderCaseStatusStrip() above always populate and show this strip, so
+  // a returning visitor sees what changed before scrolling into the timeline.
+  const scrollTarget = $('caseStatusStrip').style.display !== 'none' ? $('caseStatusStrip') : $('caseDetailsGrid');
+  window.scrollTo({ top: scrollTarget.offsetTop - 20, behavior: 'smooth' });
 }
 
 /* ═════════════════════════════════════════════════════════════
